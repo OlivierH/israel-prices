@@ -17,8 +17,8 @@ rename 's/([a-zA-Z]+\d+-\d+-\d+)-\d+.xml/$1.xml/' data_raw/*/*
 echo "Remove date from the filename."
 rename 's/([a-zA-Z]+\d+-\d+)-\d+.xml/$1.xml/' data_raw/*/*
 
-echo "Remove date from the filename when there is no store id."
-rename 's/([a-zA-Z]+\d+)--\d+.xml/$1.xml/' data_raw/*/*
+echo "Remove everything except the chain id from Stores files."
+rename 's/(StoresFull\d+)-.*.xml/$1.xml/' data_raw/*/*
 
 echo "Convert all files to utf-8"
 for f in data_raw/*/* 
