@@ -1,5 +1,5 @@
-echo "Downloading all files"
-cargo run --manifest-path raw_downloader/Cargo.toml
+echo "Deleting empty files"
+find data_raw -type f -empty -print -delete
 
 echo "Unzipping"
 gunzip data_raw/*/*.gz
@@ -10,14 +10,20 @@ ls data_raw/*/* | grep -v 'xml$' | xargs -I %  mv % %.xml
 echo "Rename 'Stores...' files to 'StoresFull'"
 ls data_raw/*/* | grep -v '/StoresFull' | grep 'Stores' | xargs -I % echo mv % % | sed 's/Stores/StoresFull/2' | bash
 
+echo "Remove date from the filename."
+rename 's/([a-zA-Z]+\d+-\d+)-\d+.xml/$1.xml/' data_raw/*/*
+
 echo "Convert all files to utf-8"
 for f in data_raw/*/* 
 do
     charset=`file -i $f | cut -d"=" -f2`
     if [ "$charset" != "utf-8" ]; then
+        if [ "$charset" == "unknown-8bit" ]; then
+            charset=`head -n 1 $f | cut -d'"' -f4`
+        fi
+        echo "Converting $f from $charset to utf-8"
         iconv -f "$charset" -t utf8 -o "$f.new" "$f"  
         mv -f "$f.new" "$f"
     fi
 done
 
-# ls data_raw/*/* | grep '^' | xargs -I %  mv % %.xml
