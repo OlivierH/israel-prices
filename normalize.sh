@@ -1,6 +1,9 @@
 echo "Deleting empty files"
 find data_raw -type f -empty -print -delete
 
+echo "Deleting x1 files"
+find data_raw -type f -name "*.x1" -print -delete
+
 echo "Unzipping"
 gunzip data_raw/*/*.gz
 
