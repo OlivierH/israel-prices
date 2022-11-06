@@ -98,7 +98,7 @@ pub fn get_store_configs() -> Vec<Store> {
             "super_yoda",
         ),
         Store::new(Website::PublishedPrice("freshmarket"), "fresh_market"),
-        Store::new(Website::PublishedPrice("Keshet"), "Keshet"),
+        Store::new(Website::PublishedPrice("Keshet"), "keshet"),
         Store::new(Website::PublishedPrice("RamiLevi"), "rami_levy"),
         Store::new(Website::PublishedPrice("SuperCofixApp"), "super_cofix"),
         Store::new(Website::Shufersal, "shufersal"),
