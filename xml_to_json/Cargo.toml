@@ -1,0 +1,16 @@
+[package]
+name = "xml_to_json"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde_json = "1.0"
+roxmltree = "0.15.1"
+serde = { version = "1.0.147", features = ["derive"] }
+lazy_static = "1.4.0"
+
+[[bin]]
+name = "xml_to_json"
+path = "src/xml_to_json.rs"
