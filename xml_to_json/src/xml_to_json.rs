@@ -176,12 +176,12 @@ fn hande_price_file(path: &Path) -> std::io::Result<()> {
 fn handle_file(path: &str) -> std::io::Result<()> {
     println!("Handling file {path}");
     let path = Path::new(&path);
-    let filename = path.file_name().unwrap();
-    if filename.to_str().unwrap().starts_with("PriceFull") {
-        hande_price_file(path)?;
-    } else if filename.to_str().unwrap().starts_with("Stores") {
+    let filename = path.file_name().unwrap().to_str().unwrap();
+    if filename.starts_with("Price") || filename.starts_with("price") {
+        // hande_price_file(path)?;
+    } else if filename.starts_with("Stores") || filename.starts_with("stores") {
     } else {
-        panic!("{}", filename.to_str().unwrap());
+        panic!("{}", filename);
     }
     Ok(())
 }
