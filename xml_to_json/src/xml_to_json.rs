@@ -1,12 +1,12 @@
+use futures::StreamExt;
 use roxmltree::Node;
 use serde::Serialize;
 use std::collections::HashSet;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
-
 mod country_code;
-
+use tokio;
 fn is_false(b: &bool) -> bool {
     return !b;
 }
@@ -179,33 +179,38 @@ fn handle_file(path: &str) -> std::io::Result<()> {
     let filename = path.file_name().unwrap();
     if filename.to_str().unwrap().starts_with("PriceFull") {
         hande_price_file(path)?;
-    } else if filename.to_str().unwrap().starts_with("StoresFull") {
+    } else if filename.to_str().unwrap().starts_with("Stores") {
     } else {
         panic!("{}", filename.to_str().unwrap());
     }
     Ok(())
 }
 
-fn main() {
-    // Skip the first arg which is not a parameter
+#[tokio::main(flavor = "multi_thread", worker_threads = 10)]
+async fn main() {
     let args: Vec<String> = std::env::args().skip(1).collect();
-
     let mut dirs = HashSet::new();
 
-    for arg in args {
-        let path = Path::new(&arg);
-        let store = path
-            .parent()
-            .unwrap()
-            .file_name()
-            .unwrap()
-            .to_str()
-            .unwrap();
-        if !dirs.insert(store.to_string()) {
-            continue;
-        }
-
-        println!("{store}");
-        handle_file(&arg);
+    let tasks: Vec<_> = args
+        .into_iter()
+        .filter(|arg| {
+            let path = Path::new(&arg);
+            let store = path
+                .parent()
+                .unwrap()
+                .file_name()
+                .unwrap()
+                .to_str()
+                .unwrap();
+            dirs.insert(store.to_string())
+        })
+        .map(|arg| {
+            tokio::spawn(async move {
+                handle_file(&arg);
+            })
+        })
+        .collect();
+    for task in tasks {
+        task.await.unwrap();
     }
 }
