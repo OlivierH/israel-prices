@@ -5,7 +5,9 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
 mod country_code;
+use anyhow::Result;
 use tokio;
+
 fn is_false(b: &bool) -> bool {
     return !b;
 }
@@ -127,7 +129,7 @@ fn get_child_content(node: &Node, tag: &str) -> String {
     )
 }
 
-fn hande_price_file(path: &Path) -> std::io::Result<()> {
+fn hande_price_file(path: &Path) -> Result<()> {
     let contents = {
         let mut file = File::open(path)?;
         let mut contents = String::new();
@@ -409,7 +411,7 @@ fn get_chain_from_root(node: Node, path: &str) -> Chain {
     stores
 }
 
-fn handle_stores_file(path: &Path) -> std::io::Result<()> {
+fn handle_stores_file(path: &Path) -> Result<()> {
     let contents = {
         let mut file = File::open(path)?;
         let mut contents = String::new();
@@ -459,7 +461,7 @@ fn handle_stores_file(path: &Path) -> std::io::Result<()> {
     Ok(())
 }
 
-fn handle_file(path: &str) -> std::io::Result<()> {
+fn handle_file(path: &str) -> Result<()> {
     println!("Handling file {path}");
     let path = Path::new(&path);
     let filename = path.file_name().unwrap().to_str().unwrap();
