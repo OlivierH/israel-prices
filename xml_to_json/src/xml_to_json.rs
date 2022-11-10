@@ -406,7 +406,6 @@ fn handle_stores_file(path: &Path, args: &Args) -> Result<()> {
             panic!("{}; root: {:?}", path.to_str().unwrap(), x);
         }
     };
-    println!("Handling file {}", path.to_str().unwrap());
 
     chain
         .subchains
