@@ -17,5 +17,5 @@ clap = { version = "4.0.22", features = ["derive"] }
 walkdir = "2.3.2"
 
 [[bin]]
-name = "xml_to_json"
-path = "src/xml_to_json.rs"
+name = "xml_to_standard"
+path = "src/xml_to_standard.rs"

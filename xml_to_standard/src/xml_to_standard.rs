@@ -442,8 +442,12 @@ struct Args {
     #[arg(short, long)]
     input: String,
 
-    #[arg(short, long, default_value = "data_json")]
+    #[arg(short, long, default_value = "")]
     output: String,
+
+    #[arg(short, long, default_value = "json",
+    value_parser = clap::builder::PossibleValuesParser::new(["json", "csv"]))]
+    format: String,
 
     #[arg(short, long)]
     parallel: bool,
@@ -454,7 +458,11 @@ struct Args {
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 10)]
 async fn main() {
-    let args = Args::parse();
+    let mut args = Args::parse();
+
+    if args.output.is_empty() {
+        args.output = format!("data_{}", args.format);
+    }
 
     let mut dirs = HashSet::new();
 
