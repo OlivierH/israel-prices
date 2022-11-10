@@ -6,7 +6,9 @@ use std::io::prelude::*;
 use std::path::Path;
 mod country_code;
 use anyhow::Result;
+use clap::Parser;
 use tokio;
+use walkdir::WalkDir;
 
 fn is_false(b: &bool) -> bool {
     return !b;
@@ -69,6 +71,15 @@ struct Store {
     zip_code: String,
 }
 
+#[derive(Debug, Default)]
+struct FullStore {
+    store: Store,
+    chain_id: String,
+    chain_name: String,
+    subchain_id: i32,
+    subchain_name: String,
+}
+
 #[derive(Debug, Default, Serialize)]
 struct Subchain {
     subchain_id: i32,
@@ -120,6 +131,37 @@ fn to_i32(n: &roxmltree::Node) -> i32 {
     n.text().unwrap_or("0").parse().unwrap()
 }
 
+fn to_full_store(node: &roxmltree::Node, path: &str) -> FullStore {
+    let mut full_store = FullStore::default();
+
+    node.children().filter(Node::is_element).for_each(|elem| {
+        match elem.tag_name().name() {
+            "ChainID" => {
+                let mut chain_id = to_string(&elem);
+                if chain_id == "7290058103393" {
+                    // Victory inconsistency
+                    chain_id = "7290696200003".to_string();
+                }
+                full_store.chain_id = chain_id;
+            }
+            "SubChainID" | "SUBCHAINID" => full_store.subchain_id = to_i32(&elem),
+            "ChainName" | "CHAINNAME" => full_store.chain_name = to_string(&elem),
+            "SubChainName" | "SUBCHAINNAME" => full_store.subchain_name = to_string(&elem),
+            "StoreID" | "STOREID" | "StoreId" => full_store.store.store_id = to_i32(&elem),
+            "BikoretNo" | "BIKORETNO" => full_store.store.verification_num = to_i32(&elem),
+            "StoreType" | "STORETYPE" => full_store.store.store_type = to_string(&elem),
+            "StoreName" | "STORENAME" => full_store.store.store_name = to_string(&elem),
+            "Address" | "ADDRESS" => full_store.store.address = to_string(&elem),
+            "City" | "CITY" => full_store.store.city = to_string(&elem),
+            "ZIPCode" | "ZIPCODE" | "ZipCode" => full_store.store.zip_code = to_string(&elem),
+            "LastUpdateDate" | "LastUpdateTime" => (),
+            "Latitude" | "Longitude" => (), // These would be interesting, but are never set.
+            unknown => panic!("Unknown field: {unknown} in file {path}"), // TODO: do not panic in prod
+        }
+    });
+    full_store
+}
+
 fn get_child_content(node: &Node, tag: &str) -> String {
     to_string(
         &node
@@ -129,7 +171,7 @@ fn get_child_content(node: &Node, tag: &str) -> String {
     )
 }
 
-fn hande_price_file(path: &Path) -> Result<()> {
+fn hande_price_file(path: &Path, args: &Args) -> Result<()> {
     let contents = {
         let mut file = File::open(path)?;
         let mut contents = String::new();
@@ -206,10 +248,10 @@ fn hande_price_file(path: &Path) -> Result<()> {
 
     prices.items.sort_by_key(|i| i.item_code);
 
-    std::fs::create_dir_all("data_json").unwrap();
+    std::fs::create_dir_all(&args.output).unwrap();
     let file = File::create(format!(
-        "data_json/prices_{}_{}.json",
-        prices.chain_id, prices.store_id
+        "{}/prices_{}_{}.json",
+        &args.output, prices.chain_id, prices.store_id
     ))?;
     serde_json::to_writer_pretty(&file, &prices)?;
 
@@ -226,41 +268,25 @@ fn get_chain_from_asx_values(node: Node, path: &str) -> Chain {
     node.descendants()
         .filter(|n| n.tag_name().name() == "STORE")
         .for_each(|node| {
-            let mut store = Store::default();
-            let mut subchain_id: i32 = 0;
-            let mut subchain_name = "".to_string();
-            node.children().filter(Node::is_element).for_each(|elem| {
-                match elem.tag_name().name() {
-                    "SUBCHAINID" => subchain_id = to_i32(&elem),
-                    "STOREID" => store.store_id = to_i32(&elem),
-                    "BIKORETNO" => store.verification_num = to_i32(&elem),
-                    "STORETYPE" => store.store_type = to_string(&elem),
-                    "CHAINNAME" => chain.chain_name = to_string(&elem),
-                    "SUBCHAINNAME" => subchain_name = to_string(&elem),
-                    "STORENAME" => store.store_name = to_string(&elem),
-                    "ADDRESS" => store.address = to_string(&elem),
-                    "CITY" => store.city = to_string(&elem),
-                    "ZIPCODE" => store.zip_code = to_string(&elem),
-                    unknown => panic!("Unknown field: {unknown} in file {path}"), // TODO: do not panic in prod
-                }
-            });
+            let full_store = to_full_store(&node, path);
 
-            match subchains.get_mut(&subchain_id) {
+            match subchains.get_mut(&full_store.subchain_id) {
                 Some(subchain) => subchain,
                 None => {
                     subchains.insert(
-                        subchain_id.clone(),
+                        full_store.subchain_id.clone(),
                         Subchain {
-                            subchain_id: subchain_id,
-                            subchain_name,
+                            subchain_id: full_store.subchain_id,
+                            subchain_name: full_store.subchain_name,
                             stores: vec![],
                         },
                     );
-                    subchains.get_mut(&subchain_id).unwrap()
+                    subchains.get_mut(&full_store.subchain_id).unwrap()
                 }
             }
             .stores
-            .push(store);
+            .push(full_store.store);
+            chain.chain_name = full_store.chain_name;
         });
     chain.subchains.extend(subchains.into_values());
     chain
@@ -273,29 +299,11 @@ fn get_chain_from_envelope(node: Node, path: &str) -> Chain {
     let mut subchain = Subchain::default();
     subchain.subchain_id = get_child_content(&node, "SubChainId").parse().unwrap();
 
-    node.descendants()
-        .filter(|n| n.tag_name().name() == "Line")
-        .for_each(|line| {
-            let mut store = Store::default();
-
-            line.children().filter(Node::is_element).for_each(|elem| {
-                match elem.tag_name().name() {
-                    "ChainName" => chain.chain_name = to_string(&elem),
-                    "SubChainName" => subchain.subchain_name = to_string(&elem),
-                    "StoreId" => store.store_id = to_i32(&elem),
-                    "BikoretNo" => store.verification_num = to_i32(&elem),
-                    "StoreType" => store.store_type = to_string(&elem),
-                    "StoreName" => store.store_name = to_string(&elem),
-                    "Address" => store.address = to_string(&elem),
-                    "City" => store.city = to_string(&elem),
-                    "ZipCode" => store.zip_code = to_string(&elem),
-                    "LastUpdateDate" => (),
-                    "LastUpdateTime" => (),
-                    unknown => panic!("Unknown field: {unknown} in file {path}"), // TODO: do not panic in prod
-                }
-            });
-            subchain.stores.push(store)
-        });
+    subchain.stores.extend(
+        node.descendants()
+            .filter(|n| n.tag_name().name() == "Line")
+            .map(|line| to_full_store(&line, path).store),
+    );
     chain.subchains.push(subchain);
     chain
 }
@@ -306,53 +314,26 @@ fn get_chain_from_stores(node: Node, path: &str) -> Chain {
     node.descendants()
         .filter(|n| n.tag_name().name() == "Branch")
         .for_each(|branch| {
-            let mut store = Store::default();
-            let mut subchain_id: i32 = 0;
-            let mut subchain_name = "".to_string();
-
-            branch.children().filter(Node::is_element).for_each(|elem| {
-                match elem.tag_name().name() {
-                    "ChainID" => {
-                        let mut chain_id = to_string(&elem);
-                        if chain_id == "7290058103393" {
-                            // Victory inconsistency
-                            chain_id = "7290696200003".to_string();
-                        }
-                        chain.chain_id = chain_id;
-                    }
-                    "SubChainID" => subchain_id = to_i32(&elem),
-                    "ChainName" => chain.chain_name = to_string(&elem),
-                    "SubChainName" => subchain_name = to_string(&elem),
-                    "StoreID" => store.store_id = to_i32(&elem),
-                    "BikoretNo" => store.verification_num = to_i32(&elem),
-                    "StoreType" => store.store_type = to_string(&elem),
-                    "StoreName" => store.store_name = to_string(&elem),
-                    "Address" => store.address = to_string(&elem),
-                    "City" => store.city = to_string(&elem),
-                    "ZIPCode" => store.zip_code = to_string(&elem),
-                    "LastUpdateDate" => (),
-                    "Latitude" | "Longitude" => (), // These would be interesting, but are never set.
-                    unknown => panic!("Unknown field: {unknown} in file {path}"), // TODO: do not panic in prod
-                }
-            });
-            match subchains.get_mut(&subchain_id) {
+            let full_store = to_full_store(&branch, path);
+            match subchains.get_mut(&full_store.subchain_id) {
                 Some(subchain) => subchain,
                 None => {
                     subchains.insert(
-                        subchain_id.clone(),
+                        full_store.subchain_id.clone(),
                         Subchain {
-                            subchain_id: subchain_id,
-                            subchain_name,
+                            subchain_id: full_store.subchain_id,
+                            subchain_name: full_store.subchain_name,
                             stores: vec![],
                         },
                     );
-                    subchains.get_mut(&subchain_id).unwrap()
+                    subchains.get_mut(&full_store.subchain_id).unwrap()
                 }
             }
             .stores
-            .push(store);
+            .push(full_store.store);
+            chain.chain_id = full_store.chain_id;
+            chain.chain_name = full_store.chain_name;
         });
-    assert!(!chain.chain_id.is_empty(), "with file: {path}");
     chain.subchains.extend(subchains.into_values());
     chain
 }
@@ -369,9 +350,6 @@ fn get_chain_from_root(node: Node, path: &str) -> Chain {
             unknown => panic!("Unknown field: {unknown} in file {path}"), // TODO: do not panic in prod
         });
 
-    assert!(!stores.chain_id.is_empty(), "{}", path);
-    assert!(!stores.chain_name.is_empty(), "{}", path);
-
     node.descendants()
         .filter(|n| n.tag_name().name() == "SubChain")
         .for_each(|n| {
@@ -387,31 +365,15 @@ fn get_chain_from_root(node: Node, path: &str) -> Chain {
 
             n.descendants()
                 .filter(|n| n.tag_name().name() == "Store")
-                // .take(5)
-                .map(|n| {
-                    let mut store = Store::default();
-                    for elem in n.children().filter(Node::is_element) {
-                        match elem.tag_name().name() {
-                            "StoreId" => store.store_id = to_i32(&elem),
-                            "BikoretNo" => store.verification_num = to_i32(&elem),
-                            "StoreType" => store.store_type = to_string(&elem),
-                            "StoreName" => store.store_name = to_string(&elem),
-                            "Address" => store.address = to_string(&elem),
-                            "City" => store.city = to_string(&elem),
-                            "ZipCode" => store.zip_code = to_string(&elem),
-                            unknown => panic!("Unknown field: {unknown} in file {path}"), // TODO: do not panic in prod
-                        }
-                    }
-                    store
-                })
-                .for_each(|store| subchain.stores.push(store));
+                .map(|n| to_full_store(&n, path))
+                .for_each(|full_store| subchain.stores.push(full_store.store));
 
             stores.subchains.push(subchain);
         });
     stores
 }
 
-fn handle_stores_file(path: &Path) -> Result<()> {
+fn handle_stores_file(path: &Path, args: &Args) -> Result<()> {
     let contents = {
         let mut file = File::open(path)?;
         let mut contents = String::new();
@@ -454,48 +416,74 @@ fn handle_stores_file(path: &Path) -> Result<()> {
     }
     validate_chain(&chain);
 
-    std::fs::create_dir_all("data_json").unwrap();
-    let file = File::create(format!("data_json/stores_{}.json", chain.chain_id))?;
+    std::fs::create_dir_all(&args.output).unwrap();
+    let file = File::create(format!("{}/stores_{}.json", &args.output, chain.chain_id))?;
     serde_json::to_writer_pretty(&file, &chain)?;
 
     Ok(())
 }
 
-fn handle_file(path: &str) -> Result<()> {
-    println!("Handling file {path}");
-    let path = Path::new(&path);
+fn handle_file(path: &Path, args: &Args) -> Result<()> {
+    println!("Handling file {}", path.display());
     let filename = path.file_name().unwrap().to_str().unwrap();
     if filename.starts_with("Price") || filename.starts_with("price") {
-        hande_price_file(path)?;
+        if !args.stores_only {
+            hande_price_file(path, &args)?;
+        }
     } else if filename.starts_with("Stores") || filename.starts_with("stores") {
-        handle_stores_file(path)?;
+        handle_stores_file(path, &args)?;
     } else {
         panic!("{}", filename);
     }
     Ok(())
 }
 
+#[derive(Parser, Debug, Clone)]
+struct Args {
+    #[arg(short, long)]
+    input: String,
+
+    #[arg(short, long, default_value = "data_json")]
+    output: String,
+
+    #[arg(short, long)]
+    parallel: bool,
+
+    #[arg(short, long)]
+    stores_only: bool,
+}
+
 #[tokio::main(flavor = "multi_thread", worker_threads = 10)]
 async fn main() {
+    let args = Args::parse();
+
     let mut dirs = HashSet::new();
 
-    let args = std::env::args().skip(1).filter(|arg| {
-        let path = Path::new(&arg);
-        let store = path
-            .parent()
-            .unwrap()
-            .file_name()
-            .unwrap()
-            .to_str()
-            .unwrap();
-        dirs.insert(store.to_string());
-        true
-    });
+    let paths = WalkDir::new(&args.input)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .map(|dir| dir.into_path())
+        .filter(|path| path.is_file())
+        .filter(|path| {
+            let store = path
+                .parent()
+                .unwrap()
+                .file_name()
+                .unwrap()
+                .to_str()
+                .unwrap();
+            dirs.insert(store.to_string());
+            true
+        });
 
-    let parralel = true;
-    if parralel {
-        let tasks: Vec<_> = args
-            .map(|arg| tokio::spawn(async move { handle_file(&arg) }))
+    if args.parallel {
+        let tasks: Vec<_> = paths
+            .map(|path| {
+                tokio::spawn({
+                    let args = args.clone();
+                    async move { handle_file(&path, &args) }
+                })
+            })
             .collect();
         for task in tasks {
             match task.await {
@@ -505,8 +493,10 @@ async fn main() {
             };
         }
     } else {
-        for arg in args {
-            handle_file(&arg);
+        for path in paths {
+            if let Err(err) = handle_file(&path, &args) {
+                println!("Error: {err}");
+            }
         }
     }
 }
