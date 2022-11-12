@@ -4,6 +4,8 @@ use std::collections::{HashMap, HashSet};
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
+use std::sync::Arc;
+use std::sync::Mutex;
 mod country_code;
 use anyhow::Result;
 use clap::Parser;
@@ -92,6 +94,14 @@ struct Chain {
     chain_id: String,
     chain_name: String,
     subchains: Vec<Subchain>,
+}
+
+#[derive(Debug, Serialize)]
+struct SubchainRecord {
+    chain_id: String,
+    chain_name: String,
+    subchain_id: i32,
+    subchain_name: String,
 }
 
 fn validate_chain(chain: &Chain) {
@@ -248,7 +258,6 @@ fn hande_price_file(path: &Path, args: &Args) -> Result<()> {
 
     prices.items.sort_by_key(|i| i.item_code);
 
-    std::fs::create_dir_all(&args.output).unwrap();
     let file = File::create(format!(
         "{}/prices_{}_{}.json",
         &args.output, prices.chain_id, prices.store_id
@@ -373,7 +382,8 @@ fn get_chain_from_root(node: Node, path: &str) -> Chain {
     stores
 }
 
-fn handle_stores_file(path: &Path, args: &Args) -> Result<()> {
+// This method returs all subchains found, so that data about them can be printed if needed.
+fn handle_stores_file(path: &Path, args: &Args) -> Result<Vec<SubchainRecord>> {
     let contents = {
         let mut file = File::open(path)?;
         let mut contents = String::new();
@@ -415,14 +425,42 @@ fn handle_stores_file(path: &Path, args: &Args) -> Result<()> {
     }
     validate_chain(&chain);
 
-    std::fs::create_dir_all(&args.output).unwrap();
-    let file = File::create(format!("{}/stores_{}.json", &args.output, chain.chain_id))?;
-    serde_json::to_writer_pretty(&file, &chain)?;
+    match args.format.as_str() {
+        "json" => {
+            let file = File::create(format!("{}/stores_{}.json", &args.output, chain.chain_id))?;
+            serde_json::to_writer_pretty(&file, &chain)?;
+        }
+        "csv" => {
+            for subchain in &chain.subchains {
+                let mut x = csv::Writer::from_path(Path::new(&args.output).join(format!(
+                    "stores_{}_{}.csv",
+                    chain.chain_id, subchain.subchain_id
+                )))?;
+                for store in &subchain.stores {
+                    x.serialize(&store)?;
+                }
+            }
+        }
+        other => panic!("Unknown format: {other}"),
+    }
 
-    Ok(())
+    Ok(chain
+        .subchains
+        .iter()
+        .map(|subchain| SubchainRecord {
+            chain_id: chain.chain_id.clone(),
+            chain_name: chain.chain_name.clone(),
+            subchain_id: subchain.subchain_id.clone(),
+            subchain_name: subchain.subchain_name.clone(),
+        })
+        .collect())
 }
 
-fn handle_file(path: &Path, args: &Args) -> Result<()> {
+fn handle_file(
+    path: &Path,
+    args: &Args,
+    subchains: &Arc<Mutex<Vec<SubchainRecord>>>,
+) -> Result<()> {
     println!("Handling file {}", path.display());
     let filename = path.file_name().unwrap().to_str().unwrap();
     if filename.starts_with("Price") || filename.starts_with("price") {
@@ -430,7 +468,8 @@ fn handle_file(path: &Path, args: &Args) -> Result<()> {
             hande_price_file(path, &args)?;
         }
     } else if filename.starts_with("Stores") || filename.starts_with("stores") {
-        handle_stores_file(path, &args)?;
+        let new_records = handle_stores_file(path, &args)?;
+        subchains.lock().unwrap().extend(new_records);
     } else {
         panic!("{}", filename);
     }
@@ -463,6 +502,7 @@ async fn main() {
     if args.output.is_empty() {
         args.output = format!("data_{}", args.format);
     }
+    std::fs::create_dir_all(&args.output).unwrap();
 
     let mut dirs = HashSet::new();
 
@@ -483,12 +523,15 @@ async fn main() {
             true
         });
 
+    let subchains: Arc<Mutex<Vec<SubchainRecord>>> = Arc::new(Mutex::new(Vec::new()));
+
     if args.parallel {
         let tasks: Vec<_> = paths
             .map(|path| {
                 tokio::spawn({
                     let args = args.clone();
-                    async move { handle_file(&path, &args) }
+                    let subchains = subchains.clone();
+                    async move { handle_file(&path, &args, &subchains) }
                 })
             })
             .collect();
@@ -501,9 +544,21 @@ async fn main() {
         }
     } else {
         for path in paths {
-            if let Err(err) = handle_file(&path, &args) {
+            if let Err(err) = handle_file(&path, &args, &subchains) {
                 println!("Error: {err}");
             }
         }
     }
+    write_subchains(&subchains, args);
+}
+
+fn write_subchains(subchains: &Arc<Mutex<Vec<SubchainRecord>>>, args: Args) -> Result<()> {
+    if args.format != "csv" {
+        return Ok(());
+    }
+    let mut writer = csv::Writer::from_path(Path::new(&args.output).join("chains.csv")).unwrap();
+    for record in subchains.lock().unwrap().iter() {
+        writer.serialize(&record)?;
+    }
+    Ok(())
 }
