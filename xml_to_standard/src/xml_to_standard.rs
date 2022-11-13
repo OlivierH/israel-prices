@@ -1,6 +1,6 @@
 use roxmltree::{Document, Node};
 use serde::Serialize;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
@@ -465,8 +465,6 @@ async fn main() {
         args.output = format!("data_{}", args.format);
     }
     std::fs::create_dir_all(&args.output).unwrap();
-
-    let mut dirs = HashSet::new();
 
     let paths = WalkDir::new(&args.input)
         .into_iter()
