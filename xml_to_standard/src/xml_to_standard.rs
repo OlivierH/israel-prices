@@ -7,6 +7,8 @@ use std::path::Path;
 use std::sync::Arc;
 use std::sync::Mutex;
 mod country_code;
+mod xml;
+use anyhow::bail;
 use anyhow::Result;
 use clap::Parser;
 use tokio;
@@ -114,71 +116,35 @@ fn validate_chain(chain: &Chain) {
     }
 }
 
-fn to_country_code(n: &roxmltree::Node) -> String {
-    let mut s = to_string(n);
-    if let Some(country_code) = country_code::to_country_code(&s) {
-        s = country_code.to_string();
-    }
-    s
-}
-
-fn to_string(n: &roxmltree::Node) -> String {
-    let mut s = match n.text().unwrap_or("") {
-        "לא ידוע" | "כללי" | "unknown" | "," => return "".to_string(),
-        s => s.trim().to_string(),
-    };
-    s = s.replace('\u{00A0}', " "); // remove non-breaking spaces
-    if s.parse::<f64>().is_ok() && s.contains(".") {
-        s = s.trim_end_matches('0').trim_end_matches('.').to_string();
-    }
-    if let Ok(i) = s.parse::<i64>() {
-        s = i.to_string();
-    }
-    s
-}
-
-fn to_i32(n: &roxmltree::Node) -> i32 {
-    n.text().unwrap_or("0").parse().unwrap()
-}
-
-fn to_full_store(node: &roxmltree::Node, path: &str) -> FullStore {
+fn to_full_store(node: &roxmltree::Node, path: &str) -> Result<FullStore> {
     let mut full_store = FullStore::default();
 
-    node.children().filter(Node::is_element).for_each(|elem| {
+    for elem in node.children().filter(Node::is_element) {
         match elem.tag_name().name() {
             "ChainID" => {
-                let mut chain_id = to_string(&elem);
+                let mut chain_id = xml::to_string(&elem);
                 if chain_id == "7290058103393" {
                     // Victory inconsistency
                     chain_id = "7290696200003".to_string();
                 }
                 full_store.chain_id = chain_id;
             }
-            "SubChainID" | "SUBCHAINID" => full_store.subchain_id = to_i32(&elem),
-            "ChainName" | "CHAINNAME" => full_store.chain_name = to_string(&elem),
-            "SubChainName" | "SUBCHAINNAME" => full_store.subchain_name = to_string(&elem),
-            "StoreID" | "STOREID" | "StoreId" => full_store.store.store_id = to_i32(&elem),
-            "BikoretNo" | "BIKORETNO" => full_store.store.verification_num = to_i32(&elem),
-            "StoreType" | "STORETYPE" => full_store.store.store_type = to_string(&elem),
-            "StoreName" | "STORENAME" => full_store.store.store_name = to_string(&elem),
-            "Address" | "ADDRESS" => full_store.store.address = to_string(&elem),
-            "City" | "CITY" => full_store.store.city = to_string(&elem),
-            "ZIPCode" | "ZIPCODE" | "ZipCode" => full_store.store.zip_code = to_string(&elem),
+            "SubChainID" | "SUBCHAINID" => full_store.subchain_id = xml::to_i32(&elem)?,
+            "ChainName" | "CHAINNAME" => full_store.chain_name = xml::to_string(&elem),
+            "SubChainName" | "SUBCHAINNAME" => full_store.subchain_name = xml::to_string(&elem),
+            "StoreID" | "STOREID" | "StoreId" => full_store.store.store_id = xml::to_i32(&elem)?,
+            "BikoretNo" | "BIKORETNO" => full_store.store.verification_num = xml::to_i32(&elem)?,
+            "StoreType" | "STORETYPE" => full_store.store.store_type = xml::to_string(&elem),
+            "StoreName" | "STORENAME" => full_store.store.store_name = xml::to_string(&elem),
+            "Address" | "ADDRESS" => full_store.store.address = xml::to_string(&elem),
+            "City" | "CITY" => full_store.store.city = xml::to_string(&elem),
+            "ZIPCode" | "ZIPCODE" | "ZipCode" => full_store.store.zip_code = xml::to_string(&elem),
             "LastUpdateDate" | "LastUpdateTime" => (),
             "Latitude" | "Longitude" => (), // These would be interesting, but are never set.
             unknown => panic!("Unknown field: {unknown} in file {path}"), // TODO: do not panic in prod
         }
-    });
-    full_store
-}
-
-fn get_child_content(node: &Node, tag: &str) -> String {
-    to_string(
-        &node
-            .children()
-            .find(|elem| elem.tag_name().name() == tag)
-            .unwrap(),
-    )
+    }
+    Ok(full_store)
 }
 
 fn hande_price_file(path: &Path, args: &Args) -> Result<()> {
@@ -205,14 +171,15 @@ fn hande_price_file(path: &Path, args: &Args) -> Result<()> {
         .for_each(|elem| match elem.tag_name().name() {
             "XmlDocVersion" | "DllVerNo" => (),
             "Items" | "Products" | "Header" => (),
-            "ChainId" | "ChainID" => prices.chain_id = to_string(&elem),
-            "SubChainId" | "SubChainID" => prices.subchain_id = to_string(&elem),
-            "StoreId" | "StoreID" => prices.store_id = to_string(&elem),
-            "BikoretNo" => prices.verification_num = to_string(&elem),
+            "ChainId" | "ChainID" => prices.chain_id = xml::to_string(&elem),
+            "SubChainId" | "SubChainID" => prices.subchain_id = xml::to_string(&elem),
+            "StoreId" | "StoreID" => prices.store_id = xml::to_string(&elem),
+            "BikoretNo" => prices.verification_num = xml::to_string(&elem),
             unknown => panic!("Unknown field: {unknown}"), // TODO: do not panic in prod
         });
 
-    doc.descendants()
+    let items = doc
+        .descendants()
         .filter(|n| {
             n.tag_name().name() == "Item"
                 || n.tag_name().name() == "Product"
@@ -222,39 +189,42 @@ fn hande_price_file(path: &Path, args: &Args) -> Result<()> {
             let mut item = Item::default();
             for elem in n.children().filter(Node::is_element) {
                 match elem.tag_name().name() {
-                    "PriceUpdateDate" => item.price_update_date = to_string(&elem),
-                    "ItemCode" => item.item_code = to_string(&elem).parse().unwrap_or(-999),
-                    "ItemType" => item.internal_code = to_string(&elem) == "0",
-                    "ItemName" | "ItemNm" => item.item_name = to_string(&elem),
+                    "PriceUpdateDate" => item.price_update_date = xml::to_string(&elem),
+                    "ItemCode" => item.item_code = xml::to_string(&elem).parse().unwrap_or(-999),
+                    "ItemType" => item.internal_code = xml::to_string(&elem) == "0",
+                    "ItemName" | "ItemNm" => item.item_name = xml::to_string(&elem),
                     "ManufacturerName" | "ManufactureName" => {
-                        item.manufacturer_name = to_string(&elem)
+                        item.manufacturer_name = xml::to_string(&elem)
                     }
-                    "ManufactureCountry" => item.manufacture_country = to_country_code(&elem),
+                    "ManufactureCountry" => item.manufacture_country = xml::to_country_code(&elem),
                     "ManufacturerItemDescription" | "ManufactureItemDescription" => {
-                        item.manufacturer_item_description = to_string(&elem)
+                        item.manufacturer_item_description = xml::to_string(&elem)
                     }
-                    "UnitQty" => item.unit_qty = to_string(&elem),
-                    "Quantity" => item.quantity = to_string(&elem),
-                    "UnitOfMeasure" | "UnitMeasure" => item.unit_of_measure = to_string(&elem),
+                    "UnitQty" => item.unit_qty = xml::to_string(&elem),
+                    "Quantity" => item.quantity = xml::to_string(&elem),
+                    "UnitOfMeasure" | "UnitMeasure" => item.unit_of_measure = xml::to_string(&elem),
                     "bIsWeighted" | "BisWeighted" | "blsWeighted" => {
-                        item.b_is_weighted = to_string(&elem) == "1"
+                        item.b_is_weighted = xml::to_string(&elem) == "1"
                     }
-                    "QtyInPackage" => item.qty_in_package = to_string(&elem),
-                    "ItemPrice" => item.item_price = to_string(&elem),
-                    "UnitOfMeasurePrice" => item.unit_of_measure_price = to_string(&elem),
-                    "AllowDiscount" => item.allow_discount = to_string(&elem) == "1",
+                    "QtyInPackage" => item.qty_in_package = xml::to_string(&elem),
+                    "ItemPrice" => item.item_price = xml::to_string(&elem),
+                    "UnitOfMeasurePrice" => item.unit_of_measure_price = xml::to_string(&elem),
+                    "AllowDiscount" => item.allow_discount = xml::to_string(&elem) == "1",
                     "ItemStatus" | "itemStatus" => {
-                        item.item_status = to_string(&elem).parse().unwrap()
+                        item.item_status = xml::to_string(&elem).parse().unwrap()
                     }
-                    "ItemId" => item.item_id = to_string(&elem),
-                    "LastUpdateDate" => item.last_update_date = to_string(&elem),
-                    "LastUpdateTime" => item.last_update_time = to_string(&elem),
-                    unknown => panic!("Unknown field: {unknown}"), // TODO: do not panic in prod
+                    "ItemId" => item.item_id = xml::to_string(&elem),
+                    "LastUpdateDate" => item.last_update_date = xml::to_string(&elem),
+                    "LastUpdateTime" => item.last_update_time = xml::to_string(&elem),
+                    unknown => bail!("Unknown field: {unknown}"), // TODO: do not panic in prod
                 }
             }
-            item
-        })
-        .for_each(|item| prices.items.push(item));
+            Ok(item)
+        });
+    for item in items {
+        let i = item?;
+        prices.items.push(i);
+    }
 
     prices.items.sort_by_key(|i| i.item_code);
 
@@ -267,119 +237,122 @@ fn hande_price_file(path: &Path, args: &Args) -> Result<()> {
     Ok(())
 }
 
-fn get_chain_from_asx_values(node: Node, path: &str) -> Chain {
+fn get_chain_from_asx_values(node: Node, path: &str) -> Result<Chain> {
     let mut chain = Chain::default();
 
-    chain.chain_id = get_child_content(&node, "CHAINID");
+    chain.chain_id = xml::to_child_content(&node, "CHAINID")?;
 
     let mut subchains: HashMap<i32, Subchain> = HashMap::new();
 
-    node.descendants()
+    for elem in node
+        .descendants()
         .filter(|n| n.tag_name().name() == "STORE")
-        .for_each(|node| {
-            let full_store = to_full_store(&node, path);
+    {
+        let full_store = to_full_store(&elem, path)?;
 
-            match subchains.get_mut(&full_store.subchain_id) {
-                Some(subchain) => subchain,
-                None => {
-                    subchains.insert(
-                        full_store.subchain_id.clone(),
-                        Subchain {
-                            subchain_id: full_store.subchain_id,
-                            subchain_name: full_store.subchain_name,
-                            stores: vec![],
-                        },
-                    );
-                    subchains.get_mut(&full_store.subchain_id).unwrap()
-                }
+        match subchains.get_mut(&full_store.subchain_id) {
+            Some(subchain) => subchain,
+            None => {
+                subchains.insert(
+                    full_store.subchain_id.clone(),
+                    Subchain {
+                        subchain_id: full_store.subchain_id,
+                        subchain_name: full_store.subchain_name,
+                        stores: vec![],
+                    },
+                );
+                subchains.get_mut(&full_store.subchain_id).unwrap()
             }
-            .stores
-            .push(full_store.store);
-            chain.chain_name = full_store.chain_name;
-        });
+        }
+        .stores
+        .push(full_store.store);
+        chain.chain_name = full_store.chain_name;
+    }
     chain.subchains.extend(subchains.into_values());
-    chain
+    Ok(chain)
 }
 
-fn get_chain_from_envelope(node: Node, path: &str) -> Chain {
+fn get_chain_from_envelope(node: Node, path: &str) -> Result<Chain> {
     let mut chain = Chain::default();
-    chain.chain_id = get_child_content(&node, "ChainId");
+    chain.chain_id = xml::to_child_content(&node, "ChainId")?;
 
     let mut subchain = Subchain::default();
-    subchain.subchain_id = get_child_content(&node, "SubChainId").parse().unwrap();
+    subchain.subchain_id = xml::to_child_content(&node, "SubChainId")?.parse().unwrap();
 
-    subchain.stores.extend(
-        node.descendants()
-            .filter(|n| n.tag_name().name() == "Line")
-            .map(|line| to_full_store(&line, path).store),
-    );
+    for line in node.descendants().filter(|n| n.tag_name().name() == "Line") {
+        subchain.stores.push(to_full_store(&line, path)?.store);
+    }
     chain.subchains.push(subchain);
-    chain
+    Ok(chain)
 }
-fn get_chain_from_stores(node: Node, path: &str) -> Chain {
+fn get_chain_from_stores(node: Node, path: &str) -> Result<Chain> {
     let mut chain = Chain::default();
 
     let mut subchains: HashMap<i32, Subchain> = HashMap::new();
-    node.descendants()
+    for branch in node
+        .descendants()
         .filter(|n| n.tag_name().name() == "Branch")
-        .for_each(|branch| {
-            let full_store = to_full_store(&branch, path);
-            match subchains.get_mut(&full_store.subchain_id) {
-                Some(subchain) => subchain,
-                None => {
-                    subchains.insert(
-                        full_store.subchain_id.clone(),
-                        Subchain {
-                            subchain_id: full_store.subchain_id,
-                            subchain_name: full_store.subchain_name,
-                            stores: vec![],
-                        },
-                    );
-                    subchains.get_mut(&full_store.subchain_id).unwrap()
-                }
+    {
+        let full_store = to_full_store(&branch, path)?;
+        match subchains.get_mut(&full_store.subchain_id) {
+            Some(subchain) => subchain,
+            None => {
+                subchains.insert(
+                    full_store.subchain_id.clone(),
+                    Subchain {
+                        subchain_id: full_store.subchain_id,
+                        subchain_name: full_store.subchain_name,
+                        stores: vec![],
+                    },
+                );
+                subchains.get_mut(&full_store.subchain_id).unwrap()
             }
-            .stores
-            .push(full_store.store);
-            chain.chain_id = full_store.chain_id;
-            chain.chain_name = full_store.chain_name;
-        });
+        }
+        .stores
+        .push(full_store.store);
+        chain.chain_id = full_store.chain_id;
+        chain.chain_name = full_store.chain_name;
+    }
     chain.subchains.extend(subchains.into_values());
-    chain
+    Ok(chain)
 }
-fn get_chain_from_root(node: Node, path: &str) -> Chain {
-    let mut stores = Chain::default();
-    node.children()
+fn get_chain_from_root(root: Node, path: &str) -> Result<Chain> {
+    let mut chain = Chain::default();
+    root.children()
         .filter(Node::is_element)
         .for_each(|elem| match elem.tag_name().name() {
             "XmlDocVersion" | "DllVerNo" => (),
             "LastUpdateDate" | "LastUpdateTime" => (),
             "SubChains" => (),
-            "ChainId" => stores.chain_id = to_string(&elem),
-            "ChainName" => stores.chain_name = to_string(&elem),
+            "ChainId" => chain.chain_id = xml::to_string(&elem),
+            "ChainName" => chain.chain_name = xml::to_string(&elem),
             unknown => panic!("Unknown field: {unknown} in file {path}"), // TODO: do not panic in prod
         });
 
-    node.descendants()
+    for node in root
+        .descendants()
         .filter(|n| n.tag_name().name() == "SubChain")
-        .for_each(|n| {
-            let mut subchain = Subchain::default();
-            n.children().filter(Node::is_element).for_each(|elem| {
-                match elem.tag_name().name() {
-                    "Stores" => (),
-                    "SubChainId" => subchain.subchain_id = to_i32(&elem),
-                    "SubChainName" => subchain.subchain_name = to_string(&elem),
-                    unknown => panic!("Unknown field: {unknown} in file {path}"), // TODO: do not panic in prod
-                };
-            });
+    {
+        let mut subchain = Subchain::default();
+        for elem in node.children().filter(Node::is_element) {
+            match elem.tag_name().name() {
+                "Stores" => (),
+                "SubChainId" => subchain.subchain_id = xml::to_i32(&elem)?,
+                "SubChainName" => subchain.subchain_name = xml::to_string(&elem),
+                unknown => panic!("Unknown field: {unknown} in file {path}"), // TODO: do not panic in prod
+            };
+        }
 
-            n.descendants()
-                .filter(|n| n.tag_name().name() == "Store")
-                .map(|n| to_full_store(&n, path))
-                .for_each(|full_store| subchain.stores.push(full_store.store));
+        for store in node
+            .descendants()
+            .filter(|n| n.tag_name().name() == "Store")
+        {
+            subchain.stores.push(to_full_store(&store, path)?.store);
+        }
 
-            stores.subchains.push(subchain);
-        });
-    stores
+        chain.subchains.push(subchain);
+    }
+    Ok(chain)
 }
 
 // This method returs all subchains found, so that data about them can be printed if needed.
@@ -394,17 +367,14 @@ fn handle_stores_file(path: &Path, args: &Args) -> Result<Vec<SubchainRecord>> {
     let doc = Document::parse(&contents).unwrap();
 
     let mut chain = {
-        if let Some(node) = doc.descendants().find(|n| n.tag_name().name() == "Root") {
-            get_chain_from_root(node, path.to_str().unwrap())
-        } else if let Some(node) = doc.descendants().find(|n| n.tag_name().name() == "Store") {
-            get_chain_from_stores(node, path.to_str().unwrap())
-        } else if let Some(node) = doc
-            .descendants()
-            .find(|n| n.tag_name().name() == "Envelope")
-        {
-            get_chain_from_envelope(node, path.to_str().unwrap())
-        } else if let Some(node) = doc.descendants().find(|n| n.tag_name().name() == "values") {
-            get_chain_from_asx_values(node, path.to_str().unwrap())
+        if let Some(node) = xml::get_descendant(&doc, "Root") {
+            get_chain_from_root(node, path.to_str().unwrap())?
+        } else if let Some(node) = xml::get_descendant(&doc, "Store") {
+            get_chain_from_stores(node, path.to_str().unwrap())?
+        } else if let Some(node) = xml::get_descendant(&doc, "Envelope") {
+            get_chain_from_envelope(node, path.to_str().unwrap())?
+        } else if let Some(node) = xml::get_descendant(&doc, "values") {
+            get_chain_from_asx_values(node, path.to_str().unwrap())?
         } else {
             let x = doc
                 .descendants()
@@ -549,14 +519,17 @@ async fn main() {
             }
         }
     }
-    write_subchains(&subchains, args);
+    match write_subchains(&subchains, args) {
+        Ok(()) => (),
+        Err(err) => println!("Error writing chains : {err}"),
+    }
 }
 
 fn write_subchains(subchains: &Arc<Mutex<Vec<SubchainRecord>>>, args: Args) -> Result<()> {
     if args.format != "csv" {
         return Ok(());
     }
-    let mut writer = csv::Writer::from_path(Path::new(&args.output).join("chains.csv")).unwrap();
+    let mut writer = csv::Writer::from_path(Path::new(&args.output).join("chains.csv"))?;
     for record in subchains.lock().unwrap().iter() {
         writer.serialize(&record)?;
     }
