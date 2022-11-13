@@ -14,37 +14,28 @@ use clap::Parser;
 use tokio;
 use walkdir::WalkDir;
 
-fn is_false(b: &bool) -> bool {
-    return !b;
-}
-
 #[derive(Debug, Default, Serialize)]
 struct Item {
     #[serde(rename(serialize = "code"))]
     item_code: i64,
-    #[serde(skip_serializing_if = "is_false")]
     internal_code: bool,
     #[serde(rename(serialize = "name"))]
     item_name: String,
-    #[serde(skip_serializing_if = "String::is_empty")]
     manufacturer_name: String,
-    #[serde(skip_serializing_if = "String::is_empty")]
     manufacture_country: String,
     manufacturer_item_description: String,
     unit_qty: String,
     quantity: String,
     unit_of_measure: String,
-    #[serde(rename(serialize = "weighted"), skip_serializing_if = "is_false")]
+    #[serde(rename(serialize = "weighted"))]
     b_is_weighted: bool,
     qty_in_package: String,
     #[serde(rename(serialize = "price"))]
     item_price: String,
     unit_of_measure_price: String,
-    #[serde(skip_serializing_if = "is_false")]
     allow_discount: bool,
     #[serde(rename(serialize = "status"))]
     item_status: i8,
-    #[serde(skip_serializing_if = "String::is_empty")]
     item_id: String,
 
     #[serde(skip_serializing)]
@@ -228,11 +219,26 @@ fn hande_price_file(path: &Path, args: &Args) -> Result<()> {
 
     prices.items.sort_by_key(|i| i.item_code);
 
-    let file = File::create(format!(
-        "{}/prices_{}_{}.json",
-        &args.output, prices.chain_id, prices.store_id
-    ))?;
-    serde_json::to_writer_pretty(&file, &prices)?;
+    match args.format.as_str() {
+        "json" => {
+            let file = File::create(format!(
+                "{}/prices/{}_{}.json",
+                &args.output, prices.chain_id, prices.store_id
+            ))?;
+            serde_json::to_writer_pretty(&file, &prices)?;
+        }
+        "csv" => {
+            let mut writer = csv::Writer::from_path(
+                Path::new(&args.output)
+                    .join("prices")
+                    .join(format!("{}_{}.csv", prices.chain_id, prices.store_id)),
+            )?;
+            for item in &prices.items {
+                writer.serialize(&item)?;
+            }
+        }
+        other => panic!("Unknown format: {other}"),
+    }
 
     Ok(())
 }
@@ -389,15 +395,16 @@ fn handle_stores_file(path: &Path, args: &Args) -> Result<Vec<SubchainRecord>> {
 
     match args.format.as_str() {
         "json" => {
-            let file = File::create(format!("{}/stores_{}.json", &args.output, chain.chain_id))?;
+            let file = File::create(format!("{}/stores/{}.json", &args.output, chain.chain_id))?;
             serde_json::to_writer_pretty(&file, &chain)?;
         }
         "csv" => {
             for subchain in &chain.subchains {
-                let mut x = csv::Writer::from_path(Path::new(&args.output).join(format!(
-                    "stores_{}_{}.csv",
-                    chain.chain_id, subchain.subchain_id
-                )))?;
+                let mut x = csv::Writer::from_path(
+                    Path::new(&args.output)
+                        .join("stores")
+                        .join(format!("{}_{}.csv", chain.chain_id, subchain.subchain_id)),
+                )?;
                 for store in &subchain.stores {
                     x.serialize(&store)?;
                 }
@@ -465,6 +472,8 @@ async fn main() {
         args.output = format!("data_{}", args.format);
     }
     std::fs::create_dir_all(&args.output).unwrap();
+    std::fs::create_dir_all(format!("{}/stores", &args.output)).unwrap();
+    std::fs::create_dir_all(format!("{}/prices", &args.output)).unwrap();
 
     let paths = WalkDir::new(&args.input)
         .into_iter()
