@@ -506,19 +506,21 @@ async fn main() {
                 println!("Error: {err}");
             }
         }
-    }
-    match write_subchains(&subchains, args) {
+    };
+    let mut subchains = Arc::try_unwrap(subchains).unwrap().into_inner().unwrap();
+    match write_subchains(&mut subchains, args) {
         Ok(()) => (),
         Err(err) => println!("Error writing chains : {err}"),
     }
 }
 
-fn write_subchains(subchains: &Arc<Mutex<Vec<SubchainRecord>>>, args: Args) -> Result<()> {
+fn write_subchains(subchains: &mut Vec<SubchainRecord>, args: Args) -> Result<()> {
     if args.format != "csv" {
         return Ok(());
     }
+    subchains.sort_by(|x, y| (&x.chain_id, &x.subchain_id).cmp(&(&y.chain_id, &y.subchain_id)));
     let mut writer = csv::Writer::from_path(Path::new(&args.output).join("chains.csv"))?;
-    for record in subchains.lock().unwrap().iter() {
+    for record in subchains {
         writer.serialize(&record)?;
     }
     Ok(())
