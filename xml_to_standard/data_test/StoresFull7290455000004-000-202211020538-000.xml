@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Store Date="02/11/22" Time="06:00:06">
+  <Branches>
+    <Branch>
+      <ChainID>7290455000004</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>001</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName />
+      <SubChainName />
+      <StoreName>המלאכה</StoreName>
+      <Address> </Address>
+      <City />
+      <ZIPCode />
+      <LastUpdateDate>01/01/0001 00:00:00</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290455000004</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>045</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName />
+      <SubChainName />
+      <StoreName>סניף מערב נתיבות</StoreName>
+      <Address> </Address>
+      <City />
+      <ZIPCode />
+      <LastUpdateDate>01/01/0001 00:00:00</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290455000004</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>065</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName />
+      <SubChainName />
+      <StoreName>סניף מול שדרות</StoreName>
+      <Address> </Address>
+      <City />
+      <ZIPCode />
+      <LastUpdateDate>01/01/0001 00:00:00</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290455000004</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>075</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName />
+      <SubChainName />
+      <StoreName>סניף רימון</StoreName>
+      <Address> </Address>
+      <City />
+      <ZIPCode />
+      <LastUpdateDate>01/01/0001 00:00:00</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+  </Branches>
+</Store>

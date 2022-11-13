@@ -1,0 +1,23 @@
+<Root>
+  <ChainId>7290058140886</ChainId>
+  <ChainName>רשת חנויות רמי לוי שיווק השקמה 2006 בע"מ</ChainName>
+  <LastUpdateDate>2022-11-02</LastUpdateDate>
+  <LastUpdateTime>06:07:05</LastUpdateTime>
+  <SubChains>
+    <SubChain>
+      <SubChainId>1</SubChainId>
+      <SubChainName>1</SubChainName>
+      <Stores>
+        <Store>
+          <StoreId>39</StoreId>
+          <BikoretNo>3</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>אינטרנט  מרלוג</StoreName>
+          <Address />
+          <City>unknown</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+      </Stores>
+    </SubChain>
+  </SubChains>
+</Root>

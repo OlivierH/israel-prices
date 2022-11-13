@@ -1,0 +1,1045 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Store Date="02/11/22" Time="06:00:01">
+  <Branches>
+    <Branch>
+      <ChainID>7290058103393</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>087</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>צמח</StoreName>
+      <Address>צומת צמח מול כנרת </Address>
+      <City />
+      <ZIPCode>1510501</ZIPCode>
+      <LastUpdateDate>27/07/2022 10:03:26</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>001</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>גן-יבנה</StoreName>
+      <Address>הכישור 8</Address>
+      <City>גן יבנה</City>
+      <ZIPCode>7080000</ZIPCode>
+      <LastUpdateDate>25/07/2022 09:55:14</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>002</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>גדרה</StoreName>
+      <Address>פינס 3</Address>
+      <City>גדרה</City>
+      <ZIPCode>7056502</ZIPCode>
+      <LastUpdateDate>25/07/2022 09:52:39</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>003</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>שדרות</StoreName>
+      <Address>סמטת הפלדה 3</Address>
+      <City>שדרות</City>
+      <ZIPCode>8710446</ZIPCode>
+      <LastUpdateDate>25/07/2022 09:54:03</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>005</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>אורנית</StoreName>
+      <Address>הערבה 10</Address>
+      <City>אורנית</City>
+      <ZIPCode>4481300</ZIPCode>
+      <LastUpdateDate>25/07/2022 09:47:15</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>007</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>פתח תקווה</StoreName>
+      <Address>בר כוכבא 18</Address>
+      <City>פתח תקווה</City>
+      <ZIPCode>4926118</ZIPCode>
+      <LastUpdateDate>14/04/2015 16:43:33</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>008</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>אשדוד</StoreName>
+      <Address>דוד המלך 18</Address>
+      <City>אשדוד</City>
+      <ZIPCode>7748109</ZIPCode>
+      <LastUpdateDate>25/07/2022 10:53:00</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>009</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>הארבעה ת"א</StoreName>
+      <Address>הארבעה 6</Address>
+      <City>תל אבית יפה</City>
+      <ZIPCode>6473906</ZIPCode>
+      <LastUpdateDate>01/01/2020 12:24:10</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>010</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>לוד</StoreName>
+      <Address>יוספטל 23</Address>
+      <City>לוד</City>
+      <ZIPCode>7136823</ZIPCode>
+      <LastUpdateDate>27/07/2022 09:53:15</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>014</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>בית שמש</StoreName>
+      <Address>הרצל 7</Address>
+      <City>בית שמש</City>
+      <ZIPCode>9903113</ZIPCode>
+      <LastUpdateDate>16/04/2015 13:09:22</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>016</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>פלורנטין</StoreName>
+      <Address>סלמה 53</Address>
+      <City>תל אביב</City>
+      <ZIPCode>6606034</ZIPCode>
+      <LastUpdateDate>16/04/2015 13:11:24</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>022</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>חדרה בפארק</StoreName>
+      <Address>משמר הגבול </Address>
+      <City>חדרה</City>
+      <ZIPCode>3825104</ZIPCode>
+      <LastUpdateDate>01/01/2020 13:46:41</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>023</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>ראשון פרס נובל</StoreName>
+      <Address>שמעון פרס 33</Address>
+      <City>ראשון לציון</City>
+      <ZIPCode>7579932</ZIPCode>
+      <LastUpdateDate>25/07/2022 09:48:56</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>024</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>חדרה בקניון</StoreName>
+      <Address>שד רוטשילד 40</Address>
+      <City>חדרה</City>
+      <ZIPCode>3826850</ZIPCode>
+      <LastUpdateDate>27/07/2022 10:00:16</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>025</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>עכו</StoreName>
+      <Address>שלום הגליל 1</Address>
+      <City>עכו</City>
+      <ZIPCode>2455301</ZIPCode>
+      <LastUpdateDate>25/07/2022 09:53:00</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>026</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>ראש העין</StoreName>
+      <Address>שבזי 26</Address>
+      <City>ראש העין</City>
+      <ZIPCode>4802126</ZIPCode>
+      <LastUpdateDate>25/07/2022 09:54:41</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>027</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>שער העליה</StoreName>
+      <Address>שלוסברג 1</Address>
+      <City>חיפה</City>
+      <ZIPCode>3584001</ZIPCode>
+      <LastUpdateDate>27/07/2022 09:59:19</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>028</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>גני תקווה</StoreName>
+      <Address>הכרמל 20</Address>
+      <City>גני תקווה</City>
+      <ZIPCode>5591620</ZIPCode>
+      <LastUpdateDate>27/07/2022 10:05:46</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>029</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>רמת גן</StoreName>
+      <Address>הרצל 42</Address>
+      <City>רמת גן</City>
+      <ZIPCode>5243130</ZIPCode>
+      <LastUpdateDate>01/01/2020 13:49:57</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>030</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>אלקנה</StoreName>
+      <Address>שיר השירים 75/1</Address>
+      <City>אלקנה</City>
+      <ZIPCode>4481400</ZIPCode>
+      <LastUpdateDate>25/07/2022 10:52:17</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>034</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>מוצקין</StoreName>
+      <Address>שד ירושלים 1</Address>
+      <City>קרית מוצקין</City>
+      <ZIPCode>2623804</ZIPCode>
+      <LastUpdateDate>14/04/2015 16:40:18</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>035</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>סיטי אחד העם</StoreName>
+      <Address>אחד העם 54</Address>
+      <City>תל-אביב</City>
+      <ZIPCode>65202</ZIPCode>
+      <LastUpdateDate>25/07/2022 08:49:45</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>037</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>קניון אשדוד</StoreName>
+      <Address>הטיילת 20</Address>
+      <City>אשדוד</City>
+      <ZIPCode>7722218</ZIPCode>
+      <LastUpdateDate>01/08/2021 11:42:21</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>038</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>מבשרת ציון</StoreName>
+      <Address>הראל 1</Address>
+      <City>מבשרת ציון</City>
+      <ZIPCode>9079129</ZIPCode>
+      <LastUpdateDate>01/01/2020 13:51:07</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>039</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>חולון קוגל</StoreName>
+      <Address>קוגל 40</Address>
+      <City>חולון</City>
+      <ZIPCode>5825816</ZIPCode>
+      <LastUpdateDate>14/09/2022 14:39:38</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>041</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>ברנע</StoreName>
+      <Address>רחבעם זאבי </Address>
+      <City>אשקלון</City>
+      <ZIPCode>7829304</ZIPCode>
+      <LastUpdateDate>24/07/2022 12:48:28</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>044</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>לינקולן תל אביב</StoreName>
+      <Address>לינקולן 16</Address>
+      <City>תל-אביב</City>
+      <ZIPCode>6713408</ZIPCode>
+      <LastUpdateDate>16/04/2015 13:10:50</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>045</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>רעננה אחוזה 158</StoreName>
+      <Address>אחוזה 158</Address>
+      <City>רעננה</City>
+      <ZIPCode>4330018</ZIPCode>
+      <LastUpdateDate>27/07/2022 09:56:06</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>046</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>דימונה</StoreName>
+      <Address>המלאכה 3</Address>
+      <City>דימונה</City>
+      <ZIPCode>8621106</ZIPCode>
+      <LastUpdateDate>08/02/2016 16:04:19</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>047</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>אופקים</StoreName>
+      <Address>החיד"א 1</Address>
+      <City>אופקים</City>
+      <ZIPCode>8759102</ZIPCode>
+      <LastUpdateDate>01/03/2016 11:19:30</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>048</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>טירת הכרמל</StoreName>
+      <Address>קרן היסוד 2</Address>
+      <City>טירת הכרמל</City>
+      <ZIPCode>3902621</ZIPCode>
+      <LastUpdateDate>01/01/2020 13:53:11</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>050</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>תל מונד</StoreName>
+      <Address>השקד 4</Address>
+      <City>תל מונד</City>
+      <ZIPCode>4060105</ZIPCode>
+      <LastUpdateDate>27/07/2022 09:57:09</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>051</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>מודיעין</StoreName>
+      <Address>מנחם בגין 21</Address>
+      <City>מודיעין</City>
+      <ZIPCode>7178081</ZIPCode>
+      <LastUpdateDate>01/01/2020 14:58:33</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>052</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>אשקלון</StoreName>
+      <Address>בן צבי 8</Address>
+      <City>אשקלון</City>
+      <ZIPCode>7846117</ZIPCode>
+      <LastUpdateDate>25/07/2022 08:46:52</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>053</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>רמת ישי</StoreName>
+      <Address>מרכז מסחרי </Address>
+      <City>רמת ישי</City>
+      <ZIPCode>3009503</ZIPCode>
+      <LastUpdateDate>27/07/2022 10:06:25</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>054</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>קרית מלאכי</StoreName>
+      <Address>זבוטינסקי 8</Address>
+      <City>קרית מלאכי</City>
+      <ZIPCode>8305115</ZIPCode>
+      <LastUpdateDate>27/07/2022 09:55:21</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>055</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>קרית גת</StoreName>
+      <Address>הגפן 3</Address>
+      <City>קרית גת</City>
+      <ZIPCode>8201807</ZIPCode>
+      <LastUpdateDate>25/07/2022 09:48:18</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>056</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>יבנה</StoreName>
+      <Address>המיסב 7</Address>
+      <City>יבנה</City>
+      <ZIPCode>8121307</ZIPCode>
+      <LastUpdateDate>01/01/2020 14:59:48</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>058</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>כפר יונה</StoreName>
+      <Address>הרצל 5</Address>
+      <City>כפר יונה</City>
+      <ZIPCode>4031452</ZIPCode>
+      <LastUpdateDate>27/07/2022 10:02:27</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>059</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>עפולה</StoreName>
+      <Address>מנחם בגין 79</Address>
+      <City>עפולה</City>
+      <ZIPCode>1830101</ZIPCode>
+      <LastUpdateDate>25/07/2022 08:48:47</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>061</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>אוניברסיטה ת"א</StoreName>
+      <Address>גורג וויז 1</Address>
+      <City>תל אביב</City>
+      <ZIPCode>6997703</ZIPCode>
+      <LastUpdateDate>24/07/2022 10:39:24</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>065</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>דיזנגוף</StoreName>
+      <Address>דיזנגוף 224</Address>
+      <City>תל אביב</City>
+      <ZIPCode>6311519</ZIPCode>
+      <LastUpdateDate>05/01/2016 15:32:21</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>067</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>סיטי יהודה הלוי</StoreName>
+      <Address>יהודה הלוי 40</Address>
+      <City>תל-אביב</City>
+      <ZIPCode>65136</ZIPCode>
+      <LastUpdateDate>27/07/2022 10:04:17</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>068</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>באר שבע</StoreName>
+      <Address>בן גוריון 15</Address>
+      <City>באר שבע</City>
+      <ZIPCode>8443944</ZIPCode>
+      <LastUpdateDate>16/04/2015 13:20:16</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>069</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>רעננה פארק</StoreName>
+      <Address>אחוזה 114</Address>
+      <City>רעננה</City>
+      <ZIPCode>4350108</ZIPCode>
+      <LastUpdateDate>27/07/2022 09:54:17</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>070</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>צור יצחק</StoreName>
+      <Address>דרך איילון 20</Address>
+      <City>צור יצחק</City>
+      <ZIPCode>4580800</ZIPCode>
+      <LastUpdateDate>25/07/2022 08:47:33</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>071</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>ראשון מזרח</StoreName>
+      <Address>צבי פרנק 39</Address>
+      <City>ראשון לציון</City>
+      <ZIPCode>7566088</ZIPCode>
+      <LastUpdateDate>16/02/2016 12:08:38</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>073</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>בית שאן</StoreName>
+      <Address>הגלבוע 1</Address>
+      <City>בית שאן</City>
+      <ZIPCode>1174001</ZIPCode>
+      <LastUpdateDate>10/02/2016 13:42:41</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>074</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>שבעת הכוכבים</StoreName>
+      <Address>קניון שבעת הכוכבי </Address>
+      <City>הרצליה</City>
+      <ZIPCode>4650504</ZIPCode>
+      <LastUpdateDate>05/01/2017 23:10:15</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>075</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>סיטי ויצמן</StoreName>
+      <Address>ויצמן 53</Address>
+      <City>תל-אביב</City>
+      <ZIPCode>62091</ZIPCode>
+      <LastUpdateDate>27/07/2022 10:04:34</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>077</StoreID>
+      <BikoretNo />
+      <StoreType>3</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>לוד נתב"ג</StoreName>
+      <Address>פסח לב 2</Address>
+      <City>לוד</City>
+      <ZIPCode>7129320</ZIPCode>
+      <LastUpdateDate>25/07/2022 09:43:53</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>079</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>כפר סבא הירוקה</StoreName>
+      <Address>אנגל 78</Address>
+      <City>כפר סבא</City>
+      <ZIPCode>4465140</ZIPCode>
+      <LastUpdateDate>01/01/2020 15:01:26</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>080</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>סיטי אלנבי</StoreName>
+      <Address>אלנבי 65</Address>
+      <City>תל-אביב</City>
+      <ZIPCode>65134</ZIPCode>
+      <LastUpdateDate>25/01/2022 10:03:28</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>081</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>פארק אפק ר"ע</StoreName>
+      <Address>העמל 2</Address>
+      <City>ראש העין</City>
+      <ZIPCode>4809202</ZIPCode>
+      <LastUpdateDate>27/07/2022 10:06:46</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>082</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>נס ציונה</StoreName>
+      <Address>הפרדסים 1</Address>
+      <City>נס ציונה</City>
+      <ZIPCode>7400448</ZIPCode>
+      <LastUpdateDate>24/07/2022 11:18:50</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>083</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>רחובות</StoreName>
+      <Address>אופנהיימר 10</Address>
+      <City>רחובות</City>
+      <ZIPCode>7670110</ZIPCode>
+      <LastUpdateDate>27/07/2022 10:04:57</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>086</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>טבעון</StoreName>
+      <Address>המרווה 1</Address>
+      <City>טבעון</City>
+      <ZIPCode>3653201</ZIPCode>
+      <LastUpdateDate>25/07/2022 09:55:57</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>088</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>איילון</StoreName>
+      <Address>אבא הילל 301</Address>
+      <City>רמת גן</City>
+      <ZIPCode>5259408</ZIPCode>
+      <LastUpdateDate>27/07/2022 10:03:02</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>089</StoreID>
+      <BikoretNo />
+      <StoreType />
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>מלחה</StoreName>
+      <Address>אגודת הספורט 1</Address>
+      <City>ירושלים</City>
+      <ZIPCode>9695989</ZIPCode>
+      <LastUpdateDate>27/07/2022 10:02:05</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>090</StoreID>
+      <BikoretNo />
+      <StoreType>0</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>נתניה</StoreName>
+      <Address>האורזים 4</Address>
+      <City>נתניה</City>
+      <ZIPCode>4201234</ZIPCode>
+      <LastUpdateDate>25/07/2022 09:42:58</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>091</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>שוהם</StoreName>
+      <Address>עמק איילון 161</Address>
+      <City>שוהם</City>
+      <ZIPCode>6083646</ZIPCode>
+      <LastUpdateDate>27/07/2022 09:57:35</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>092</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>נתיבות</StoreName>
+      <Address>בעלי המלאכה 5</Address>
+      <City>נתיבות</City>
+      <ZIPCode>8776202</ZIPCode>
+      <LastUpdateDate>01/01/2020 15:03:01</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>095</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>אשקלון מרכז</StoreName>
+      <Address>בן גוריון 1</Address>
+      <City>אשקלון</City>
+      <ZIPCode>7828124</ZIPCode>
+      <LastUpdateDate>03/02/2016 14:47:39</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>096</StoreID>
+      <BikoretNo />
+      <StoreType>1</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>קרית אתא</StoreName>
+      <Address>זבולון 14</Address>
+      <City>קרית אתא</City>
+      <ZIPCode>2806007</ZIPCode>
+      <LastUpdateDate>27/07/2022 09:56:35</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+    <Branch>
+      <ChainID>7290696200003</ChainID>
+      <SubChainID>001</SubChainID>
+      <StoreID>097</StoreID>
+      <BikoretNo />
+      <StoreType>2</StoreType>
+      <ChainName>ויקטורי</ChainName>
+      <SubChainName>ויקטורי</SubChainName>
+      <StoreName>אינטרנט</StoreName>
+      <Address>victoryonline.co. </Address>
+      <City />
+      <ZIPCode />
+      <LastUpdateDate>25/11/2020 11:37:09</LastUpdateDate>
+      <Latitude />
+      <Longitude />
+    </Branch>
+  </Branches>
+</Store>

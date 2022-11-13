@@ -1,0 +1,194 @@
+<Root>
+  <ChainId>7290058134977</ChainId>
+  <ChainName>שפע  ברכת השם בע"מ</ChainName>
+  <LastUpdateDate>2022-11-02</LastUpdateDate>
+  <LastUpdateTime>10:55:58</LastUpdateTime>
+  <SubChains>
+    <SubChain>
+      <SubChainId>1</SubChainId>
+      <SubChainName>1</SubChainName>
+      <Stores>
+        <Store>
+          <StoreId>1</StoreId>
+          <BikoretNo>2</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>כף החיים</StoreName>
+          <Address>כף החיים 38</Address>
+          <City>ביתר עילית</City>
+          <ZipCode>90537</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>2</StoreId>
+          <BikoretNo>2</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>בן ציון ברוק</StoreName>
+          <Address>בן ציון ברוק 7</Address>
+          <City>ביתר עילית</City>
+          <ZipCode>90554</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>3</StoreId>
+          <BikoretNo>1</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>עלי הכהן</StoreName>
+          <Address>עלי הכהן 21</Address>
+          <City>ירושלים</City>
+          <ZipCode>95311</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>5</StoreId>
+          <BikoretNo>0</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>החיד"א</StoreName>
+          <Address>החיד"א 11</Address>
+          <City>ביתר עילית</City>
+          <ZipCode>90508</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>6</StoreId>
+          <BikoretNo>4</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>יואל</StoreName>
+          <Address>יואל 14</Address>
+          <City>ירושלים</City>
+          <ZipCode>95269</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>17</StoreId>
+          <BikoretNo>1</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>אגן האיילות ג. זאב</StoreName>
+          <Address>אגן האיילות 41</Address>
+          <City>גבעת זאב</City>
+          <ZipCode>90938</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>18</StoreId>
+          <BikoretNo>3</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>מעזריטש</StoreName>
+          <Address>המגיד ממעזריטש 38</Address>
+          <City>ביתר עילית</City>
+          <ZipCode>90560</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>19</StoreId>
+          <BikoretNo>0</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>כנסת יחזקאל</StoreName>
+          <Address>כנסת יחזקאל 6</Address>
+          <City>ביתר עילית</City>
+          <ZipCode>90551</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>21</StoreId>
+          <BikoretNo>5</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>השלושה בני ברק</StoreName>
+          <Address>השלושה 35</Address>
+          <City>בני ברק</City>
+          <ZipCode>51386</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>22</StoreId>
+          <BikoretNo>3</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>בן איש חי בית שמש</StoreName>
+          <Address>בן איש חי 39</Address>
+          <City>בית שמש</City>
+          <ZipCode>99420</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>23</StoreId>
+          <BikoretNo>9</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>כהנמן בני ברק</StoreName>
+          <Address>כהנמן 107</Address>
+          <City>בני ברק</City>
+          <ZipCode>51553</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>31</StoreId>
+          <BikoretNo>3</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>בית וגן</StoreName>
+          <Address>בית וגן 10</Address>
+          <City>ירושלים</City>
+          <ZipCode>96463</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>32</StoreId>
+          <BikoretNo>0</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>תכלת מרדכי</StoreName>
+          <Address>תכלת מרדכי 1</Address>
+          <City>ירושלים</City>
+          <ZipCode>94396</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>33</StoreId>
+          <BikoretNo>7</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>סורוצקין</StoreName>
+          <Address>סורוצקין 14</Address>
+          <City>ירושלים</City>
+          <ZipCode>94423</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>34</StoreId>
+          <BikoretNo>4</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>עזרת תורה</StoreName>
+          <Address>עזרת תורה 28</Address>
+          <City>ירושלים</City>
+          <ZipCode>95320</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>36</StoreId>
+          <BikoretNo>7</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>תל ציון</StoreName>
+          <Address>אהבת ישראל 1</Address>
+          <City>תל ציון</City>
+          <ZipCode>90622</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>37</StoreId>
+          <BikoretNo>4</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>בן קיסמא בית שמש</StoreName>
+          <Address>ר' יוסי בן קיסמא 17</Address>
+          <City>בית שמש</City>
+          <ZipCode>99579</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>38</StoreId>
+          <BikoretNo>1</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>שמאי אלעד</StoreName>
+          <Address>שמאי 1</Address>
+          <City>אלעד</City>
+          <ZipCode>40801</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>39</StoreId>
+          <BikoretNo>8</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>מודיעין עילית</StoreName>
+          <Address>ר' עקיבא 5</Address>
+          <City>מודיעין עילית</City>
+          <ZipCode>71838</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>41</StoreId>
+          <BikoretNo>6</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>נתיבות</StoreName>
+          <Address>בעלי המלאכה 10</Address>
+          <City>נתיבות</City>
+          <ZipCode>8776803</ZipCode>
+        </Store>
+      </Stores>
+    </SubChain>
+  </SubChains>
+</Root>

@@ -1,0 +1,212 @@
+<Root>
+  <ChainId>7290058198450</ChainId>
+  <ChainName>פז חברת נפט בע"מ</ChainName>
+  <LastUpdateDate>2022-11-02</LastUpdateDate>
+  <LastUpdateTime>10:00:04</LastUpdateTime>
+  <SubChains>
+    <SubChain>
+      <SubChainId>1</SubChainId>
+      <SubChainName>1</SubChainName>
+      <Stores>
+        <Store>
+          <StoreId>3</StoreId>
+          <BikoretNo>7</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>ישעיהו</StoreName>
+          <Address>ישעיהו 1</Address>
+          <City>תל אביב יפו</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>4</StoreId>
+          <BikoretNo>0</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>דיזנגוף</StoreName>
+          <Address>דיזנגוף 215</Address>
+          <City>תל אביב - יפו</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>5</StoreId>
+          <BikoretNo>7</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>ריינס</StoreName>
+          <Address>ריינס 62</Address>
+          <City>תל אביב - יפו</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>8</StoreId>
+          <BikoretNo>8</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>אבן גבירול 73</StoreName>
+          <Address>אבן גבירול 73</Address>
+          <City>תל אביב - יפו</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>10</StoreId>
+          <BikoretNo>5</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>בן יהודה 224</StoreName>
+          <Address>בן יהודה 224</Address>
+          <City>תל אביב - יפו</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>11</StoreId>
+          <BikoretNo>9</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>בן יהודה 32</StoreName>
+          <Address>בן יהודה 32</Address>
+          <City>תל אביב - יפו</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>14</StoreId>
+          <BikoretNo>3</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>בן - ציון</StoreName>
+          <Address>בן ציון 3</Address>
+          <City>תל אביב - יפו</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>18</StoreId>
+          <BikoretNo>9</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>איינשטין</StoreName>
+          <Address>איינשטיין 9</Address>
+          <City>תל אביב - יפו</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>19</StoreId>
+          <BikoretNo>6</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>יהודה המכבי</StoreName>
+          <Address>יהודה מכבי 72</Address>
+          <City>תל אביב - יפו</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>23</StoreId>
+          <BikoretNo>3</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>בוגרשוב</StoreName>
+          <Address>בוגרשוב 19</Address>
+          <City>תל אביב - יפו</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>24</StoreId>
+          <BikoretNo>6</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>בארט 6</StoreName>
+          <Address>בארט 6</Address>
+          <City>תל אביב - יפו</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>25</StoreId>
+          <BikoretNo>2</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>אלנבי</StoreName>
+          <Address>אלנבי 29</Address>
+          <City>תל אביב - יפו</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>31</StoreId>
+          <BikoretNo>6</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>פינסקר</StoreName>
+          <Address>פינסקר 59</Address>
+          <City>תל אביב - יפו</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>32</StoreId>
+          <BikoretNo>2</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>הרצליה (ויצמן)</StoreName>
+          <Address>ויצמן 20</Address>
+          <City>הרצליה</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>33</StoreId>
+          <BikoretNo>9</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>נחלת בנימין</StoreName>
+          <Address>נחלת בנימין 37</Address>
+          <City>תל אביב יפו</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>34</StoreId>
+          <BikoretNo>5</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>רמת השרון</StoreName>
+          <Address>אושיסקין 43</Address>
+          <City>רמת השרון</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>35</StoreId>
+          <BikoretNo>9</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>רעננה (ירושלים)</StoreName>
+          <Address>ירושלים 13</Address>
+          <City>unknown</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>36</StoreId>
+          <BikoretNo>2</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>חולון (גאולים)</StoreName>
+          <Address>גאולים 46</Address>
+          <City>unknown</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>37</StoreId>
+          <BikoretNo>5</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>ראשל"צ (עין דור)</StoreName>
+          <Address>עין דור 6</Address>
+          <City>ראשון לציון</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>38</StoreId>
+          <BikoretNo>1</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>אבן יהודה -המייסדים</StoreName>
+          <Address>המייסדים 61</Address>
+          <City>אבן יהודה</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>39</StoreId>
+          <BikoretNo>3</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>דיזנגוף 100</StoreName>
+          <Address>דיזנגוף 100</Address>
+          <City>תל אביב - יפו</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+        <Store>
+          <StoreId>40</StoreId>
+          <BikoretNo>5</BikoretNo>
+          <StoreType>1</StoreType>
+          <StoreName>התזמורת ראשל"צ</StoreName>
+          <Address>התזמורת 29</Address>
+          <City>ראשון לציון</City>
+          <ZipCode>unknown</ZipCode>
+        </Store>
+      </Stores>
+    </SubChain>
+  </SubChains>
+</Root>

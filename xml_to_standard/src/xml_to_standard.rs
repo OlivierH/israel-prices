@@ -294,22 +294,14 @@ fn get_chain_from_stores(node: Node, path: &str) -> Result<Chain> {
         .filter(|n| n.tag_name().name() == "Branch")
     {
         let full_store = to_full_store(&branch, path)?;
-        match subchains.get_mut(&full_store.subchain_id) {
-            Some(subchain) => subchain,
-            None => {
-                subchains.insert(
-                    full_store.subchain_id.clone(),
-                    Subchain {
-                        subchain_id: full_store.subchain_id,
-                        subchain_name: full_store.subchain_name,
-                        stores: vec![],
-                    },
-                );
-                subchains.get_mut(&full_store.subchain_id).unwrap()
-            }
-        }
-        .stores
-        .push(full_store.store);
+        let subchain = subchains
+            .entry(full_store.subchain_id)
+            .or_insert_with(|| Subchain {
+                subchain_id: full_store.subchain_id,
+                subchain_name: full_store.subchain_name,
+                stores: vec![],
+            });
+        subchain.stores.push(full_store.store);
         chain.chain_id = full_store.chain_id;
         chain.chain_name = full_store.chain_name;
     }
@@ -480,18 +472,7 @@ async fn main() {
         .into_iter()
         .filter_map(|e| e.ok())
         .map(|dir| dir.into_path())
-        .filter(|path| path.is_file())
-        .filter(|path| {
-            let store = path
-                .parent()
-                .unwrap()
-                .file_name()
-                .unwrap()
-                .to_str()
-                .unwrap();
-            dirs.insert(store.to_string());
-            true
-        });
+        .filter(|path| path.is_file());
 
     let subchains: Arc<Mutex<Vec<SubchainRecord>>> = Arc::new(Mutex::new(Vec::new()));
 

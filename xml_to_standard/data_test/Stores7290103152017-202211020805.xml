@@ -1,0 +1,186 @@
+﻿<Root>
+    <ChainId>7290103152017</ChainId>
+    <ChainName>אושר עד</ChainName>
+    <XmlDocVersion>00000</XmlDocVersion>
+    <LastUpdateDate>2022-11-02</LastUpdateDate>
+    <LastUpdateTime>08:05:00</LastUpdateTime>
+    <SubChains>
+        <SubChain>
+            <SubChainId>1</SubChainId>
+            <SubChainName>1</SubChainName>
+            <Stores>
+                <Store>
+                    <StoreId>1</StoreId>
+                    <BikoretNo>6</BikoretNo>
+                    <StoreType>1</StoreType>
+                    <StoreName>מגדל העמק</StoreName>
+                    <Address>האיצטדיון 11</Address>
+                    <City>מגדל העמק</City>
+                    <ZipCode>1000000</ZipCode>
+                </Store>
+                <Store>
+                    <StoreId>3</StoreId>
+                    <BikoretNo>4</BikoretNo>
+                    <StoreType>1</StoreType>
+                    <StoreName>גבעת שאול</StoreName>
+                    <Address>בית הדפוס 29</Address>
+                    <City>ירושלים</City>
+                    <ZipCode>9548334</ZipCode>
+                </Store>
+                <Store>
+                    <StoreId>5</StoreId>
+                    <BikoretNo>2</BikoretNo>
+                    <StoreType>1</StoreType>
+                    <StoreName>קרית ביאליק</StoreName>
+                    <Address>הנס מולר 6, צור שלום</Address>
+                    <City>קרית ביאליק</City>
+                    <ZipCode>2751206</ZipCode>
+                </Store>
+                <Store>
+                    <StoreId>6</StoreId>
+                    <BikoretNo>1</BikoretNo>
+                    <StoreType>1</StoreType>
+                    <StoreName>כנות</StoreName>
+                    <Address>אדום 24 פארק התעשיות כנות</Address>
+                    <City>כנות</City>
+                    <ZipCode>7982500</ZipCode>
+                </Store>
+                <Store>
+                    <StoreId>9</StoreId>
+                    <BikoretNo>8</BikoretNo>
+                    <StoreType>1</StoreType>
+                    <StoreName>אשדוד</StoreName>
+                    <Address>בעלי המלאכה 4</Address>
+                    <City>אשדוד</City>
+                    <ZipCode>7761205</ZipCode>
+                </Store>
+                <Store>
+                    <StoreId>10</StoreId>
+                    <BikoretNo>4</BikoretNo>
+                    <StoreType>1</StoreType>
+                    <StoreName>פתח תקווה - סגולה</StoreName>
+                    <Address>בן ציון גליס 30</Address>
+                    <City>פתח תקווה</City>
+                    <ZipCode>4927930</ZipCode>
+                </Store>
+                <Store>
+                    <StoreId>11</StoreId>
+                    <BikoretNo>3</BikoretNo>
+                    <StoreType>1</StoreType>
+                    <StoreName>בני ברק</StoreName>
+                    <Address>הקישון 11</Address>
+                    <City>בני ברק</City>
+                    <ZipCode>5120314</ZipCode>
+                </Store>
+                <Store>
+                    <StoreId>13</StoreId>
+                    <BikoretNo>1</BikoretNo>
+                    <StoreType>1</StoreType>
+                    <StoreName>באר שבע</StoreName>
+                    <Address>הקוצר 15 אזור תעשיה עמק שרה</Address>
+                    <City>באר שבע</City>
+                    <ZipCode>8480904</ZipCode>
+                </Store>
+                <Store>
+                    <StoreId>14</StoreId>
+                    <BikoretNo>0</BikoretNo>
+                    <StoreType>1</StoreType>
+                    <StoreName>חדרה</StoreName>
+                    <Address>המסגר 22 אזה"ת הצפוני</Address>
+                    <City>חדרה</City>
+                    <ZipCode>2000000</ZipCode>
+                </Store>
+                <Store>
+                    <StoreId>15</StoreId>
+                    <BikoretNo>9</BikoretNo>
+                    <StoreType>1</StoreType>
+                    <StoreName>נוף הגליל-נצרת</StoreName>
+                    <Address>גלבוע 1</Address>
+                    <City>נצרת עילית</City>
+                    <ZipCode>1767201</ZipCode>
+                </Store>
+                <Store>
+                    <StoreId>16</StoreId>
+                    <BikoretNo>8</BikoretNo>
+                    <StoreType>1</StoreType>
+                    <StoreName>בית שמש - גליל</StoreName>
+                    <Address>מורדי הגיטאות 6</Address>
+                    <City>בית שמש</City>
+                    <ZipCode>9958206</ZipCode>
+                </Store>
+                <Store>
+                    <StoreId>20</StoreId>
+                    <BikoretNo>1</BikoretNo>
+                    <StoreType>1</StoreType>
+                    <StoreName>לוד</StoreName>
+                    <Address>בת שבע 1 מתחם טלרד</Address>
+                    <City>לוד</City>
+                    <ZipCode>7120101</ZipCode>
+                </Store>
+                <Store>
+                    <StoreId>22</StoreId>
+                    <BikoretNo>9</BikoretNo>
+                    <StoreType>1</StoreType>
+                    <StoreName>אשקלון בת הדר</StoreName>
+                    <Address>בת הדר</Address>
+                    <City>אשקלון בת הדר</City>
+                    <ZipCode>7910300</ZipCode>
+                </Store>
+                <Store>
+                    <StoreId>23</StoreId>
+                    <BikoretNo>8</BikoretNo>
+                    <StoreType>1</StoreType>
+                    <StoreName>נתניה</StoreName>
+                    <Address>שדרות תום לנטוס</Address>
+                    <City>נתניה</City>
+                    <ZipCode>4276019</ZipCode>
+                </Store>
+                <Store>
+                    <StoreId>24</StoreId>
+                    <BikoretNo>7</BikoretNo>
+                    <StoreType>1</StoreType>
+                    <StoreName>תל אביב</StoreName>
+                    <Address>קרמינצקי 3</Address>
+                    <City>תל אביב</City>
+                    <ZipCode>6789903</ZipCode>
+                </Store>
+                <Store>
+                    <StoreId>25</StoreId>
+                    <BikoretNo>6</BikoretNo>
+                    <StoreType>1</StoreType>
+                    <StoreName>ראשון לציון</StoreName>
+                    <Address>אצל 26</Address>
+                    <City>ראשון לציון</City>
+                    <ZipCode>7570630</ZipCode>
+                </Store>
+                <Store>
+                    <StoreId>26</StoreId>
+                    <BikoretNo>5</BikoretNo>
+                    <StoreType>1</StoreType>
+                    <StoreName>תלפיות</StoreName>
+                    <Address>פייר קניג 26 קניון הדר</Address>
+                    <City>ירושלים</City>
+                    <ZipCode>9346934</ZipCode>
+                </Store>
+                <Store>
+                    <StoreId>28</StoreId>
+                    <BikoretNo>3</BikoretNo>
+                    <StoreType>1</StoreType>
+                    <StoreName>שמגר</StoreName>
+                    <Address>שמגר 16</Address>
+                    <City>ירושלים</City>
+                    <ZipCode>9446116</ZipCode>
+                </Store>
+                <Store>
+                    <StoreId>30</StoreId>
+                    <BikoretNo>8</BikoretNo>
+                    <StoreType>1</StoreType>
+                    <StoreName>חיפה</StoreName>
+                    <Address>דרך בר יהודה 31</Address>
+                    <City>חיפה</City>
+                    <ZipCode>3262724</ZipCode>
+                </Store>
+            </Stores>
+        </SubChain>
+    </SubChains>
+</Root>

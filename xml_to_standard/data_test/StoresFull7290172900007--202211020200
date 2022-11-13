@@ -1,0 +1,3664 @@
+<?xml version="1.0" encoding="ISO-8859-8" standalone="no" ?>
+<OrderXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Envelope>
+		<ChainId>7290172900007</ChainId>
+		<SubChainId>100</SubChainId>
+		<Header>
+			<Details>
+				<Line>
+					<StoreId>1</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם צמרות</StoreName>
+					<Address>צמרות</Address>
+					<City>הרצליה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>2</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ניות</StoreName>
+					<Address>ניות</Address>
+					<City>ירושלים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>4</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם משחררים</StoreName>
+					<Address>רח&apos; המשחררים 70</Address>
+					<City>באר-שבע</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>5</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם בית אמריקה</StoreName>
+					<Address>בית אמריקה פתח תקווה</Address>
+					<City>פתח-תקוה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>6</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אורון</StoreName>
+					<Address>רוטשילד 182 פ&quot;ת</Address>
+					<City>פתח-תקוה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>7</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם גילה</StoreName>
+					<Address>גילה</Address>
+					<City>ירושלים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>8</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם רמת אביב</StoreName>
+					<Address>איינשטיין 40 קניון אביב תל-אביב</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>9</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם כפר סבא</StoreName>
+					<Address>ויצמן 76 כפר סבא</Address>
+					<City>כפר-סבא</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>10</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון איילון</StoreName>
+					<Address>אבא הלל 165</Address>
+					<City>רמת גן</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>12</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם גבעת סביון</StoreName>
+					<Address>הגליל 78 , מרכז גבעת סביון</Address>
+					<City>גבעת סביון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>13</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם חורב</StoreName>
+					<Address>מרכז חורב חיפה</Address>
+					<City>חיפה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>14</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון השרון</StoreName>
+					<Address>הרצל 58 , קניון השרון , נתניה</Address>
+					<City>נתניה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>15</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קריון</StoreName>
+					<Address>פלמ&quot;ח 44 , קריון ,קרית ביאליק</Address>
+					<City>קרית-ביאליק</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>16</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם נס ציונה</StoreName>
+					<Address>אירוסים 53 נס-ציונה</Address>
+					<City>נס-ציונה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>17</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם דיזינגוף סנטר</StoreName>
+					<Address>דיזינגוף סנטר ת&quot;א</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>18</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון הנגב</StoreName>
+					<Address>קניון הנגב באר שבע</Address>
+					<City>באר-שבע</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>20</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם סינמול</StoreName>
+					<Address>שד&apos; ההסתדרות 55</Address>
+					<City>חיפה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>24</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם תל השומר</StoreName>
+					<Address>מרכז גימיון</Address>
+					<City>תל השומר</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>25</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ראשון צפון</StoreName>
+					<Address>בקר 15 ראשון לציון</Address>
+					<City>ראשון-לציון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>26</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם סוקולוב הרצליה</StoreName>
+					<Address>סוקולוב 25 הרצליה</Address>
+					<City>הרצליה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>27</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם מדרחוב</StoreName>
+					<Address>ההסתדרות 3 ירושלים</Address>
+					<City>ירושלים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>28</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אשקלון גירון</StoreName>
+					<Address>שד&apos; בן גוריון 21 קניון גירון אשקלון</Address>
+					<City>אשקלון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>29</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם כופר הישוב</StoreName>
+					<Address>ביאליק 10 רמת-גן</Address>
+					<City>רמת גן</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>30</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם מלחה</StoreName>
+					<Address>קניון ירושלים</Address>
+					<City>ירושלים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>32</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון הזהב</StoreName>
+					<Address>סחרוב 21 ראשון לציון</Address>
+					<City>ראשון-לציון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>33</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם תחנה מרכזית</StoreName>
+					<Address>לוינסקי 108 תל אביב</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>35</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם רעננה פארק מול</StoreName>
+					<Address>מרכז מול , אחוזה 267 , רעננה</Address>
+					<City>רעננה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>36</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ערד</StoreName>
+					<Address>רח&apos; הקנאים , קניון ערד</Address>
+					<City>ערד</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>38</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם חוצות המפרץ</StoreName>
+					<Address>צומת וולקן חיפה</Address>
+					<City>חיפה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>39</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם לונדון מיניסטור</StoreName>
+					<Address>שד&apos; שאול המלך 4 תל-אביב</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>40</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אשדוד סיטי</StoreName>
+					<Address>הבנים 1 אשדוד</Address>
+					<City>אשדוד</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>42</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קרית שמונה</StoreName>
+					<Address>הנשיא 4 ,צומת גיבור קרית שמונה</Address>
+					<City>קרית-שמונה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>43</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם עפולה</StoreName>
+					<Address>קניון העמקים עפולה</Address>
+					<City>עפולה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>44</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם נווה שאנן</StoreName>
+					<Address>טרומפלדור 54 , חיפה</Address>
+					<City>חיפה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>45</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון רחובות</StoreName>
+					<Address>קניון רחובות</Address>
+					<City>רחובות</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>46</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם רוטשילד</StoreName>
+					<Address>רוטשילד 45 ראשון לציון</Address>
+					<City>ראשון-לציון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>47</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם שאול המלך ב&quot;ש</StoreName>
+					<Address>שאול המלך 80</Address>
+					<City>באר-שבע</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>48</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם שפיים</StoreName>
+					<Address>קיבוץ שפיים</Address>
+					<City>קיבוץ שפיים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>49</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם שוהם</StoreName>
+					<Address>מרכז מסחרי שוהם</Address>
+					<City>שוהם</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>50</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אורדע</StoreName>
+					<Address>כיכר רמב&quot;ם 3</Address>
+					<City>רמת גן</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>51</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם לישנסקי</StoreName>
+					<Address>לישנסקי 9 ראשון לציון</Address>
+					<City>ראשון-לציון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>52</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם בילו סנטר</StoreName>
+					<Address>צומת בילו , רחובות</Address>
+					<City>צומת בילו</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>53</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם מול הים</StoreName>
+					<Address>קניון מול הים אילת</Address>
+					<City>אילת</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>54</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם הוד השרון</StoreName>
+					<Address>קניון מרגליות , הוד השרון</Address>
+					<City>הוד השרון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>55</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ביג באר שבע</StoreName>
+					<Address>חיל ההנדסה 2 באר שבע</Address>
+					<City>באר-שבע</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>56</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם רעננה אחוזה</StoreName>
+					<Address>אחוזה 83 רעננה</Address>
+					<City>רעננה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>57</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם נצרת</StoreName>
+					<Address>פאולוס השישי נצרת</Address>
+					<City>נצרת</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>59</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם היכל</StoreName>
+					<Address>ההסתדרות 26 פתח-תקוה</Address>
+					<City>פתח-תקוה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>61</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון עזריאלי ת&quot;א</StoreName>
+					<Address>דרך פ&quot;ת 132 פינת דרך השלום ת&quot;א</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>64</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם מרום נווה</StoreName>
+					<Address>לנדאו 7 רמת גן</Address>
+					<City>רמת גן</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>65</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם שיכון דן</StoreName>
+					<Address>דרך פנחס רוזן 72 תל אביב</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>66</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון חולון</StoreName>
+					<Address>גולדה מאיר 7 חולון</Address>
+					<City>חולון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>67</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם כרמיאל</StoreName>
+					<Address>מעלה כמון 2, כרמיאל</Address>
+					<City>כרמיאל</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>68</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון רננים</StoreName>
+					<Address>המלאכה 2 אזה&quot;ת רעננה</Address>
+					<City>רעננה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>71</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם טבריה</StoreName>
+					<Address>טבריה</Address>
+					<City>טבריה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>72</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קרית אתא</StoreName>
+					<Address>מרכז ביג,ההתסדרות 248 מפרץ חיפה</Address>
+					<City>קרית-אתא</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>73</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם גורדון</StoreName>
+					<Address>גורדון תל-אביב</Address>
+					<City>גורדון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>74</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם מעלה אדומים</StoreName>
+					<Address>דרך קדם מעלה אדומים</Address>
+					<City>מעלה אדומים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>75</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם שער אשקלון</StoreName>
+					<Address>צומת כפר סילבר אשקלון</Address>
+					<City>אשקלון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>76</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קרית רמלה</StoreName>
+					<Address>הרצל 91 רמלה</Address>
+					<City>רמלה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>77</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם גרנד קניון</StoreName>
+					<Address>דרך שמחה גולן חיפה</Address>
+					<City>חיפה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>78</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם רמז נתניה</StoreName>
+					<Address>רמז פינת סמילנסקי נתניה</Address>
+					<City>נתניה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>79</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם סיטי סנטר</StoreName>
+					<Address>שד&apos; בן גוריון 6 חיפה</Address>
+					<City>חיפה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>81</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם הרצל רחובות</StoreName>
+					<Address>הרצל 182 , רחובות</Address>
+					<City>רחובות</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>82</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ארמון חיפה</StoreName>
+					<Address>הנביאים 18 חיפה</Address>
+					<City>חיפה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>83</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם שנקין</StoreName>
+					<Address>שנקין תל-אביב</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>84</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם גן שמואל</StoreName>
+					<Address>גן שמואל</Address>
+					<City>גן שמואל</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>85</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם לב חדרה</StoreName>
+					<Address>רח&apos; רוטשילד 40 חדרה</Address>
+					<City>חדרה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>86</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם פרדס חנה</StoreName>
+					<Address>הדקלים 81 פרדס חנה</Address>
+					<City>פרדס-חנה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>87</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם שבעת הכוכבים</StoreName>
+					<Address>דרך שבעת הכוכבים , הרצליה</Address>
+					<City>הרצליה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>88</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם גבעת שאול</StoreName>
+					<Address>כנפי נשרים 22 גבעת שאול ירושלים</Address>
+					<City>ירושלים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>90</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם נאות שקמה</StoreName>
+					<Address>מורשת ישראל 15 , ראשון לציון</Address>
+					<City>ראשון-לציון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>91</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם זכרון יעקב</StoreName>
+					<Address>הדגן 2 זכרון יעקב</Address>
+					<City>זכרון יעקב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>92</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם בית מילמן</StoreName>
+					<Address>טאגור 32 רמת אביב</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>93</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם בית שמש</StoreName>
+					<Address>יגאל אלון 1 , בית שמש</Address>
+					<City>בית שמש</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>94</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ת&quot;מ ירושלים</StoreName>
+					<Address>יפו 234 ירושלים</Address>
+					<City>ירושלים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>95</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם תלפיות</StoreName>
+					<Address>פייר קניג 26 תלפיות ירושלים</Address>
+					<City>ירושלים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>96</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם בן-גוריון</StoreName>
+					<Address>בן-גוריון רמת-גן</Address>
+					<City>רמת גן</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>97</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם מגדל הורד</StoreName>
+					<Address>דרך השלום 53 גבעתיים</Address>
+					<City>גבעתיים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>98</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קרית אונו</StoreName>
+					<Address>שלמה המלך 37 קניון קרית אונו</Address>
+					<City>קרית-אונו</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>100</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם מרכז דוד אפרידר</StoreName>
+					<Address>הנשיא 3 אשקלון</Address>
+					<City>אשקלון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>101</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם מודיעין שמשוני</StoreName>
+					<Address>עמק בית שאן 29 מודיעין</Address>
+					<City>מודיעין</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>102</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם נחל עשן</StoreName>
+					<Address>החשמונאים 15 באר שבע</Address>
+					<City>באר-שבע</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>103</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם גבעת טל</StoreName>
+					<Address>משה דיין 2 גבעת-טל ראש העין</Address>
+					<City>גבעת טל</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>104</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ביג פולג</StoreName>
+					<Address>גיבורי ישראל 5 א נתניה</Address>
+					<City>נתניה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>105</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם נהריה געתון</StoreName>
+					<Address>ויצמן 62 , פינת שד&apos; געתון נהריה</Address>
+					<City>נהריה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>106</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם נהריה רגבה</StoreName>
+					<Address>מרכז ביג , רגבה , נהריה</Address>
+					<City>נהריה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>107</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם איכילוב</StoreName>
+					<Address>ויצמן 14 א&apos; תל אביב</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>108</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם יבנה</StoreName>
+					<Address>שדרות דואני 42 יבנה</Address>
+					<City>יבנה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>109</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אבן גבירול</StoreName>
+					<Address>אבן גבירול 124 תל אביב</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>110</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם מרינה</StoreName>
+					<Address>רח&apos; יורדי ים 1</Address>
+					<City>הרצליה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>111</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אודיטוריום</StoreName>
+					<Address>אודיטוריום חיפה</Address>
+					<City>חיפה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>112</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ביג אילת</StoreName>
+					<Address>הסתת 14 אזוה&quot;ת אילת</Address>
+					<City>אילת</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>113</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם כרמיאל קק&quot;ל</StoreName>
+					<Address>שדרות קק&quot;ל 99 כרמיאל</Address>
+					<City>כרמיאל</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>114</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אלנבי</StoreName>
+					<Address>אלנבי 115 תל-אביב</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>115</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם בת-ים</StoreName>
+					<Address>יוסטפל 92 בת-ים</Address>
+					<City>בת-ים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>116</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם פסגת זאב</StoreName>
+					<Address>שד&apos; משה דיין 106 ירושלים</Address>
+					<City>ירושלים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>117</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אשדוד סטאר-סנטר</StoreName>
+					<Address>ז&apos;בוטינסקי 41 אשדוד</Address>
+					<City>אשדוד</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>118</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם לוד</StoreName>
+					<Address>שד&apos; דוד המלך 2 לוד</Address>
+					<City>לוד</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>119</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם עמק-סנטר עפולה</StoreName>
+					<Address>שד&apos; יצחק רבין,עמק-סנטר</Address>
+					<City>עפולה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>120</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון גבעתיים</StoreName>
+					<Address>דרך יצחק רבין 53 גבעתיים</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>121</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם בית הכרם</StoreName>
+					<Address>אבי זוהר 7 בית הכרם ירושלים</Address>
+					<City>ירושלים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>122</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם לב העיר קרית גת</StoreName>
+					<Address>ככר פז שד&apos; לכיש קרית גת</Address>
+					<City>קרית-גת</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>124</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם מגדל העמק</StoreName>
+					<Address>שד&apos; המדע 77 מגדל העמק</Address>
+					<City>מגדל העמק</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>125</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם מודיעין ישפרו</StoreName>
+					<Address>אזור המלאכה- ישפרו סנטר מודיעין</Address>
+					<City>מודיעין</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>126</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אור יהודה</StoreName>
+					<Address>רח המפעל 11 אזוה&apos;&apos;ת אור יהודה</Address>
+					<City>אור יהודה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>127</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אוסישקין רמה&quot;ש</StoreName>
+					<Address>אוסישקין 62 רמת השרון</Address>
+					<City>הרצליה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>128</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אופקים</StoreName>
+					<Address>רח&apos; הרתך 7, שכונת-הריף, אופקים</Address>
+					<City>אופקים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>129</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אום-אל-פאחם</StoreName>
+					<Address>שכונת עין-איברהים 18 אום-אל-פאחם</Address>
+					<City>אום אל פאחם</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>130</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם יפו</StoreName>
+					<Address>שד&apos; ירושלים 49,תל-אביב-יפו</Address>
+					<City>יפו</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>131</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם נוף הגליל</StoreName>
+					<Address>מתחם עופר סנטר נוף הגליל</Address>
+					<City>נוף הגליל</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>132</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם שדרות</StoreName>
+					<Address>סמטת הפלדה 1 שדרות</Address>
+					<City>שדרות</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>133</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם נתיבות</StoreName>
+					<Address>שד &apos; ירושלים פינת טדי קולק , נתיבות</Address>
+					<City>נתיבות</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>134</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם כפר יאסיף</StoreName>
+					<Address>כפר-יאסיף 15, כפר-יאסיף מיקוד 24908</Address>
+					<City>כפר יאסיף</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>135</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם דימונה</StoreName>
+					<Address>המעפיל פינת גולדה מאיר 395 אזו&quot;ת</Address>
+					<City>דימונה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>136</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם גאלרי רשל&quot;צ</StoreName>
+					<Address>ילדי טהרן 5 פינת משה דיין ראשל&quot;צ</Address>
+					<City>ראשון-לציון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>137</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם רמת החייל</StoreName>
+					<Address>הברזל 23, רמת החייל</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>138</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם הדסה עין כרם</StoreName>
+					<Address>מתחם ישפרו סנטר הדסה עין  כרם</Address>
+					<City>ירושלים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>139</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם העצמאות קרית-אתא</StoreName>
+					<Address>רח&apos; דרך העצמאות 61 קרית-אתא</Address>
+					<City>קרית-אתא</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>140</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם האר&quot;י נתניה</StoreName>
+					<Address>רח&apos; האר&quot;י 1 נתניה</Address>
+					<City>נתניה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>141</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם וייצמן חולון</StoreName>
+					<Address>ויצמן 43 חולון</Address>
+					<City>חולון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>142</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם הרצליה-פיתוח</StoreName>
+					<Address>שד&apos; אבא-אבן 8</Address>
+					<City>הרצליה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>143</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם שפרעם</StoreName>
+					<Address>רח&apos; ג&apos;ונבלט שכונת אלעיין</Address>
+					<City>שפרעם</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>144</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם התמרים אילת</StoreName>
+					<Address>שד&apos; התמרים 9</Address>
+					<City>אילת</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>145</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ממילא</StoreName>
+					<Address>שלמה המלך 9</Address>
+					<City>ירושלים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>146</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם גדרה</StoreName>
+					<Address>רח&apos; בן-גוריון 105, מתחם המושבה</Address>
+					<City>גדרה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>147</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם שער- רחובות</StoreName>
+					<Address>רח&apos; אופנהיימר 2 פארק ת.מ.ר</Address>
+					<City>רחובות</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>148</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון-ערים</StoreName>
+					<Address>רח&apos; וייצמן 63 פינת כצנלסון, קניון-ערים</Address>
+					<City>כפר-סבא</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>149</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם יד-אליהו</StoreName>
+					<Address>רח&apos; יגאל אלון 51</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>150</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ביג קסטינה</StoreName>
+					<Address>ביג קסטינה, אזוה&quot;ת באר-טוביה</Address>
+					<City>באר-טוביה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>151</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ביג-יקנעם</StoreName>
+					<Address>שדרות רבין 9, מרכז ביג</Address>
+					<City>יקנעם</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>152</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם סכנין</StoreName>
+					<Address>רחוב ראשי</Address>
+					<City>סכנין</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>153</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון-מודיעין</StoreName>
+					<Address>רח&apos; לב-העיר 2</Address>
+					<City>מודיעין</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>154</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם מול-זכרון</StoreName>
+					<Address>אזוה&quot;ת מערבי, כביש 4</Address>
+					<City>זכרון-יעקב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>155</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם עכו</StoreName>
+					<Address>בן-עמי 67 פינת דוד רמז</Address>
+					<City>עכו</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>156</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קרית-ים</StoreName>
+					<Address>שדרות ירושלים 51</Address>
+					<City>קרית-ים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>157</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם פקר כפר-סבא</StoreName>
+					<Address>רח&apos; וייצמן 207</Address>
+					<City>כפר-סבא</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>158</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ביג-פוריה</StoreName>
+					<Address>רח&apos; המברג 1</Address>
+					<City>טבריה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>159</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ביג-נצרת</StoreName>
+					<Address>רח&apos; תופיק זיאד 53</Address>
+					<City>נצרת</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>160</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם איירפורט סיטי</StoreName>
+					<Address>קרית-שדה תעופה</Address>
+					<City>לוד</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>161</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ויצמן נתניה</StoreName>
+					<Address>רח&apos; ויצמן 22</Address>
+					<City>נתניה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>162</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם כוכב-יאיר</StoreName>
+					<Address>מתחם פז, צומת כוכב-יאיר</Address>
+					<City>כוכב-יאיר</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>163</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם הרצל ראשל&quot;צ</StoreName>
+					<Address>רח&apos; הרצל 52</Address>
+					<City>ראשון-לציון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>164</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם נוה-זאב</StoreName>
+					<Address>שד&apos; יוהנה זבוטינסקי 28-30</Address>
+					<City>באר-שבע</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>167</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם שחמון אילת</StoreName>
+					<Address>שדרות ששת הימים 290-294</Address>
+					<City>אילת</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>168</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם הקניון הגדול - פ&quot;ת</StoreName>
+					<Address>רח&apos; ז&apos;בוטינסקי 72</Address>
+					<City>פתח-תקוה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>169</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם יכין-סנטר</StoreName>
+					<Address>דרך יצחק-רבין 17, יכין-סנטר</Address>
+					<City>פתח-תקוה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>170</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ביג צ&apos;ק פוסט</StoreName>
+					<Address>בר יהודה 111</Address>
+					<City>חיפה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>171</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם בית-שאן</StoreName>
+					<Address>רח&apos; השחם פינת ירושלים הבירה</Address>
+					<City>בית-שאן</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>172</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם מגדל-שלום</StoreName>
+					<Address>רח&apos; אחד-העם 9</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>173</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם כפר-גנים</StoreName>
+					<Address>רח&apos; העצמאות 65, פינת בן-גוריון</Address>
+					<City>פתח-תקוה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>174</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם רמלוד</StoreName>
+					<Address>רח&apos; צופית 40</Address>
+					<City>רמלה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>175</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם צמרת ת&quot;א</StoreName>
+					<Address>רח&apos; ניסים אלוני 10</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>176</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם בית-האומות</StoreName>
+					<Address>דרך-חברון 101</Address>
+					<City>ירושלים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>178</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ביג קרית-גת</StoreName>
+					<Address>דרך-הדרום 3</Address>
+					<City>קרית-גת</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>179</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם העצמאות בת-ים</StoreName>
+					<Address>שדרות העצמאות 67</Address>
+					<City>בת-ים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>181</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם צים נתיבות</StoreName>
+					<Address>רחוב בעלי מלאכה 5</Address>
+					<City>נתיבות</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>182</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם מזכרת-בתיה</StoreName>
+					<Address>רחוב מנחם בגין 2</Address>
+					<City>מזכרת-בתיה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>183</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם חדרה-מזרח</StoreName>
+					<Address>רחוב צה&quot;ל 6</Address>
+					<City>חדרה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>184</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם רמות ירושלים</StoreName>
+					<Address>שד&apos; גולדה-מאיר פינת הקונגרס-הציוני</Address>
+					<City>ירושלים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>185</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אזור התעשיה חולון</StoreName>
+					<Address>רח&apos; הכישור 3</Address>
+					<City>חולון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>186</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ישפרו נס-ציונה</StoreName>
+					<Address>רח&apos; הפטיש 6</Address>
+					<City>נס-ציונה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>188</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם מגדלי תל-אביב</StoreName>
+					<Address>רח&apos; נחלת-יצחק 20</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>189</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם פלורנטין תל-אביב</StoreName>
+					<Address>רח&apos; הרצל 96, פינת פלורנטין</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>190</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם טבעון</StoreName>
+					<Address>רח&apos; מרווה 1</Address>
+					<City>קרית-טבעון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>191</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם עיר-ימים נתניה</StoreName>
+					<Address>רח&apos; בני ברמן 2</Address>
+					<City>נתניה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>192</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ביג קרית-שמונה</StoreName>
+					<Address>אזור תעשיה דרומי מרכז קניות ביג</Address>
+					<City>קרית-שמונה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>193</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ביג אור-יהודה</StoreName>
+					<Address>יצחק רבין 5</Address>
+					<City>אור-יהודה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>194</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ביג פרדס-חנה</StoreName>
+					<Address>רחוב תדהר 1</Address>
+					<City>פרדס-חנה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>195</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קסטל ת&quot;א</StoreName>
+					<Address>רח&apos; אבן-גבירול 153</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>196</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם תל-מונד</StoreName>
+					<Address>רח&apos; הדקל 47</Address>
+					<City>תל-מונד</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>198</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון בית-שמש</StoreName>
+					<Address>רח&apos; יצחק רבין 2</Address>
+					<City>בית-שמש</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>199</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אם-המושבות פ&quot;ת</StoreName>
+					<Address>רח&apos; יעל רום 8</Address>
+					<City>פתח-תקוה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>200</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם מעלות</StoreName>
+					<Address>רח&apos; שלמה שרירא 3</Address>
+					<City>מעלות</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>201</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ביג-עפולה</StoreName>
+					<Address>רח&apos; השוק 13</Address>
+					<City>עפולה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>204</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם גרנד באר-שבע</StoreName>
+					<Address>טוביהו דוד 125</Address>
+					<City>באר-שבע</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>205</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם נמל תל-אביב</StoreName>
+					<Address>גני-התערוכה 3, ת&quot;א</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>206</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קדימה</StoreName>
+					<Address>רחוב האופה 1</Address>
+					<City>קדימה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>207</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם רמת-ישי</StoreName>
+					<Address>רח&apos; אקליפטוס 3</Address>
+					<City>רמת-ישי</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>208</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון טבריה</StoreName>
+					<Address>רחוב יהודה הלוי 1/1</Address>
+					<City>טבריה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>209</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם סוקולוב חולון</StoreName>
+					<Address>רחוב סוקולוב 69</Address>
+					<City>חולון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>210</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם בן-יהודה 4</StoreName>
+					<Address>רח&apos; בן-יהודה 4</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>212</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם טמרה</StoreName>
+					<Address>מרכז-מסחרי</Address>
+					<City>טמרה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>213</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם סנטרו רחובות</StoreName>
+					<Address>מוטי קינד 10, רחובות</Address>
+					<City>רחובות</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>215</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם מצליח</StoreName>
+					<Address>שושנה דמארי 20</Address>
+					<City>רמלה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>216</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קרית-מוצקין</StoreName>
+					<Address>שד&apos; ירושלים 1</Address>
+					<City>קרית-מוצקין</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>217</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ככר דיזינגוף</StoreName>
+					<Address>פינסקר 69 פינת דיזינגוף 5</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>218</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם באקה אל-גארבייה</StoreName>
+					<Address>אל-קודס פינת ביר-באקה</Address>
+					<City>באקה אל-גארבייה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>219</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם יפו ירושלים</StoreName>
+					<Address>רח&apos; יפו 29</Address>
+					<City>ירושלים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>220</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ארלוזורוב</StoreName>
+					<Address>רח&apos; דיזינגוף 208 פינת ארלוזורוב</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>221</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם שער-הצפון ק.אתא</StoreName>
+					<Address>רח&apos; קרן-היסוד 14</Address>
+					<City>קרית-אתא</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>222</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם טירת-הכרמל</StoreName>
+					<Address>רח&apos; ששת-הימים 1</Address>
+					<City>טירת-הכרמל</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>223</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם רמות רכס</StoreName>
+					<Address>רח&apos; אוסקר שינדלר 21</Address>
+					<City>באר-שבע</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>224</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם רמת-הנשיא חיפה</StoreName>
+					<Address>רח&apos; שונית 12, רמת הנשיא</Address>
+					<City>חיפה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>225</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם כפר-סבא הירוקה</StoreName>
+					<Address>רח&apos; מנחם בגין</Address>
+					<City>כפר-סבא</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>226</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם עמק רפאים</StoreName>
+					<Address>רח&apos; עמק רפאים 24</Address>
+					<City>ירושלים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>227</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם בית-הבד</StoreName>
+					<Address>בית-הבד 2, פינת רמתיים 27</Address>
+					<City>הוד-השרון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>228</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם גן יבנה</StoreName>
+					<Address>המגינים 56</Address>
+					<City>גן יבנה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>229</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ארנה נהריה</StoreName>
+					<Address>שד&apos; בן-צבי 1</Address>
+					<City>נהריה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>230</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ביג-פאשן אשדוד</StoreName>
+					<Address>דרך אריאל שרון 1</Address>
+					<City>אשדוד</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>231</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם צפת</StoreName>
+					<Address>רח&apos; הגדוד השלישי 3</Address>
+					<City>צפת</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>232</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם רמב&quot;ם חיפה</StoreName>
+					<Address>רח&apos; העליה השניה 8</Address>
+					<City>חיפה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>233</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אגמים נתניה</StoreName>
+					<Address>אגם כינרת 6</Address>
+					<City>נתניה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>234</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם שרונה ת&apos;&apos;א</StoreName>
+					<Address>דרך מנחם בגין 121</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>235</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קרית חיים</StoreName>
+					<Address>אח&quot;י אילת 34</Address>
+					<City>קרית-חיים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>236</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אור-עקיבא</StoreName>
+					<Address>רח&apos; הנשיא 157</Address>
+					<City>אור-עקיבא</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>237</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם הקישון יבנה</StoreName>
+					<Address>רח&apos; הקישון, מתחם G</Address>
+					<City>יבנה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>238</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם יבנה הירוקה</StoreName>
+					<Address>רח&apos; הדוגית 16</Address>
+					<City>יבנה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>239</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם צייטלין ת&quot;א</StoreName>
+					<Address>רח&apos; צייטלין 2, פינת אבן גבירול 62</Address>
+					<City>תל אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>240</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אליהו קורן י-ם</StoreName>
+					<Address>רח&apos; אסתר רזיאל 2</Address>
+					<City>ירושלים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>241</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אחימאיר</StoreName>
+					<Address>אבא אחימאיר 28</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>242</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם יפיע</StoreName>
+					<Address>רחוב חיפה-נצרת 999</Address>
+					<City>יפיע</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>243</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם שבזי ראש-העין</StoreName>
+					<Address>רחוב שבזי</Address>
+					<City>ראש-העין</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>244</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם המכללה ראשל&quot;צ</StoreName>
+					<Address>שד&apos; יצחק רבין 7 פינת מוטה גור</Address>
+					<City>ראשון-לציון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>245</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם חוצות אשקלון</StoreName>
+					<Address>שד&apos; דוד בן-גוריון 1</Address>
+					<City>חוצות אשקלון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>246</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קרית-השרון</StoreName>
+					<Address>שד&apos; טום לנטוס 60</Address>
+					<City>נתניה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>247</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם גבעת-שמואל</StoreName>
+					<Address>רח&apos; מנחם בגין 23</Address>
+					<City>גבעת-שמואל</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>248</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון מבשרת</StoreName>
+					<Address>שדרות החוצבים 10</Address>
+					<City>קניון מבשרת</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>249</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון באר-יעקב</StoreName>
+					<Address>רחוב שא-נס 17</Address>
+					<City>באר-יעקב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>250</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון הראל</StoreName>
+					<Address>רחוב הראל 1</Address>
+					<City>מבשרת-ציון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>252</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון TLV</StoreName>
+					<Address>רח&apos; החשמונאים 94</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>253</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם נופי ים תל אביב</StoreName>
+					<Address>רח&apos; איינשטיין 7</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>255</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם מור</StoreName>
+					<Address>רחוב ז&apos;בוטינסקי 7</Address>
+					<City>בני-ברק</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>256</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון ראשונים</StoreName>
+					<Address>שדרות נים 2</Address>
+					<City>ראשון-לציון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>257</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ישפרו פלאנט ב&quot;ש</StoreName>
+					<Address>רח&apos; ברוך קטינקא 2</Address>
+					<City>באר-שבע</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>258</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם רחובות החדשה</StoreName>
+					<Address>שד&apos; פנחס בן-דוד קפרא 1</Address>
+					<City>רחובות</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>260</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קרית-שרת חולון</StoreName>
+					<Address>רח&apos; קרן היסוד 1, קרית-שרת</Address>
+					<City>חולון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>261</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם מגדלי אלון ת&quot;א</StoreName>
+					<Address>רח&apos; יגאל אלון 94</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>263</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם איינשטיין חיפה</StoreName>
+					<Address>רח&apos; איינשטיין 139</Address>
+					<City>חיפה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>264</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אסף הרופא</StoreName>
+					<Address>קניון אסף-סנטר, צריפין</Address>
+					<City>באר-יעקב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>265</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם מול-החוף חדרה</StoreName>
+					<Address>רחוב שכטמן 10</Address>
+					<City>חדרה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>266</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם טיילת אילת</StoreName>
+					<Address>טייילת מלכת שבא דרך פעמי השלום פינת אנטיב</Address>
+					<City>אילת</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>267</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ירכא</StoreName>
+					<Address>ביג פאשן אאוטלט ירכא</Address>
+					<City>כפר ירכא</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>268</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אבן-יהודה</StoreName>
+					<Address>רח&apos; המייסדים 62</Address>
+					<City>אבן-יהודה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>269</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם גלובוס אשקלון</StoreName>
+					<Address>מתחם גלובוס סנטר, צומת מבקיעים</Address>
+					<City>אשקלון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>270</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם דרך בר-לב ת&quot;א</StoreName>
+					<Address>רח&apos; משה דיין 2</Address>
+					<City>תל-אביב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>271</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם נוה-הדרים</StoreName>
+					<Address>רח&apos; ירושלים 31</Address>
+					<City>ראשון-לציון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>272</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון ביאליק ר&quot;ג</StoreName>
+					<Address>רח&apos; ביאליק 76</Address>
+					<City>רמת-גן</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>273</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון עזריאלי רמלה</StoreName>
+					<Address>שד&apos; דוד רזיאל 1</Address>
+					<City>רמלה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>274</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם עטרות</StoreName>
+					<Address>קניון עטרות</Address>
+					<City>ירושלים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>275</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם שכונת הפארק חדרה</StoreName>
+					<Address>רח&apos; גמלא 3</Address>
+					<City>חדרה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>276</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון עזריאלי אור-יהודה</StoreName>
+					<Address>רח&apos; סעדון אליהו 120</Address>
+					<City>אור יהודה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>277</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם שער ראשון</StoreName>
+					<Address>רח&apos; גולדה מאיר 1</Address>
+					<City>ראשון-לציון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>278</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם חריש</StoreName>
+					<Address>דרך ארץ 2</Address>
+					<City>חריש</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>279</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם בורוכוב גבעתיים</StoreName>
+					<Address>רח&apos; בורוכוב 54</Address>
+					<City>גבעתיים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>280</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם הר-יונה</StoreName>
+					<Address>רח&apos; הפריון 2</Address>
+					<City>נצרת-עילית</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>281</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ראש-פינה</StoreName>
+					<Address>רח&apos; האגס פינת התפוח</Address>
+					<City>ראש-פינה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>282</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם גושן קרית-מוצקין</StoreName>
+					<Address>שד&apos; גושן 20</Address>
+					<City>קרית-מוצקין</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>283</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם רכבת עפולה</StoreName>
+					<Address>שד&apos; יצחק רבין 20</Address>
+					<City>עפולה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>284</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון אורות</StoreName>
+					<Address>שד&apos; הנשיא וייצמן 1</Address>
+					<City>אור-עקיבא</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>285</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קניון האחים ישראל</StoreName>
+					<Address>רח&apos; יד-חרוצים 18</Address>
+					<City>ירושלים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>286</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם קינג ג&apos;ורג&apos; ירושלים</StoreName>
+					<Address>רח&apos; קינג ג&apos;ורג&apos; 27</Address>
+					<City>ירושלים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>287</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם דליית אל-כרמל</StoreName>
+					<Address>רח&apos; ראשי 1</Address>
+					<City>דאלית אל-כרמל</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>288</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ערערה בנגב</StoreName>
+					<Address>מרכז מסחרי ערערה</Address>
+					<City>ערערה בנגב</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>289</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם כפר כנא</StoreName>
+					<Address>שכונת פוק אל-עין</Address>
+					<City>כפר כנא</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>290</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם באקה סנטר</StoreName>
+					<Address>רח&apos; ביר באקה</Address>
+					<City>באקה גל-גרביה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>291</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם מול כנרת צמח</StoreName>
+					<Address>מתחם מול כנרת - צמח</Address>
+					<City>צמח</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>292</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם דושי סנטר נצרת</StoreName>
+					<Address>רח&apos; בילאל 45</Address>
+					<City>נצרת</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>293</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם רמבלס סנטר רמלה</StoreName>
+					<Address>רח&apos; דני מס 1, מתחם השדרה</Address>
+					<City>רמלה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>294</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם כפר-קרע</StoreName>
+					<Address>קניון סלאמה סנטר, כפר קרע</Address>
+					<City>כפר-קרע</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>295</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ביג יהוד</StoreName>
+					<Address>רח&apos; אלטלף 4</Address>
+					<City>יהוד</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>296</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ג&apos;דיידה מכר</StoreName>
+					<Address>רחוב 1001</Address>
+					<City>ג&apos;דיידה מכר</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>297</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם דרך מצדה ב&quot;ש</StoreName>
+					<Address>דרך מצדה 4</Address>
+					<City>באר-שבע</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>298</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם שכונת הפארק בת-ים</StoreName>
+					<Address>רח&apos; הקוממיות 16</Address>
+					<City>בת-ים</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>299</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם יוקלר עפולה</StoreName>
+					<Address>חטיבה שבע 2</Address>
+					<City>עפולה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>300</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם צורן</StoreName>
+					<Address>אריות הגולן 55</Address>
+					<City>צורן</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>301</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם פסגת-דן ר&quot;ג</StoreName>
+					<Address>רח&apos; זאב ז&apos;בוטינסקי 105</Address>
+					<City>רמת-גן</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>302</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם דימונה דימרי סנטר</StoreName>
+					<Address>רח&apos; גולדה מאיר 20</Address>
+					<City>דימונה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>304</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם נתיבות מערב</StoreName>
+					<Address>רח&apos; אליהו אילוז 2</Address>
+					<City>נתיבות</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>305</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם ברנע אשקלון</StoreName>
+					<Address>שד&apos; ירושלים 117</Address>
+					<City>אשקלון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>306</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם כפר-יונה</StoreName>
+					<Address>שד&apos; בן-גוריון 1</Address>
+					<City>כפר-יונה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>307</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם נווה-זמר רעננה</StoreName>
+					<Address>רח&apos; סשה ארגוב 23</Address>
+					<City>רעננה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>308</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם הנשיאים הוד-השרון</StoreName>
+					<Address>שד&apos; הנשיאים 1</Address>
+					<City>הוד-השרון</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>309</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם טירה</StoreName>
+					<Address>רח&apos; דרך יפו, מתחם Seven</Address>
+					<City>טירה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>310</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם צים גני-תקוה</StoreName>
+					<Address>דרך ההדרים 7</Address>
+					<City>גני-תקוה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>311</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם הדר-גנים פ&quot;ת</StoreName>
+					<Address>הרב משורר ישעיהו 11</Address>
+					<City>פתח-תקוה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>313</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם דן טאון פ&quot;ת</StoreName>
+					<Address>רח&apos; ז&apos;בוטינסקי 61</Address>
+					<City>פתח-תקוה</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>398</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אופטיק אילת</StoreName>
+					<Address>דרך הערבה</Address>
+					<City>אילת</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>399</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>אאוטלט גן-שמואל</StoreName>
+					<Address>גן-שמואל</Address>
+					<City>אאוטלט גן-שמואל</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>450</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>1</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם דייליס ספיר</StoreName>
+					<Address>רח&apos; תובל 40</Address>
+					<City>רמת-גן</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+				<Line>
+					<StoreId>667</StoreId>
+					<BikoretNo>100</BikoretNo>
+					<StoreType>2</StoreType>
+					<ChainName>סופר פארם ישראל</ChainName>
+					<SubChainName></SubChainName>
+					<StoreName>סופר-פארם אתר סחר</StoreName>
+					<Address>רח&apos; אריה שנקר 16</Address>
+					<City>הרצליה-פיתוח</City>
+					<ZipCode>0</ZipCode>
+					<LastUpdateDate>2022-11-02</LastUpdateDate>
+					<LastUpdateTime>02:00:01</LastUpdateTime>
+				</Line>
+			</Details>
+		</Header>
+	</Envelope>
+</OrderXml>
