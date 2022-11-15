@@ -1,5 +1,6 @@
 rm -rf data_raw
 sh download_all.sh
+rm -rf data_csv
 sh normalize.sh
 sh xml_to_csv.sh
 if [ ! -d "israel-prices-data" ];
