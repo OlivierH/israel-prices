@@ -1,0 +1,18 @@
+[package]
+name = "processed_data_generator"
+version = "0.1.0"
+edition = "2021"
+
+
+[dependencies]
+serde = { version = "1.0.147", features = ["derive"] }
+anyhow = "1.0.66"
+clap = { version = "4.0.22", features = ["derive"] }
+walkdir = "2.3.2"
+csv = "1.1.6"
+models = { path = "../models" }
+
+
+[[bin]]
+name = "processed_data_generator"
+path = "src/processed_data_generator.rs"
