@@ -48,10 +48,10 @@ struct Item {
 
 #[derive(Debug, Default, Serialize)]
 struct Prices {
-    chain_id: String,
-    subchain_id: String,
-    store_id: String,
-    verification_num: String,
+    chain_id: i64,
+    subchain_id: i32,
+    store_id: i32,
+    verification_num: i32,
     items: Vec<Item>,
 }
 
@@ -69,7 +69,7 @@ struct Store {
 #[derive(Debug, Default)]
 struct FullStore {
     store: Store,
-    chain_id: String,
+    chain_id: i64,
     chain_name: String,
     subchain_id: i32,
     subchain_name: String,
@@ -84,21 +84,21 @@ struct Subchain {
 
 #[derive(Debug, Default, Serialize)]
 struct Chain {
-    chain_id: String,
+    chain_id: i64,
     chain_name: String,
     subchains: Vec<Subchain>,
 }
 
 #[derive(Debug, Serialize)]
 struct SubchainRecord {
-    chain_id: String,
+    chain_id: i64,
     chain_name: String,
     subchain_id: i32,
     subchain_name: String,
 }
 
 fn validate_chain(chain: &Chain) {
-    assert!(!chain.chain_id.is_empty());
+    assert!(chain.chain_id > 0);
     assert!(!chain.subchains.is_empty());
     for subchain in &chain.subchains {
         for store in &subchain.stores {
@@ -113,11 +113,7 @@ fn to_full_store(node: &roxmltree::Node, path: &str) -> Result<FullStore> {
     for elem in node.children().filter(Node::is_element) {
         match elem.tag_name().name() {
             "ChainID" => {
-                let mut chain_id = xml::to_string(&elem);
-                if chain_id == "7290058103393" {
-                    // Victory inconsistency
-                    chain_id = "7290696200003".to_string();
-                }
+                let chain_id = xml::to_chain_id(&elem)?;
                 full_store.chain_id = chain_id;
             }
             "SubChainID" | "SUBCHAINID" => full_store.subchain_id = xml::to_i32(&elem)?,
@@ -150,7 +146,8 @@ fn hande_price_file(path: &Path, args: &Args) -> Result<()> {
 
     let mut prices = Prices::default();
 
-    doc.descendants()
+    for elem in doc
+        .descendants()
         .find(|n| {
             n.tag_name().name() == "Prices"
                 || n.tag_name().name().to_lowercase() == "root"
@@ -159,15 +156,17 @@ fn hande_price_file(path: &Path, args: &Args) -> Result<()> {
         .unwrap()
         .children()
         .filter(Node::is_element)
-        .for_each(|elem| match elem.tag_name().name() {
+    {
+        match elem.tag_name().name() {
             "XmlDocVersion" | "DllVerNo" => (),
             "Items" | "Products" | "Header" => (),
-            "ChainId" | "ChainID" => prices.chain_id = xml::to_string(&elem),
-            "SubChainId" | "SubChainID" => prices.subchain_id = xml::to_string(&elem),
-            "StoreId" | "StoreID" => prices.store_id = xml::to_string(&elem),
-            "BikoretNo" => prices.verification_num = xml::to_string(&elem),
+            "ChainId" | "ChainID" => prices.chain_id = xml::to_chain_id(&elem)?,
+            "SubChainId" | "SubChainID" => prices.subchain_id = xml::to_i32(&elem)?,
+            "StoreId" | "StoreID" => prices.store_id = xml::to_i32(&elem)?,
+            "BikoretNo" => prices.verification_num = xml::to_i32(&elem)?,
             unknown => panic!("Unknown field: {unknown}"), // TODO: do not panic in prod
-        });
+        }
+    }
 
     let items = doc
         .descendants()
@@ -246,7 +245,7 @@ fn hande_price_file(path: &Path, args: &Args) -> Result<()> {
 fn get_chain_from_asx_values(node: Node, path: &str) -> Result<Chain> {
     let mut chain = Chain::default();
 
-    chain.chain_id = xml::to_child_content(&node, "CHAINID")?;
+    chain.chain_id = xml::to_child_content(&node, "CHAINID")?.parse()?;
 
     let mut subchains: HashMap<i32, Subchain> = HashMap::new();
 
@@ -280,7 +279,7 @@ fn get_chain_from_asx_values(node: Node, path: &str) -> Result<Chain> {
 
 fn get_chain_from_envelope(node: Node, path: &str) -> Result<Chain> {
     let mut chain = Chain::default();
-    chain.chain_id = xml::to_child_content(&node, "ChainId")?;
+    chain.chain_id = xml::to_child_content(&node, "ChainId")?.parse()?;
 
     let mut subchain = Subchain::default();
     subchain.subchain_id = xml::to_child_content(&node, "SubChainId")?.parse().unwrap();
@@ -316,16 +315,16 @@ fn get_chain_from_stores(node: Node, path: &str) -> Result<Chain> {
 }
 fn get_chain_from_root(root: Node, path: &str) -> Result<Chain> {
     let mut chain = Chain::default();
-    root.children()
-        .filter(Node::is_element)
-        .for_each(|elem| match elem.tag_name().name() {
+    for elem in root.children().filter(Node::is_element) {
+        match elem.tag_name().name() {
             "XmlDocVersion" | "DllVerNo" => (),
             "LastUpdateDate" | "LastUpdateTime" => (),
             "SubChains" => (),
-            "ChainId" => chain.chain_id = xml::to_string(&elem),
+            "ChainId" => chain.chain_id = xml::to_chain_id(&elem)?,
             "ChainName" => chain.chain_name = xml::to_string(&elem),
             unknown => panic!("Unknown field: {unknown} in file {path}"), // TODO: do not panic in prod
-        });
+        }
+    }
 
     for node in root
         .descendants()

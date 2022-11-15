@@ -29,6 +29,18 @@ pub fn to_child_content(node: &roxmltree::Node, tag: &str) -> Result<String> {
     ))
 }
 
+pub fn to_chain_id(node: &roxmltree::Node) -> Result<i64> {
+    let chain_id = node.text().unwrap_or("0").parse::<i64>()?;
+
+    Ok({
+        if chain_id == 7290058103393 {
+            7290696200003
+        } else {
+            chain_id
+        }
+    })
+}
+
 pub fn get_descendant<'node>(
     node: &'node roxmltree::Document,
     tag: &str,
