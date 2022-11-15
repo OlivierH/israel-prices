@@ -366,7 +366,7 @@ struct Args {
     #[arg(short, long)]
     input: String,
 
-    #[arg(short, long, default_value = "")]
+    #[arg(short, long, default_value = "data")]
     output: String,
 
     #[arg(short, long, default_value = "json",
@@ -382,11 +382,8 @@ struct Args {
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 10)]
 async fn main() {
-    let mut args = Args::parse();
+    let args = Args::parse();
 
-    if args.output.is_empty() {
-        args.output = format!("data_{}", args.format);
-    }
     std::fs::create_dir_all(&args.output).unwrap();
     std::fs::create_dir_all(format!("{}/stores", &args.output)).unwrap();
     std::fs::create_dir_all(format!("{}/prices", &args.output)).unwrap();

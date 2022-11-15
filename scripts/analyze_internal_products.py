@@ -3,7 +3,7 @@ import csv
 
 data = set()
 
-for root, dirs, files in os.walk("data_csv/prices"):
+for root, dirs, files in os.walk("data/prices"):
     for name in files:
         filename = os.path.join(root, name)
         # print("> ", filename)

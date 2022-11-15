@@ -6,7 +6,7 @@ use models::Item;
 
 #[derive(Parser, Debug, Clone)]
 struct Args {
-    #[arg(short, long, default_value = "../data_csv")]
+    #[arg(short, long, default_value = "../data")]
     input: String,
 
     #[arg(short, long, default_value = "")]
