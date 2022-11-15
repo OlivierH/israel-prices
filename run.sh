@@ -9,7 +9,7 @@ fi
 cp data_csv/* israel-prices-data -r
 cd israel-prices-data
 git add *
-git tag "`date +%F`"
 git commit -a -m"Data for `date +%F`"
+git tag "`date +%F`"
 git push
 git push origin --tags
