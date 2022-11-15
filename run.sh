@@ -3,6 +3,7 @@ sh download_all.sh
 rm -rf data
 sh normalize.sh
 sh xml_to_csv.sh
+python3 scripts/build_catalog.py
 if [ ! -d "israel-prices-data" ];
 then
     git clone https://github.com/OlivierH/israel-prices-data.git
