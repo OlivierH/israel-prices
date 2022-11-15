@@ -1,5 +1,4 @@
 use roxmltree::{Document, Node};
-use serde::Serialize;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::prelude::*;
@@ -11,91 +10,9 @@ mod xml;
 use anyhow::bail;
 use anyhow::Result;
 use clap::Parser;
+use models::*;
 use tokio;
 use walkdir::WalkDir;
-
-#[derive(Debug, Default, Serialize)]
-struct Item {
-    #[serde(rename(serialize = "code"))]
-    item_code: i64,
-    internal_code: bool,
-    #[serde(rename(serialize = "name"))]
-    item_name: String,
-    manufacturer_name: String,
-    manufacture_country: String,
-    manufacturer_item_description: String,
-    unit_qty: String,
-    quantity: String,
-    unit_of_measure: String,
-    #[serde(rename(serialize = "weighted"))]
-    b_is_weighted: bool,
-    qty_in_package: String,
-    #[serde(rename(serialize = "price"))]
-    item_price: String,
-    unit_of_measure_price: String,
-    allow_discount: bool,
-    #[serde(rename(serialize = "status"))]
-    item_status: i8,
-    item_id: String,
-
-    #[serde(skip_serializing)]
-    price_update_date: String,
-    #[serde(skip_serializing)]
-    last_update_date: String,
-    #[serde(skip_serializing)]
-    last_update_time: String,
-}
-
-#[derive(Debug, Default, Serialize)]
-struct Prices {
-    chain_id: i64,
-    subchain_id: i32,
-    store_id: i32,
-    verification_num: i32,
-    items: Vec<Item>,
-}
-
-#[derive(Debug, Default, Serialize)]
-struct Store {
-    store_id: i32,
-    verification_num: i32,
-    store_type: String,
-    store_name: String,
-    address: String,
-    city: String,
-    zip_code: String,
-}
-
-#[derive(Debug, Default)]
-struct FullStore {
-    store: Store,
-    chain_id: i64,
-    chain_name: String,
-    subchain_id: i32,
-    subchain_name: String,
-}
-
-#[derive(Debug, Default, Serialize)]
-struct Subchain {
-    subchain_id: i32,
-    subchain_name: String,
-    stores: Vec<Store>,
-}
-
-#[derive(Debug, Default, Serialize)]
-struct Chain {
-    chain_id: i64,
-    chain_name: String,
-    subchains: Vec<Subchain>,
-}
-
-#[derive(Debug, Serialize)]
-struct SubchainRecord {
-    chain_id: i64,
-    chain_name: String,
-    subchain_id: i32,
-    subchain_name: String,
-}
 
 fn validate_chain(chain: &Chain) {
     assert!(chain.chain_id > 0);
