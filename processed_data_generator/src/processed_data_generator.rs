@@ -70,15 +70,16 @@ fn read_all_price_data(input: &str) -> Result<HashMap<ItemKey, Vec<ItemPrice>>> 
     Ok(data)
 }
 
-fn write_all_price_data(data: &HashMap<ItemKey, Vec<ItemPrice>>, output: &str) -> Result<()> {
+fn write_all_price_data(data: HashMap<ItemKey, Vec<ItemPrice>>, output: &str) -> Result<()> {
     let dir = std::path::Path::new(output).join("prices_per_product");
     std::fs::create_dir_all(&dir)?;
-    for (key, prices) in data {
+    for (key, mut prices) in data.into_iter() {
         let mut filename = key.item_code.to_string();
         if let Some(chain_id) = key.chain_id {
             filename += &format!("_{}", chain_id);
         }
         filename += ".csv";
+        prices.sort_by_key(|k| (k.chain_id, k.store_id));
         let mut writer = csv::Writer::from_path(dir.join(filename))?;
         for price in prices {
             writer.serialize(&price)?;
@@ -97,7 +98,7 @@ fn run() -> Result<()> {
 
     let data = read_all_price_data(&args.input)?;
 
-    write_all_price_data(&data, &args.output)?;
+    write_all_price_data(data, &args.output)?;
     Ok(())
 }
 fn main() {
