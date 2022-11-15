@@ -1,11 +1,12 @@
+use serde::Deserialize;
 use serde::Serialize;
 
-#[derive(Debug, Default, Serialize)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 pub struct Item {
-    #[serde(rename(serialize = "code"))]
+    #[serde(rename = "code")]
     pub item_code: i64,
     pub internal_code: bool,
-    #[serde(rename(serialize = "name"))]
+    #[serde(rename = "name")]
     pub item_name: String,
     pub manufacturer_name: String,
     pub manufacture_country: String,
@@ -13,22 +14,22 @@ pub struct Item {
     pub unit_qty: String,
     pub quantity: String,
     pub unit_of_measure: String,
-    #[serde(rename(serialize = "weighted"))]
+    #[serde(rename = "weighted")]
     pub b_is_weighted: bool,
     pub qty_in_package: String,
-    #[serde(rename(serialize = "price"))]
+    #[serde(rename = "price")]
     pub item_price: String,
     pub unit_of_measure_price: String,
     pub allow_discount: bool,
-    #[serde(rename(serialize = "status"))]
+    #[serde(rename = "status")]
     pub item_status: i8,
     pub item_id: String,
 
-    #[serde(skip_serializing)]
+    #[serde(skip_serializing, skip_deserializing)]
     pub price_update_date: String,
-    #[serde(skip_serializing)]
+    #[serde(skip_serializing, skip_deserializing)]
     pub last_update_date: String,
-    #[serde(skip_serializing)]
+    #[serde(skip_serializing, skip_deserializing)]
     pub last_update_time: String,
 }
 
