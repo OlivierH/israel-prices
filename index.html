@@ -1,9 +1,98 @@
 <!DOCTYPE html>
+<html>
 
-<head>
+<head dir="rtl">
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+        integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 
+    <!-- Used for CSV parsing-->
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <link rel="stylesheet" href="https://raw.githack.com/waldyrious/downstyler/master/downstyler.css" />
+
+    <style>
+        #chains {
+            direction: rtl;
+        }
+
+        h1 {
+            text-align: center;
+        }
+    </style>
+
+
+    <script>
+        $(document).ready(() => {
+            console.log("ready");
+
+            const data_url = 'https://olivierh.github.io/israel-prices-data/'
+
+            const catalog_url = data_url + "catalog.json"
+            const chains_url = data_url + "chains.csv"
+
+
+            $.get(chains_url)
+                .then((chains) => {
+
+                    const chains_raw = d3.csvParse(chains);
+                    const chains_map = new Map();
+                    for (const row of chains_raw) {
+                        if (chains_map.has(row.chain_id)) {
+                            chains_map.get(row.chain_id).subchains.push({ "name": row.subchain_name, "id": row.subchain_id });
+                        }
+                        else {
+                            chains_map.set(row.chain_id, { "name": row.chain_name, "subchains": [{ "name": row.subchain_name, "id": row.subchain_id }] });
+                        }
+
+                    }
+                    let div = $('<ul>');
+                    for (const chain_id of chains_map.keys()) {
+                        const chain_value = chains_map.get(chain_id);
+                        let p = $('<li>')
+                        const chain_text = chain_value.name + " - (" + chain_id + ")";
+
+                        if (chain_value.subchains.length > 1) {
+                            p.text(chain_text)
+                            let sublist = $('<ul>')
+                            for (const subchain of chain_value.subchains) {
+                                sublist.append($('<li>').append($('<a>')
+                                    .attr("href", "stores.html?chain_id=" + chain_id
+                                        + "&chain_name=" + chain_value.name
+                                        + "&subchain_id=" + subchain.id
+                                        + "&subchain_name=" + subchain.name).text(subchain.name + " - (" + subchain.id + ")")));
+                            }
+                            p.append(sublist);
+                        } else {
+                            $('<a>').attr("href", "AAA").text(chain_text).appendTo(p);
+
+                        }
+                        div.append(p);
+                    }
+                    $("#chains").append(div);
+                    $("#chains").show();
+
+                    console.log(chains);
+                }, (err) => {
+                    console.log("error " + err);
+
+
+                });
+
+
+
+        })
+
+    </script>
 </head>
 
 <body>
     <h1>Israel Prices</h1>
+
+    <div id="chains" style="display: none;">
+    </div>
+    <div id="stores" style="display: none;">
+    </div>
 </body>
+
+</html>
