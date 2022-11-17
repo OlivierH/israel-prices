@@ -25,6 +25,14 @@
         h3 {
             text-align: center;
         }
+
+        tr {
+            cursor: pointer;
+        }
+
+        tr:hover {
+            background-color: lightgray;
+        }
     </style>
 
     <script>
@@ -44,11 +52,19 @@
             });
             let table = $("<table>");
             for (const store of stores) {
-                let row = $("<tr>");
+
+                const prices_url = "prices.html?chain_id=" + chain_id
+                    + "&chain_name=" + chain_name
+                    + "&subchain_id=" + subchain_id
+                    + "&subchain_name=" + subchain_name
+                    + "&store_id=" + store.store_id
+                    + "&store_name=" + store.store_name;
+
+
+                let row = $("<tr>").attr("onclick", "window.location='" + prices_url + "'");
 
                 row.append($("<td>").text(store.store_name));
                 row.append($("<td>").text(store.city));
-
                 table.append(row);
 
             }
