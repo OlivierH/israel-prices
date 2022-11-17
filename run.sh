@@ -3,6 +3,7 @@ sh download_all.sh
 rm -rf data
 sh normalize.sh
 sh xml_to_csv.sh
+sh generate_processed_data.sh
 python3 scripts/build_catalog.py
 if [ ! -d "israel-prices-data" ];
 then
