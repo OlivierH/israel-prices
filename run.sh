@@ -1,5 +1,6 @@
 rm -rf data_raw
 sh download_all.sh
+sh curate_data_raw.sh
 rm -rf data
 sh normalize.sh
 sh xml_to_csv.sh
