@@ -3,7 +3,7 @@ use anyhow::Result;
 
 pub fn to_string(n: &roxmltree::Node) -> String {
     let mut s = match n.text().unwrap_or("") {
-        "לא ידוע" | "כללי" | "unknown" | "," => "".to_string(),
+        "לא ידוע" | "כללי" | "unknown" | "---" | "," => "".to_string(),
         s => s.trim().to_string(),
     };
     s = s.replace('\u{00A0}', " "); // remove non-breaking spaces
