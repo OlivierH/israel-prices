@@ -1,6 +1,7 @@
 mod file_info;
 mod parallel_download;
 mod store;
+use chrono::Datelike;
 use file_info::*;
 use futures::StreamExt; // 0.3.5
 use parallel_download::Download;
@@ -8,7 +9,7 @@ use reqwest::header;
 use reqwest::{Client, Response}; // 0.10.6
 use scraper::{ElementRef, Html, Selector};
 use serde_json::Value;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::env;
 use store::*;
 use tokio;
@@ -290,22 +291,86 @@ async fn get_downloads_netiv_hahesed(
     store: &Store,
     file_limit: Option<usize>,
 ) -> Result<Vec<Download>, Box<dyn std::error::Error>> {
-    let html = get_text("http://141.226.222.202/").await?;
-    let selector = Selector::parse("#download_content a").unwrap();
-    let document = Html::parse_document(&html);
-
-    let downloads: Vec<Download> = FileInfo::from_str_iter(
+    fn get_links(document: &Html) -> Vec<String> {
+        let selector = Selector::parse("#download_content a").unwrap();
         document
             .select(&selector)
-            .map(|a| a.value().attr("href").unwrap().to_string()),
-        file_limit,
-    )
-    .map(|fi| Download {
-        dest: format!("data_raw/{}/{}", store.name, fi.filename),
-        path: format!("http://141.226.222.202/prices/{}", fi.filename),
-        headers: None,
-    })
-    .collect();
+            .map(|a| a.value().attr("href").unwrap().to_string())
+            .collect()
+    }
+    let html = get_text("http://141.226.222.202/").await?;
+    let document = Html::parse_document(&html);
+    let mut all_links = get_links(&document);
+
+    // Netiv Hahesed has a per-day filter, which is initialised to the current day.
+    // In various occasions (holidays, too early in the day), the page will be empty of incomplete.
+    // To ensure that we get corret data, we fetch the pages of the last 7 days.
+    {
+        let date_selector = Selector::parse("#MainContent_MainContent_txtDate").unwrap();
+        let date = document
+            .select(&date_selector)
+            .next()
+            .ok_or("Cannot find date")?
+            .value()
+            .attr("value")
+            .ok_or("Cannot find date")?
+            .split("/")
+            .collect::<Vec<&str>>();
+        let date =
+            chrono::NaiveDate::from_ymd_opt(date[2].parse()?, date[1].parse()?, date[0].parse()?)
+                .unwrap();
+
+        fn get_value<'a>(
+            document: &'a Html,
+            selector: &str,
+        ) -> Result<&'a str, Box<dyn std::error::Error>> {
+            let selector = Selector::parse(&selector).unwrap();
+            document
+                .select(&selector)
+                .next()
+                .ok_or("cannot find view state")?
+                .value()
+                .attr("value")
+                .ok_or("Cannot find view state".into())
+        }
+
+        let view_state = get_value(&document, "#__VIEWSTATE")?;
+        let view_state_generator = get_value(&document, "#__VIEWSTATEGENERATOR")?;
+        let event_validation = get_value(&document, "#__EVENTVALIDATION")?;
+
+        for i in 1..=7 {
+            let date = date.checked_sub_days(chrono::Days::new(i)).unwrap();
+
+            let date = format!("{}/{}/{}", date.day(), date.month(), date.year());
+            let client = Client::builder()
+                .redirect(reqwest::redirect::Policy::none())
+                .build()
+                .unwrap();
+            let mut params = HashMap::new();
+            params.insert("__VIEWSTATE", view_state);
+            params.insert("__VIEWSTATEGENERATOR", view_state_generator);
+            params.insert("__EVENTVALIDATION", event_validation);
+            params.insert("ctl00$MainContent$MainContent_txtDate", &date);
+
+            let html = client
+                .post("http://141.226.222.202/")
+                .form(&params)
+                .send()
+                .await?
+                .text()
+                .await?;
+            let document = Html::parse_document(&html);
+            all_links.extend(get_links(&document));
+        }
+    }
+
+    let downloads: Vec<Download> = FileInfo::from_str_iter(all_links.into_iter(), file_limit)
+        .map(|fi| Download {
+            dest: format!("data_raw/{}/{}", store.name, fi.filename),
+            path: format!("http://141.226.222.202/prices/{}", fi.filename),
+            headers: None,
+        })
+        .collect();
 
     Ok(downloads)
 }
