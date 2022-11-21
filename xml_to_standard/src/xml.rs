@@ -1,10 +1,21 @@
 use anyhow::anyhow;
 use anyhow::Result;
 
+pub fn trim_whitespace(s: &str) -> String {
+    let mut new_str = s.trim().to_owned();
+    let mut prev = ' '; // The initial value doesn't really matter
+    new_str.retain(|ch| {
+        let result = ch != ' ' || prev != ' ';
+        prev = ch;
+        result
+    });
+    new_str
+}
+
 pub fn to_string(n: &roxmltree::Node) -> String {
     let mut s = match n.text().unwrap_or("") {
         "לא ידוע" | "כללי" | "unknown" | "---" | "," => "".to_string(),
-        s => s.trim().to_string(),
+        s => trim_whitespace(s),
     };
     s = s.replace('\u{00A0}', " "); // remove non-breaking spaces
     s
