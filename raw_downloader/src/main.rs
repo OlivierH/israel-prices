@@ -1,6 +1,8 @@
 mod file_info;
 mod parallel_download;
 mod store;
+use anyhow::anyhow;
+use anyhow::Result;
 use chrono::Datelike;
 use file_info::*;
 use futures::StreamExt; // 0.3.5
@@ -14,7 +16,7 @@ use std::env;
 use store::*;
 use tokio;
 
-async fn get_text(url: &str) -> Result<String, String> {
+async fn get_text(url: &str) -> Result<String> {
     let client = Client::builder()
         .timeout(std::time::Duration::from_secs(10))
         .build()
@@ -28,10 +30,10 @@ async fn get_text(url: &str) -> Result<String, String> {
             };
         };
     }
-    Err(format!("Could not download {url} after retries"))
+    Err(anyhow!("Could not download {url} after retries"))
 }
 
-fn extract_csrf(html: String) -> Result<String, String> {
+fn extract_csrf(html: String) -> Result<String> {
     let document = Html::parse_document(&html);
     let selector = Selector::parse("meta[name=\"csrftoken\"]").unwrap();
     let input = document.select(&selector).next().unwrap();
@@ -39,14 +41,14 @@ fn extract_csrf(html: String) -> Result<String, String> {
         .value()
         .attr("content")
         .map(str::to_string)
-        .ok_or("Cannot extract csrf token".to_string())
+        .ok_or(anyhow!("Cannot extract csrf token"))
 }
 
-fn get_cookie_from_resp(resp: &Response) -> Result<String, Box<dyn std::error::Error>> {
+fn get_cookie_from_resp(resp: &Response) -> Result<String> {
     let cookie = resp
         .headers()
         .get(header::SET_COOKIE)
-        .ok_or("Cannot get cookie")?;
+        .ok_or(anyhow!("Cannot get cookie"))?;
     Ok(cookie.to_str()?.split(";").next().unwrap_or("").to_string())
 }
 
@@ -64,7 +66,7 @@ async fn get_downloads_publishedprice(
     username: &str,
     password: &str,
     file_limit: Option<usize>,
-) -> Result<Vec<Download>, Box<dyn std::error::Error>> {
+) -> Result<Vec<Download>> {
     let client = Client::builder().cookie_store(true).build()?;
 
     // Main Page
@@ -98,7 +100,7 @@ async fn get_downloads_publishedprice(
     let downloads: Vec<Download> = FileInfo::from_str_iter(
         json_root["aaData"]
             .as_array()
-            .ok_or("Empty json array")?
+            .ok_or(anyhow!("Empty json array"))?
             .into_iter()
             .map(|elem| elem["fname"].to_string().replace("\"", "")),
         file_limit,
@@ -121,7 +123,7 @@ async fn get_downloads_simple_json_to_get(
     file_limit: Option<usize>,
     initial_url: &str,
     download_prefix: &str,
-) -> Result<Vec<Download>, Box<dyn std::error::Error>> {
+) -> Result<Vec<Download>> {
     let text = get_text(initial_url).await?;
 
     let json_root = serde_json::from_str::<Value>(&text)?;
@@ -129,7 +131,7 @@ async fn get_downloads_simple_json_to_get(
     let downloads: Vec<Download> = FileInfo::from_str_iter(
         json_root
             .as_array()
-            .ok_or("Empty json array")?
+            .ok_or(anyhow!("Empty json array"))?
             .into_iter()
             .map(|v| {
                 v.as_object()
@@ -154,7 +156,7 @@ async fn get_downloads_simple_json_to_get(
 async fn get_downloads_superpharm(
     store: &Store,
     file_limit: Option<usize>,
-) -> Result<Vec<Download>, Box<dyn std::error::Error>> {
+) -> Result<Vec<Download>> {
     // The flow is complex here.
     // First, we get the total number of pages.
     // Then, we fetch all the pages; and for each page,
@@ -169,12 +171,12 @@ async fn get_downloads_superpharm(
     let num_pages = Html::parse_document(&html)
         .select(&selector)
         .find(|&elem| elem.text().next() == Some(">>"))
-        .ok_or("Cannot find link to SuperPharm last page")?
+        .ok_or(anyhow!("Cannot find link to SuperPharm last page"))?
         .value()
         .attr("href")
-        .ok_or("Cannot find href for SuperPharm last page")?
+        .ok_or(anyhow!("Cannot find href for SuperPharm last page"))?
         .rsplit_once("=")
-        .ok_or("No equal sign in SuperPharm link")?
+        .ok_or(anyhow!("No equal sign in SuperPharm link"))?
         .1
         .parse::<usize>()?;
 
@@ -290,7 +292,7 @@ async fn get_downloads_superpharm(
 async fn get_downloads_netiv_hahesed(
     store: &Store,
     file_limit: Option<usize>,
-) -> Result<Vec<Download>, Box<dyn std::error::Error>> {
+) -> Result<Vec<Download>> {
     fn get_links(document: &Html) -> Vec<String> {
         let selector = Selector::parse("#download_content a").unwrap();
         document
@@ -310,28 +312,25 @@ async fn get_downloads_netiv_hahesed(
         let date = document
             .select(&date_selector)
             .next()
-            .ok_or("Cannot find date")?
+            .ok_or(anyhow!("Cannot find date"))?
             .value()
             .attr("value")
-            .ok_or("Cannot find date")?
+            .ok_or(anyhow!("Cannot find date"))?
             .split("/")
             .collect::<Vec<&str>>();
         let date =
             chrono::NaiveDate::from_ymd_opt(date[2].parse()?, date[1].parse()?, date[0].parse()?)
                 .unwrap();
 
-        fn get_value<'a>(
-            document: &'a Html,
-            selector: &str,
-        ) -> Result<&'a str, Box<dyn std::error::Error>> {
+        fn get_value<'a>(document: &'a Html, selector: &str) -> Result<&'a str> {
             let selector = Selector::parse(&selector).unwrap();
             document
                 .select(&selector)
                 .next()
-                .ok_or("cannot find view state")?
+                .ok_or(anyhow!("cannot find view state"))?
                 .value()
                 .attr("value")
-                .ok_or("Cannot find view state".into())
+                .ok_or(anyhow!("Cannot find view state"))
         }
 
         let view_state = get_value(&document, "#__VIEWSTATE")?;
@@ -379,7 +378,7 @@ async fn get_downloads_publish_price(
     store: &Store,
     file_limit: Option<usize>,
     url: &str,
-) -> Result<Vec<Download>, Box<dyn std::error::Error>> {
+) -> Result<Vec<Download>> {
     // e.g. http://publishprice.mega.co.il/20221031/
     let data_url = {
         println!("Downloading {url} ...");
@@ -425,7 +424,7 @@ async fn get_downloads_matrix_catalog(
     store: &Store,
     file_limit: Option<usize>,
     chain: &str,
-) -> Result<Vec<Download>, Box<dyn std::error::Error>> {
+) -> Result<Vec<Download>> {
     let html = get_text("http://matrixcatalog.co.il/NBCompetitionRegulations.aspx").await?;
     let selector = Selector::parse("#download_content tr").unwrap();
     let document = Html::parse_document(&html);
@@ -479,18 +478,18 @@ async fn get_downloads_matrix_catalog(
 async fn get_downloads_shufersal(
     store: &Store,
     file_limit: Option<usize>,
-) -> Result<Vec<Download>, Box<dyn std::error::Error>> {
+) -> Result<Vec<Download>> {
     let html = get_text("http://prices.shufersal.co.il/FileObject/UpdateCategory?page=1").await?;
     let selector = Selector::parse("tfoot a").unwrap();
     let num_pages = Html::parse_document(&html)
         .select(&selector)
         .find(|&elem| elem.text().next() == Some(">>"))
-        .ok_or("Cannot find link to Shufersal last page")?
+        .ok_or(anyhow!("Cannot find link to Shufersal last page"))?
         .value()
         .attr("href")
-        .ok_or("Cannot find href for Shufersal last page")?
+        .ok_or(anyhow!("Cannot find href for Shufersal last page"))?
         .rsplit_once("=")
-        .ok_or("No equal sign in Shufersal link")?
+        .ok_or(anyhow!("No equal sign in Shufersal link"))?
         .1
         .parse::<usize>()?;
 
@@ -537,44 +536,57 @@ async fn get_downloads_shufersal(
     Ok(downloads)
 }
 
+async fn download_store_data(store: Store, quick: bool, file_limit: Option<usize>) -> Result<()> {
+    println!("Now handling Store: {}", store.name);
+    let downloads = match store.website {
+        Website::PublishedPrice(username) => {
+            get_downloads_publishedprice(&store, username, "", file_limit).await?
+        }
+        Website::PublishedPriceWithPassword(username, password) => {
+            get_downloads_publishedprice(&store, username, password, file_limit).await?
+        }
+        Website::Shufersal => get_downloads_shufersal(&store, file_limit).await?,
+        Website::SimpleJsonToGet(initial_url, download_prefix) => {
+            get_downloads_simple_json_to_get(&store, file_limit, initial_url, download_prefix)
+                .await?
+        }
+        Website::MatrixCatalog(chain) => {
+            get_downloads_matrix_catalog(&store, file_limit, chain).await?
+        }
+        Website::PublishPrice(url) => get_downloads_publish_price(&store, file_limit, url).await?,
+        Website::NetivHahesed => get_downloads_netiv_hahesed(&store, file_limit).await?,
+        Website::SuperPharm => get_downloads_superpharm(&store, file_limit).await?,
+    };
+    println!("Found a total of {} elements.", downloads.len());
+    if quick {
+        return Ok(());
+    }
+    parallel_download::parallel_download(downloads).await;
+    Ok(())
+}
+
 async fn download_all_stores_data(
     stores: &Vec<Store>,
     quick: bool,
     file_limit: Option<usize>,
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> Result<()> {
+    // let tasks: Vec<_> = stores
+    //     .iter()
+    //     .map(|store| {
+    //         tokio::spawn({
+    //             let store = store.clone();
+    //             let file_limit = file_limit.clone();
+    //             async move { download_store_data(store, quick, file_limit) }
+    //         })
+    //     })
+    //     .collect();
     for store in stores {
-        println!("Now handling Store: {}", store.name);
-        let downloads = match store.website {
-            Website::PublishedPrice(username) => {
-                get_downloads_publishedprice(store, username, "", file_limit).await?
-            }
-            Website::PublishedPriceWithPassword(username, password) => {
-                get_downloads_publishedprice(store, username, password, file_limit).await?
-            }
-            Website::Shufersal => get_downloads_shufersal(store, file_limit).await?,
-            Website::SimpleJsonToGet(initial_url, download_prefix) => {
-                get_downloads_simple_json_to_get(store, file_limit, initial_url, download_prefix)
-                    .await?
-            }
-            Website::MatrixCatalog(chain) => {
-                get_downloads_matrix_catalog(store, file_limit, chain).await?
-            }
-            Website::PublishPrice(url) => {
-                get_downloads_publish_price(store, file_limit, url).await?
-            }
-            Website::NetivHahesed => get_downloads_netiv_hahesed(store, file_limit).await?,
-            Website::SuperPharm => get_downloads_superpharm(store, file_limit).await?,
-        };
-        println!("Found a total of {} elements.", downloads.len());
-        if quick {
-            continue;
-        }
-        parallel_download::parallel_download(downloads).await;
+        download_store_data(store.clone(), quick, file_limit).await?;
     }
     Ok(())
 }
 
-#[tokio::main]
+#[tokio::main(flavor = "multi_thread", worker_threads = 10)]
 async fn main() {
     let args: Vec<String> = env::args().collect();
     let quick = args.contains(&String::from("q"));
