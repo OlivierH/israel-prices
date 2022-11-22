@@ -11,6 +11,9 @@ clap = { version = "4.0.22", features = ["derive"] }
 walkdir = "2.3.2"
 csv = "1.1.6"
 models = { path = "../models" }
+slog = "2.7.0"
+slog-term = "2.9.0"
+slog-async = "2.7.0"
 
 
 [[bin]]

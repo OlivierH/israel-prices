@@ -1,8 +1,17 @@
-use std::collections::{HashMap, HashSet};
+use std::{
+    collections::{HashMap, HashSet},
+    hash::Hash,
+    path::PathBuf,
+};
 
+use anyhow::anyhow;
 use anyhow::{Ok, Result};
 use clap::Parser;
 use models::Item;
+use slog::{self, debug, info, o, trace, Logger};
+use slog::{log, Drain};
+use slog_async;
+use slog_term;
 
 #[derive(Parser, Debug, Clone)]
 struct Args {
@@ -29,33 +38,49 @@ struct ItemPrice {
     price: String,
 }
 
+fn prices_paths(input: &str) -> Vec<PathBuf> {
+    walkdir::WalkDir::new(std::path::Path::new(input).join("prices"))
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .map(|dir| dir.into_path())
+        .filter(|path| path.is_file())
+        .filter(|path| !path.ends_with("csv_new"))
+        .collect::<Vec<PathBuf>>()
+}
+fn extract_chain_id_and_store_id(path: &PathBuf) -> Result<(i64, i32)> {
+    let (chain_id, store_id) = path
+        .file_name()
+        .ok_or(anyhow!("Could not extract filename"))?
+        .to_str()
+        .ok_or(anyhow!("Could not convert filename to str"))?
+        .split_once(".")
+        .ok_or(anyhow!("No dot in filename"))?
+        .0
+        .split_once("_")
+        .ok_or(anyhow!("No _ in filename"))?;
+    let chain_id = chain_id.parse::<i64>()?;
+    let store_id = store_id.parse::<i32>()?;
+    Ok((chain_id, store_id))
+}
+
 fn read_all_price_data(
     input: &str,
+    debug: bool,
 ) -> Result<(
     HashMap<ItemKey, Vec<ItemPrice>>,
     HashMap<ItemKey, HashSet<String>>,
 )> {
     let mut prices: HashMap<ItemKey, Vec<ItemPrice>> = HashMap::new();
     let mut names: HashMap<ItemKey, HashSet<String>> = HashMap::new();
-    let paths = walkdir::WalkDir::new(std::path::Path::new(input).join("prices"))
-        .into_iter()
-        .filter_map(|e| e.ok())
-        .map(|dir| dir.into_path())
-        .filter(|path| path.is_file());
+    let paths = prices_paths(input);
+
+    let paths = match debug {
+        true => &paths[0..20],
+        false => &paths[..],
+    };
 
     for path in paths {
-        let (chain_id, store_id) = path
-            .file_name()
-            .unwrap()
-            .to_str()
-            .unwrap()
-            .split_once(".")
-            .unwrap()
-            .0
-            .split_once("_")
-            .unwrap();
-        let chain_id = chain_id.parse::<i64>().unwrap();
-        let store_id = store_id.parse::<i32>().unwrap();
+        let (chain_id, store_id) = extract_chain_id_and_store_id(&path)?;
         let mut reader = csv::Reader::from_path(&path)?;
         for item in reader.deserialize::<Item>() {
             let item = item?;
@@ -104,6 +129,16 @@ fn write_all_price_data(prices: HashMap<ItemKey, Vec<ItemPrice>>, output: &str) 
     Ok(())
 }
 
+fn get_canonical_names(names: &HashMap<ItemKey, HashSet<String>>) -> HashMap<ItemKey, &String> {
+    let mut output = HashMap::new();
+    for (key, names) in names.iter() {
+        let name = names.iter().max_by_key(|s| s.len()).unwrap();
+        output.insert(key.clone(), name);
+    }
+
+    output
+}
+
 fn write_all_product_data(names: HashMap<ItemKey, HashSet<String>>, output: &str) -> Result<()> {
     println!(
         "Starting to write product data, got {} elements",
@@ -121,6 +156,46 @@ fn write_all_product_data(names: HashMap<ItemKey, HashSet<String>>, output: &str
     Ok(())
 }
 
+fn update_store_data_in_place(
+    dir: &str,
+    names: &HashMap<ItemKey, &String>,
+    log: &Logger,
+) -> Result<()> {
+    let log = log.new(o!("op" => "update_store_data_in_place"));
+    let paths = prices_paths(&dir);
+    for path in paths {
+        let new_path = path
+            .as_os_str()
+            .to_str()
+            .ok_or(anyhow!("Path is not unicode"))?
+            .to_owned()
+            + "_new";
+        trace!(log, "{}", path.as_os_str().to_str().unwrap());
+        {
+            let (chain_id, _) = extract_chain_id_and_store_id(&path)?;
+            let mut reader = csv::Reader::from_path(&path)?;
+            let mut writer = csv::Writer::from_path(&new_path)?;
+            for item in reader.deserialize::<Item>() {
+                let mut item = item?;
+
+                let item_key = ItemKey {
+                    chain_id: match item.internal_code {
+                        true => Some(chain_id),
+                        false => None,
+                    },
+                    item_code: item.item_code,
+                };
+                names
+                    .get(&item_key)
+                    .map(|name| item.item_name = name.to_string());
+                writer.serialize(item)?;
+            }
+        }
+        std::fs::rename(new_path, path)?;
+    }
+    Ok(())
+}
+
 fn run() -> Result<()> {
     let mut args = Args::parse();
 
@@ -128,14 +203,24 @@ fn run() -> Result<()> {
         args.output = args.input.clone();
     }
 
-    let (prices, names) = read_all_price_data(&args.input)?;
+    let decorator = slog_term::TermDecorator::new().build();
+    let drain = slog_term::FullFormat::new(decorator).build().fuse();
+    let drain = slog_async::Async::new(drain).build().fuse();
+
+    let log = slog::Logger::root(drain, o!());
+
+    info!(log, "Initialization complete.");
+    let (prices, all_names) = read_all_price_data(&args.input, args.debug)?;
+    info!(log, "All data read.");
+
+    let names = get_canonical_names(&all_names);
+    info!(log, "Canonical names obtained.");
 
     if args.debug {
-        write_all_product_data(names, &args.output)?;
+        update_store_data_in_place(&args.input, &names, &log)?;
         return Ok(());
     }
-    write_all_price_data(prices, &args.output)?;
-    // write_all_product_data(names, &args.output)?;
+    info!(log, "Complete.");
     Ok(())
 }
 fn main() {
