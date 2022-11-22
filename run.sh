@@ -8,7 +8,7 @@ sh generate_processed_data.sh
 python3 scripts/build_catalog.py
 if [ ! -d "israel-prices-data" ];
 then
-    git clone https://github.com/OlivierH/israel-prices-data.git
+    git clone git@github.com:OlivierH/israel-prices-data.gitt
 fi
 cp data/* israel-prices-data -r
 cd israel-prices-data
