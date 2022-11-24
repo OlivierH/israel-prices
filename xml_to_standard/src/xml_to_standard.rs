@@ -377,9 +377,6 @@ struct Args {
     format: String,
 
     #[arg(short, long)]
-    parallel: bool,
-
-    #[arg(short, long)]
     stores_only: bool,
 }
 
@@ -410,30 +407,23 @@ async fn main() {
     let subchains: Arc<Mutex<Vec<SubchainRecord>>> = Arc::new(Mutex::new(Vec::new()));
 
     info!(log, "Starting processing");
-    if args.parallel {
-        let tasks: Vec<_> = paths
-            .map(|path| {
-                tokio::spawn({
-                    let args = args.clone();
-                    let subchains = subchains.clone();
-                    async move { handle_file(&path, &args, &subchains) }
-                })
+    let tasks: Vec<_> = paths
+        .map(|path| {
+            tokio::spawn({
+                let args = args.clone();
+                let subchains = subchains.clone();
+                async move { handle_file(&path, &args, &subchains) }
             })
-            .collect();
-        for task in tasks {
-            match task.await {
-                Ok(Ok(())) => (),
-                Ok(Err(err)) => error!(log, "Error: {err}"),
-                Err(err) => error!(log, "Error: {err}"),
-            };
-        }
-    } else {
-        for path in paths {
-            if let Err(err) = handle_file(&path, &args, &subchains) {
-                error!(log, "Error: {err}");
-            }
-        }
-    };
+        })
+        .collect();
+    for task in tasks {
+        match task.await {
+            Ok(Ok(())) => (),
+            Ok(Err(err)) => error!(log, "Error: {err}"),
+            Err(err) => error!(log, "Error: {err}"),
+        };
+    }
+
     let mut subchains = Arc::try_unwrap(subchains).unwrap().into_inner().unwrap();
     match write_subchains(&mut subchains, args) {
         Ok(()) => (),
