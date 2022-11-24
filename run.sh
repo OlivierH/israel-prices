@@ -1,3 +1,4 @@
+git pull
 rm -rf data_raw
 sh download_all.sh
 sh curate_data_raw.sh
