@@ -14,7 +14,7 @@ use models::*;
 use tokio;
 use walkdir::WalkDir;
 
-use slog::{self, error, info, o, trace, Drain, Logger};
+use slog::{self, debug, error, info, o, Drain, Logger};
 use slog_async;
 use slog_term;
 fn validate_chain(chain: &Chain) {
@@ -348,9 +348,11 @@ fn handle_file(
     path: &Path,
     args: &Args,
     subchains: &Arc<Mutex<Vec<SubchainRecord>>>,
+    log: Logger,
 ) -> Result<()> {
-    println!("Handling file {}", path.display());
-    let filename = path.file_name().unwrap().to_str().unwrap();
+    let filename = path.file_name().unwrap().to_str().unwrap().to_string();
+    let log = log.new(o!("file" => filename.clone()));
+    debug!(log, "Start");
     if filename.starts_with("Price") || filename.starts_with("price") {
         if !args.stores_only {
             hande_price_file(path, &args)?;
@@ -411,11 +413,17 @@ async fn main() {
         .map(|path| {
             tokio::spawn({
                 let args = args.clone();
+                let log = log.clone();
                 let subchains = subchains.clone();
-                async move { handle_file(&path, &args, &subchains) }
+                async move { handle_file(&path, &args, &subchains, log) }
             })
         })
         .collect();
+    info!(
+        log,
+        "All tasks are spawned. Total tasks spawned: {}.",
+        tasks.len()
+    );
     for task in tasks {
         match task.await {
             Ok(Ok(())) => (),
@@ -423,12 +431,15 @@ async fn main() {
             Err(err) => error!(log, "Error: {err}"),
         };
     }
+    info!(log, "Processing complete.");
 
+    info!(log, "Writing chains.");
     let mut subchains = Arc::try_unwrap(subchains).unwrap().into_inner().unwrap();
     match write_subchains(&mut subchains, args) {
         Ok(()) => (),
-        Err(err) => println!("Error writing chains : {err}"),
+        Err(err) => error!(log, "Error writing chains : {err}"),
     }
+    info!(log, "Writing chains complete.");
 }
 
 fn write_subchains(subchains: &mut Vec<SubchainRecord>, args: Args) -> Result<()> {
