@@ -568,7 +568,7 @@ async fn download_store_data(
         }
         Website::PublishPrice(url) => get_downloads_publish_price(&store, file_limit, url).await?,
         Website::NetivHahesed => get_downloads_netiv_hahesed(&store, file_limit).await?,
-        Website::SuperPharm => get_downloads_superpharm(&store, file_limit).await?,
+        Website::SuperPharm => get_downloads_superpharm(&store, file_limit, &log).await?,
     };
     info!(log, "Found a total of {} elements", downloads.len());
     if quick {
