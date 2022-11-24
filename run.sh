@@ -1,6 +1,6 @@
 git pull
 rm -rf data_raw
-sh download_all.sh
+./download_all.sh --release
 sh curate_data_raw.sh
 rm -rf data
 sh normalize.sh

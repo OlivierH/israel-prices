@@ -11,6 +11,10 @@ use reqwest::header;
 use reqwest::{Client, Response}; // 0.10.6
 use scraper::{ElementRef, Html, Selector};
 use serde_json::Value;
+use slog::debug;
+use slog::{self, error, info, o, Drain, Logger};
+use slog_async;
+use slog_term;
 use std::collections::{HashMap, HashSet};
 use std::env;
 use store::*;
@@ -156,6 +160,7 @@ async fn get_downloads_simple_json_to_get(
 async fn get_downloads_superpharm(
     store: &Store,
     file_limit: Option<usize>,
+    log: &Logger,
 ) -> Result<Vec<Download>> {
     // The flow is complex here.
     // First, we get the total number of pages.
@@ -188,7 +193,7 @@ async fn get_downloads_superpharm(
                     let cookie = get_cookie_from_resp(&resp).unwrap();
                     match &resp.text().await {
                         Ok(html) => {
-                            println!("Success reading {path}");
+                            debug!(log, "Success reading {path}");
                             let selector = Selector::parse(".file_list tr").unwrap();
                             Ok(Html::parse_document(&html)
                                 .select(&selector)
@@ -231,7 +236,7 @@ async fn get_downloads_superpharm(
             Ok(links) => {
                 all_links.extend(links);
             }
-            Err(e) => println!("Error: {e}"),
+            Err(e) => error!(log, "Error: {e}"),
         }
     }
     let file_infos = FileInfo::keep_most_recents(
@@ -478,6 +483,7 @@ async fn get_downloads_matrix_catalog(
 async fn get_downloads_shufersal(
     store: &Store,
     file_limit: Option<usize>,
+    log: &Logger,
 ) -> Result<Vec<Download>> {
     let html = get_text("http://prices.shufersal.co.il/FileObject/UpdateCategory?page=1").await?;
     let selector = Selector::parse("tfoot a").unwrap();
@@ -500,7 +506,7 @@ async fn get_downloads_shufersal(
             match reqwest::get(&path).await {
                 Ok(resp) => match resp.text().await {
                     Ok(html) => {
-                        println!("Success reading {path}");
+                        debug!(log, "Success reading {path}");
                         let selector = Selector::parse("tbody a").unwrap();
                         Ok(Html::parse_document(&html)
                             .select(&selector)
@@ -522,7 +528,7 @@ async fn get_downloads_shufersal(
             Ok(links) => {
                 all_links.extend(links);
             }
-            Err(e) => println!("Error: {e}"),
+            Err(e) => error!(log, "Error: {e}"),
         }
     }
 
@@ -536,8 +542,15 @@ async fn get_downloads_shufersal(
     Ok(downloads)
 }
 
-async fn download_store_data(store: Store, quick: bool, file_limit: Option<usize>) -> Result<()> {
-    println!("Now handling Store: {}", store.name);
+async fn download_store_data(
+    store: Store,
+    quick: bool,
+    file_limit: Option<usize>,
+    log: &Logger,
+) -> Result<()> {
+    let log = log.new(o!("store" => store.name));
+
+    info!(log, "Start handling store");
     let downloads = match store.website {
         Website::PublishedPrice(username) => {
             get_downloads_publishedprice(&store, username, "", file_limit).await?
@@ -545,7 +558,7 @@ async fn download_store_data(store: Store, quick: bool, file_limit: Option<usize
         Website::PublishedPriceWithPassword(username, password) => {
             get_downloads_publishedprice(&store, username, password, file_limit).await?
         }
-        Website::Shufersal => get_downloads_shufersal(&store, file_limit).await?,
+        Website::Shufersal => get_downloads_shufersal(&store, file_limit, &log).await?,
         Website::SimpleJsonToGet(initial_url, download_prefix) => {
             get_downloads_simple_json_to_get(&store, file_limit, initial_url, download_prefix)
                 .await?
@@ -557,11 +570,11 @@ async fn download_store_data(store: Store, quick: bool, file_limit: Option<usize
         Website::NetivHahesed => get_downloads_netiv_hahesed(&store, file_limit).await?,
         Website::SuperPharm => get_downloads_superpharm(&store, file_limit).await?,
     };
-    println!("Found a total of {} elements.", downloads.len());
+    info!(log, "Found a total of {} elements", downloads.len());
     if quick {
         return Ok(());
     }
-    parallel_download::parallel_download(downloads).await;
+    parallel_download::parallel_download(downloads, &log).await;
     Ok(())
 }
 
@@ -569,25 +582,22 @@ async fn download_all_stores_data(
     stores: &Vec<Store>,
     quick: bool,
     file_limit: Option<usize>,
+    log: &Logger,
 ) -> Result<()> {
-    // let tasks: Vec<_> = stores
-    //     .iter()
-    //     .map(|store| {
-    //         tokio::spawn({
-    //             let store = store.clone();
-    //             let file_limit = file_limit.clone();
-    //             async move { download_store_data(store, quick, file_limit) }
-    //         })
-    //     })
-    //     .collect();
     for store in stores {
-        download_store_data(store.clone(), quick, file_limit).await?;
+        download_store_data(store.clone(), quick, file_limit, &log).await?;
     }
     Ok(())
 }
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 10)]
 async fn main() {
+    let decorator = slog_term::TermDecorator::new().build();
+    let drain = slog_term::FullFormat::new(decorator).build().fuse();
+    let drain = slog_async::Async::new(drain).build().fuse();
+    let log = slog::Logger::root(drain, o!("P" => "raw_downloader"));
+    info!(log, "Start");
+
     let args: Vec<String> = env::args().collect();
     let quick = args.contains(&String::from("q"));
     let minimal = args.contains(&String::from("m"));
@@ -607,8 +617,8 @@ async fn main() {
         true => get_debug_store_configs(),
     };
 
-    match download_all_stores_data(&stores, quick, file_limit).await {
-        Ok(()) => println!("Success!"),
-        Err(e) => println!("Failure: {e}"),
+    match download_all_stores_data(&stores, quick, file_limit, &log).await {
+        Ok(()) => info!(log, "Success!"),
+        Err(e) => error!(log, "Failure: {e}"),
     };
 }

@@ -1,6 +1,7 @@
 use bytes::Bytes;
 use futures::StreamExt;
 use reqwest::{header::HeaderMap, Client};
+use slog::{debug, info, Logger};
 use std::fs::File;
 use std::io::Cursor;
 pub struct Download {
@@ -18,47 +19,51 @@ fn write_file(content: &Bytes, dest: &str) -> std::io::Result<()> {
     std::io::copy(&mut content, &mut file)?;
     Ok(())
 }
-pub async fn parallel_download(downloads: Vec<Download>) {
+pub async fn parallel_download(downloads: Vec<Download>, log: &Logger) {
+    info!(log, "Starting parallel download");
     futures::stream::iter(downloads)
-        .map(|download| async move {
-            let mut should_retry = true;
+        .map(|download| {
+            let log = log.clone();
+            async move {
+                let mut should_retry = true;
 
-            while should_retry {
-                let path = &download.path;
-                let client = Client::builder()
-                    .timeout(std::time::Duration::from_secs(10))
-                    .build()
-                    .unwrap();
-                let mut client = client.get(path);
-                if let Some(headers) = &download.headers {
-                    client = client.headers(headers.clone())
-                }
-                let dest = &download.dest;
+                while should_retry {
+                    let path = &download.path;
+                    let client = Client::builder()
+                        .timeout(std::time::Duration::from_secs(10))
+                        .build()
+                        .unwrap();
+                    let mut client = client.get(path);
+                    if let Some(headers) = &download.headers {
+                        client = client.headers(headers.clone())
+                    }
+                    let dest = &download.dest;
 
-                should_retry = match client.send().await {
-                    Ok(resp) => match resp.bytes().await {
-                        Ok(content) => match write_file(&content, dest) {
-                            Ok(()) => {
-                                println!("Success in writing {dest}");
-                                false
-                            }
+                    should_retry = match client.send().await {
+                        Ok(resp) => match resp.bytes().await {
+                            Ok(content) => match write_file(&content, dest) {
+                                Ok(()) => {
+                                    debug!(log, "Success in writing {dest}");
+                                    false
+                                }
+                                Err(e) => {
+                                    debug!(log, "Error in writing {dest}: {e}");
+                                    false
+                                }
+                            },
                             Err(e) => {
-                                println!("Error in writing {dest}: {e}");
+                                debug!(log, "ERROR reading {path}: {e}");
                                 false
                             }
                         },
                         Err(e) => {
-                            println!("ERROR reading {path}: {e}");
-                            false
+                            debug!(log, "ERROR downloading {path}: {e}");
+                            true
                         }
-                    },
-                    Err(e) => {
-                        println!("ERROR downloading {path}: {e}");
-                        true
+                    };
+                    if should_retry {
+                        debug!(log, "Retrying {path}");
                     }
-                };
-                if should_retry {
-                    println!("Retrying {path}")
                 }
             }
         })
