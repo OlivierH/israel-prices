@@ -8,8 +8,7 @@ use anyhow::anyhow;
 use anyhow::{Ok, Result};
 use clap::Parser;
 use models::Item;
-use slog::{self, debug, info, o, trace, Logger};
-use slog::{log, Drain};
+use slog::{self, info, o, trace, Drain, Logger};
 use slog_async;
 use slog_term;
 
@@ -25,7 +24,7 @@ struct Args {
     debug: bool,
 }
 
-#[derive(Default, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
+#[derive(Default, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
 struct ItemKey {
     chain_id: Option<i64>,
     item_code: i64,
@@ -68,10 +67,12 @@ fn read_all_price_data(
     debug: bool,
 ) -> Result<(
     HashMap<ItemKey, Vec<ItemPrice>>,
-    HashMap<ItemKey, HashSet<String>>,
+    HashMap<ItemKey, HashSet<String>>, // names
+    HashMap<ItemKey, HashSet<String>>, // manufacturer names
 )> {
     let mut prices: HashMap<ItemKey, Vec<ItemPrice>> = HashMap::new();
     let mut names: HashMap<ItemKey, HashSet<String>> = HashMap::new();
+    let mut manufacturer_names: HashMap<ItemKey, HashSet<String>> = HashMap::new();
     let paths = prices_paths(input);
 
     let paths = match debug {
@@ -92,9 +93,8 @@ fn read_all_price_data(
                 },
                 item_code: item.item_code,
             };
-
             prices
-                .entry(item_key.clone())
+                .entry(item_key)
                 .or_insert_with(|| Vec::new())
                 .push(ItemPrice {
                     chain_id: chain_id,
@@ -105,9 +105,13 @@ fn read_all_price_data(
                 .entry(item_key)
                 .or_insert_with(|| HashSet::new())
                 .insert(item.item_name);
+            manufacturer_names
+                .entry(item_key)
+                .or_insert_with(|| HashSet::new())
+                .insert(item.manufacturer_name);
         }
     }
-    Ok((prices, names))
+    Ok((prices, names, manufacturer_names))
 }
 
 fn write_all_price_data(prices: HashMap<ItemKey, Vec<ItemPrice>>, output: &str) -> Result<()> {
@@ -130,10 +134,10 @@ fn write_all_price_data(prices: HashMap<ItemKey, Vec<ItemPrice>>, output: &str) 
 }
 
 fn get_canonical_names(names: &HashMap<ItemKey, HashSet<String>>) -> HashMap<ItemKey, &String> {
-    let mut output = HashMap::new();
+    let mut output: HashMap<ItemKey, &String> = HashMap::new();
     for (key, names) in names.iter() {
         let name = names.iter().max_by_key(|s| s.len()).unwrap();
-        output.insert(key.clone(), name);
+        output.insert(*key, name);
     }
 
     output
@@ -144,7 +148,7 @@ fn write_all_product_data(names: HashMap<ItemKey, HashSet<String>>, output: &str
         "Starting to write product data, got {} elements",
         names.len()
     );
-    for (key, names) in names.into_iter() {
+    for (_key, names) in names.into_iter() {
         if names.len() > 5 {
             println!("-----");
             for name in names {
@@ -159,6 +163,7 @@ fn write_all_product_data(names: HashMap<ItemKey, HashSet<String>>, output: &str
 fn update_store_data_in_place(
     dir: &str,
     names: &HashMap<ItemKey, &String>,
+    manufacturer_names: &HashMap<ItemKey, &String>,
     log: &Logger,
 ) -> Result<()> {
     let log = log.new(o!("op" => "update_store_data_in_place"));
@@ -170,7 +175,7 @@ fn update_store_data_in_place(
             .ok_or(anyhow!("Path is not unicode"))?
             .to_owned()
             + "_new";
-        trace!(log, "{}", path.as_os_str().to_str().unwrap());
+        trace!(log, "Handling {}", path.as_os_str().to_str().unwrap());
         {
             let (chain_id, _) = extract_chain_id_and_store_id(&path)?;
             let mut reader = csv::Reader::from_path(&path)?;
@@ -188,6 +193,9 @@ fn update_store_data_in_place(
                 names
                     .get(&item_key)
                     .map(|name| item.item_name = name.to_string());
+                manufacturer_names
+                    .get(&item_key)
+                    .map(|name| item.manufacturer_name = name.to_string());
                 writer.serialize(item)?;
             }
         }
@@ -210,16 +218,21 @@ fn run() -> Result<()> {
     let log = slog::Logger::root(drain, o!());
 
     info!(log, "Initialization complete.");
-    let (prices, all_names) = read_all_price_data(&args.input, args.debug)?;
+    let (prices, all_names, all_manufacturer_names) = read_all_price_data(&args.input, args.debug)?;
     info!(log, "All data read.");
 
     let names = get_canonical_names(&all_names);
     info!(log, "Canonical names obtained.");
 
-    if args.debug {
-        update_store_data_in_place(&args.input, &names, &log)?;
-        return Ok(());
-    }
+    let manufacturer_names = get_canonical_names(&all_manufacturer_names);
+    info!(log, "Canonical manufacturer names obtained.");
+
+    update_store_data_in_place(&args.input, &names, &manufacturer_names, &log)?;
+    info!(log, "Store data updated in place.");
+
+    write_all_price_data(prices, &args.output)?;
+    info!(log, "Wrote all prices data.");
+
     info!(log, "Complete.");
     Ok(())
 }
