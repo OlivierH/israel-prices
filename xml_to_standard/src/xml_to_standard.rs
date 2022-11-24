@@ -14,6 +14,9 @@ use models::*;
 use tokio;
 use walkdir::WalkDir;
 
+use slog::{self, error, info, o, trace, Drain, Logger};
+use slog_async;
+use slog_term;
 fn validate_chain(chain: &Chain) {
     assert!(chain.chain_id > 0);
     assert!(!chain.subchains.is_empty());
@@ -382,11 +385,21 @@ struct Args {
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 10)]
 async fn main() {
+    let decorator = slog_term::TermDecorator::new().build();
+    let drain = slog_term::FullFormat::new(decorator).build().fuse();
+    let drain = slog_async::Async::new(drain).build().fuse();
+
+    let log = slog::Logger::root(drain, o!("P" => "xml_to_standard"));
+
+    info!(log, "Start");
+
     let args = Args::parse();
 
+    info!(log, "Begin creating directories");
     std::fs::create_dir_all(&args.output).unwrap();
     std::fs::create_dir_all(format!("{}/stores", &args.output)).unwrap();
     std::fs::create_dir_all(format!("{}/prices", &args.output)).unwrap();
+    info!(log, "Finished creating directories");
 
     let paths = WalkDir::new(&args.input)
         .into_iter()
@@ -396,6 +409,7 @@ async fn main() {
 
     let subchains: Arc<Mutex<Vec<SubchainRecord>>> = Arc::new(Mutex::new(Vec::new()));
 
+    info!(log, "Starting processing");
     if args.parallel {
         let tasks: Vec<_> = paths
             .map(|path| {
@@ -409,14 +423,14 @@ async fn main() {
         for task in tasks {
             match task.await {
                 Ok(Ok(())) => (),
-                Ok(Err(err)) => println!("Error: {err}"),
-                Err(err) => println!("Error: {err}"),
+                Ok(Err(err)) => error!(log, "Error: {err}"),
+                Err(err) => error!(log, "Error: {err}"),
             };
         }
     } else {
         for path in paths {
             if let Err(err) = handle_file(&path, &args, &subchains) {
-                println!("Error: {err}");
+                error!(log, "Error: {err}");
             }
         }
     };
