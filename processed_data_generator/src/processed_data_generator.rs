@@ -8,7 +8,7 @@ use anyhow::anyhow;
 use anyhow::{Ok, Result};
 use clap::Parser;
 use models::Item;
-use slog::{self, info, o, trace, Drain, Logger};
+use slog::{self, debug, info, o, Drain, Logger};
 use slog_async;
 use slog_term;
 
@@ -62,17 +62,8 @@ fn extract_chain_id_and_store_id(path: &PathBuf) -> Result<(i64, i32)> {
     Ok((chain_id, store_id))
 }
 
-fn read_all_price_data(
-    input: &str,
-    debug: bool,
-) -> Result<(
-    HashMap<ItemKey, Vec<ItemPrice>>,
-    HashMap<ItemKey, HashSet<String>>, // names
-    HashMap<ItemKey, HashSet<String>>, // manufacturer names
-)> {
-    let mut prices: HashMap<ItemKey, Vec<ItemPrice>> = HashMap::new();
-    let mut names: HashMap<ItemKey, HashSet<String>> = HashMap::new();
-    let mut manufacturer_names: HashMap<ItemKey, HashSet<String>> = HashMap::new();
+fn read_all_price_data(input: &str, debug: bool) -> Result<HashMap<ItemKey, AggregatedData>> {
+    let mut all_aggregated_data: HashMap<ItemKey, AggregatedData> = HashMap::new();
     let paths = prices_paths(input);
 
     let paths = match debug {
@@ -93,39 +84,36 @@ fn read_all_price_data(
                 },
                 item_code: item.item_code,
             };
-            prices
+            let aggregated_data = all_aggregated_data
                 .entry(item_key)
-                .or_insert_with(|| Vec::new())
-                .push(ItemPrice {
-                    chain_id: chain_id,
-                    store_id: store_id,
-                    price: item.item_price,
-                });
-            names
-                .entry(item_key)
-                .or_insert_with(|| HashSet::new())
-                .insert(item.item_name);
-            manufacturer_names
-                .entry(item_key)
-                .or_insert_with(|| HashSet::new())
+                .or_insert_with(|| AggregatedData::default());
+
+            aggregated_data.prices.push(ItemPrice {
+                chain_id: chain_id,
+                store_id: store_id,
+                price: item.item_price,
+            });
+            aggregated_data.names.insert(item.item_name);
+            aggregated_data
+                .manufacturer_names
                 .insert(item.manufacturer_name);
         }
     }
-    Ok((prices, names, manufacturer_names))
+    Ok(all_aggregated_data)
 }
 
-fn write_all_price_data(prices: HashMap<ItemKey, Vec<ItemPrice>>, output: &str) -> Result<()> {
+fn write_all_price_data(all_data: HashMap<ItemKey, AggregatedData>, output: &str) -> Result<()> {
     let dir = std::path::Path::new(output).join("prices_per_product");
     std::fs::create_dir_all(&dir)?;
-    for (key, mut prices) in prices.into_iter() {
+    for (key, mut data) in all_data.into_iter() {
         let mut filename = key.item_code.to_string();
         if let Some(chain_id) = key.chain_id {
             filename += &format!("_{}", chain_id);
         }
         filename += ".csv";
-        prices.sort_by_key(|k| (k.chain_id, k.store_id));
+        data.prices.sort_by_key(|k| (k.chain_id, k.store_id));
         let mut writer = csv::Writer::from_path(dir.join(filename))?;
-        for price in prices {
+        for price in data.prices {
             writer.serialize(&price)?;
         }
     }
@@ -133,37 +121,38 @@ fn write_all_price_data(prices: HashMap<ItemKey, Vec<ItemPrice>>, output: &str) 
     Ok(())
 }
 
-fn get_canonical_names(names: &HashMap<ItemKey, HashSet<String>>) -> HashMap<ItemKey, &String> {
-    let mut output: HashMap<ItemKey, &String> = HashMap::new();
-    for (key, names) in names.iter() {
-        let name = names.iter().max_by_key(|s| s.len()).unwrap();
-        output.insert(*key, name);
+struct ItemFieldsRef<'a> {
+    item_name: &'a str,
+    manufacturer_name: &'a str,
+}
+
+fn get_canonical_data(
+    aggregated_data: &HashMap<ItemKey, AggregatedData>,
+) -> HashMap<ItemKey, ItemFieldsRef> {
+    let mut output: HashMap<ItemKey, ItemFieldsRef> = HashMap::new();
+    fn longest(strings: &HashSet<String>) -> &String {
+        strings
+            .iter()
+            .max_by(|x, y| (x.len(), x).cmp(&(y.len(), y)))
+            .unwrap()
+    }
+
+    for (key, data) in aggregated_data.iter() {
+        output.insert(
+            *key,
+            ItemFieldsRef {
+                item_name: longest(&data.names),
+                manufacturer_name: longest(&data.manufacturer_names),
+            },
+        );
     }
 
     output
 }
 
-fn write_all_product_data(names: HashMap<ItemKey, HashSet<String>>, output: &str) -> Result<()> {
-    println!(
-        "Starting to write product data, got {} elements",
-        names.len()
-    );
-    for (_key, names) in names.into_iter() {
-        if names.len() > 5 {
-            println!("-----");
-            for name in names {
-                println!("  {name}");
-            }
-        }
-    }
-
-    Ok(())
-}
-
 fn update_store_data_in_place(
     dir: &str,
-    names: &HashMap<ItemKey, &String>,
-    manufacturer_names: &HashMap<ItemKey, &String>,
+    canonical_data: &HashMap<ItemKey, ItemFieldsRef>,
     log: &Logger,
 ) -> Result<()> {
     let log = log.new(o!("op" => "update_store_data_in_place"));
@@ -175,7 +164,7 @@ fn update_store_data_in_place(
             .ok_or(anyhow!("Path is not unicode"))?
             .to_owned()
             + "_new";
-        trace!(log, "Handling {}", path.as_os_str().to_str().unwrap());
+        debug!(log, "Handling {}", path.as_os_str().to_str().unwrap());
         {
             let (chain_id, _) = extract_chain_id_and_store_id(&path)?;
             let mut reader = csv::Reader::from_path(&path)?;
@@ -190,12 +179,9 @@ fn update_store_data_in_place(
                     },
                     item_code: item.item_code,
                 };
-                names
-                    .get(&item_key)
-                    .map(|name| item.item_name = name.to_string());
-                manufacturer_names
-                    .get(&item_key)
-                    .map(|name| item.manufacturer_name = name.to_string());
+                let item_fields = canonical_data.get(&item_key).unwrap();
+                item.item_name = item_fields.item_name.to_string();
+                item.manufacturer_name = item_fields.manufacturer_name.to_string();
                 writer.serialize(item)?;
             }
         }
@@ -204,6 +190,12 @@ fn update_store_data_in_place(
     Ok(())
 }
 
+#[derive(Default)]
+struct AggregatedData {
+    prices: Vec<ItemPrice>,
+    names: HashSet<String>,
+    manufacturer_names: HashSet<String>,
+}
 fn run() -> Result<()> {
     let mut args = Args::parse();
 
@@ -218,19 +210,16 @@ fn run() -> Result<()> {
     let log = slog::Logger::root(drain, o!());
 
     info!(log, "Initialization complete.");
-    let (prices, all_names, all_manufacturer_names) = read_all_price_data(&args.input, args.debug)?;
+    let all_aggregated_data = read_all_price_data(&args.input, args.debug)?;
     info!(log, "All data read.");
 
-    let names = get_canonical_names(&all_names);
-    info!(log, "Canonical names obtained.");
+    let all_canonical_data = get_canonical_data(&all_aggregated_data);
+    info!(log, "Canonical data obtained.");
 
-    let manufacturer_names = get_canonical_names(&all_manufacturer_names);
-    info!(log, "Canonical manufacturer names obtained.");
-
-    update_store_data_in_place(&args.input, &names, &manufacturer_names, &log)?;
+    update_store_data_in_place(&args.input, &all_canonical_data, &log)?;
     info!(log, "Store data updated in place.");
 
-    write_all_price_data(prices, &args.output)?;
+    write_all_price_data(all_aggregated_data, &args.output)?;
     info!(log, "Wrote all prices data.");
 
     info!(log, "Complete.");

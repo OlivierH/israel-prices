@@ -5,7 +5,7 @@ sh curate_data_raw.sh
 rm -rf data
 sh normalize.sh
 ./xml_to_csv.sh --release
-sh generate_processed_data.sh
+./generate_processed_data.sh --release
 python3 scripts/build_catalog.py
 if [ ! -d "israel-prices-data" ];
 then
