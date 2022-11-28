@@ -8,6 +8,7 @@ use anyhow::anyhow;
 use anyhow::{Ok, Result};
 use clap::Parser;
 use models::Item;
+use serde::Serialize;
 use slog::{self, debug, info, o, Drain, Logger};
 use slog_async;
 use slog_term;
@@ -128,30 +129,53 @@ fn write_all_price_data(all_data: HashMap<ItemKey, AggregatedData>, output: &str
     Ok(())
 }
 
-struct ItemFieldsRef<'a> {
-    item_name: &'a str,
-    manufacturer_name: &'a str,
-    manufacture_country: &'a str,
+fn write_all_product_data(all_data: &HashMap<ItemKey, Product>, output: &str) -> Result<()> {
+    let dir = std::path::Path::new(output).join("products");
+    std::fs::create_dir_all(&dir)?;
+    println!("{}", all_data.len());
+
+    for (key, data) in all_data.iter() {
+        let mut filename = key.item_code.to_string();
+        if let Some(chain_id) = key.chain_id {
+            filename += &format!("_{}", chain_id);
+        }
+        serde_json::to_writer(&std::fs::File::create(dir.join(filename + ".json"))?, &data)?;
+    }
+
+    Ok(())
+}
+
+#[derive(Serialize)]
+struct Product {
+    item_name: String,
+    manufacturer_name: String,
+    manufacture_country: String,
 }
 
 fn get_canonical_data(
     aggregated_data: &HashMap<ItemKey, AggregatedData>,
-) -> HashMap<ItemKey, ItemFieldsRef> {
-    let mut output: HashMap<ItemKey, ItemFieldsRef> = HashMap::new();
-    fn longest(strings: &HashSet<String>) -> &String {
+) -> HashMap<ItemKey, Product> {
+    let mut output: HashMap<ItemKey, Product> = HashMap::new();
+    fn longest(strings: &HashSet<String>) -> String {
         strings
             .iter()
             .max_by(|x, y| (x.len(), x).cmp(&(y.len(), y)))
-            .unwrap()
+            .unwrap_or(&"".to_string())
+            .to_string()
     }
 
     for (key, data) in aggregated_data.iter() {
         output.insert(
             *key,
-            ItemFieldsRef {
+            Product {
                 item_name: longest(&data.names),
                 manufacturer_name: longest(&data.manufacturer_names),
-                manufacture_country: data.country.most_common().get(0).map_or("", |v| &v.0),
+                manufacture_country: data
+                    .country
+                    .most_common()
+                    .get(0)
+                    .map_or("", |v| &v.0)
+                    .to_string(),
             },
         );
     }
@@ -161,7 +185,7 @@ fn get_canonical_data(
 
 fn update_store_data_in_place(
     dir: &str,
-    canonical_data: &HashMap<ItemKey, ItemFieldsRef>,
+    canonical_data: &HashMap<ItemKey, Product>,
     log: &Logger,
 ) -> Result<()> {
     let log = log.new(o!("op" => "update_store_data_in_place"));
@@ -229,6 +253,9 @@ fn run() -> Result<()> {
 
     update_store_data_in_place(&args.input, &all_canonical_data, &log)?;
     info!(log, "Store data updated in place.");
+
+    write_all_product_data(&all_canonical_data, &args.output)?;
+    info!(log, "Wrote all product data.");
 
     write_all_price_data(all_aggregated_data, &args.output)?;
     info!(log, "Wrote all prices data.");
