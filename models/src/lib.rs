@@ -1,10 +1,15 @@
 use serde::Deserialize;
 use serde::Serialize;
 
+pub type Barcode = i64;
+pub type ChainId = i64;
+pub type SubchainId = i32;
+pub type StoreId = i32;
+
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct Item {
     #[serde(rename = "code")]
-    pub item_code: i64,
+    pub item_code: Barcode,
     pub internal_code: bool,
     #[serde(rename = "name")]
     pub item_name: String,
@@ -35,16 +40,16 @@ pub struct Item {
 
 #[derive(Debug, Default, Serialize)]
 pub struct Prices {
-    pub chain_id: i64,
-    pub subchain_id: i32,
-    pub store_id: i32,
+    pub chain_id: ChainId,
+    pub subchain_id: SubchainId,
+    pub store_id: StoreId,
     pub verification_num: i32,
     pub items: Vec<Item>,
 }
 
 #[derive(Debug, Default, Serialize)]
 pub struct Store {
-    pub store_id: i32,
+    pub store_id: StoreId,
     pub verification_num: i32,
     pub store_type: String,
     pub store_name: String,
@@ -56,30 +61,30 @@ pub struct Store {
 #[derive(Debug, Default)]
 pub struct FullStore {
     pub store: Store,
-    pub chain_id: i64,
+    pub chain_id: ChainId,
     pub chain_name: String,
-    pub subchain_id: i32,
+    pub subchain_id: SubchainId,
     pub subchain_name: String,
 }
 
 #[derive(Debug, Default, Serialize)]
 pub struct Subchain {
-    pub subchain_id: i32,
+    pub subchain_id: SubchainId,
     pub subchain_name: String,
     pub stores: Vec<Store>,
 }
 
 #[derive(Debug, Default, Serialize)]
 pub struct Chain {
-    pub chain_id: i64,
+    pub chain_id: ChainId,
     pub chain_name: String,
     pub subchains: Vec<Subchain>,
 }
 
 #[derive(Debug, Serialize)]
 pub struct SubchainRecord {
-    pub chain_id: i64,
+    pub chain_id: ChainId,
     pub chain_name: String,
-    pub subchain_id: i32,
+    pub subchain_id: SubchainId,
     pub subchain_name: String,
 }
