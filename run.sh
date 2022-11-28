@@ -16,5 +16,6 @@ cd israel-prices-data
 git add *
 git commit -a -m"Data for `date +%F`"
 git tag "`date +%F`"
-git push
+echo "Pushing to git"
+git push --quiet
 git push origin --tags
