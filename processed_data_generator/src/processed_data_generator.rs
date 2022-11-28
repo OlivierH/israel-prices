@@ -93,10 +93,17 @@ fn read_all_price_data(input: &str, debug: bool) -> Result<HashMap<ItemKey, Aggr
                 store_id: store_id,
                 price: item.item_price,
             });
-            aggregated_data.names.insert(item.item_name);
-            aggregated_data
-                .manufacturer_names
-                .insert(item.manufacturer_name);
+            if !item.item_name.is_empty() {
+                aggregated_data.names.insert(item.item_name);
+            }
+            if !item.manufacturer_name.is_empty() {
+                aggregated_data
+                    .manufacturer_names
+                    .insert(item.manufacturer_name);
+            }
+            if !item.manufacture_country.is_empty() {
+                aggregated_data.country[&item.manufacture_country] += 1;
+            }
         }
     }
     Ok(all_aggregated_data)
@@ -124,6 +131,7 @@ fn write_all_price_data(all_data: HashMap<ItemKey, AggregatedData>, output: &str
 struct ItemFieldsRef<'a> {
     item_name: &'a str,
     manufacturer_name: &'a str,
+    manufacture_country: &'a str,
 }
 
 fn get_canonical_data(
@@ -143,6 +151,7 @@ fn get_canonical_data(
             ItemFieldsRef {
                 item_name: longest(&data.names),
                 manufacturer_name: longest(&data.manufacturer_names),
+                manufacture_country: data.country.most_common().get(0).map_or("", |v| &v.0),
             },
         );
     }
@@ -182,6 +191,7 @@ fn update_store_data_in_place(
                 let item_fields = canonical_data.get(&item_key).unwrap();
                 item.item_name = item_fields.item_name.to_string();
                 item.manufacturer_name = item_fields.manufacturer_name.to_string();
+                item.manufacture_country = item_fields.manufacture_country.to_string();
                 writer.serialize(item)?;
             }
         }
@@ -195,6 +205,7 @@ struct AggregatedData {
     prices: Vec<ItemPrice>,
     names: HashSet<String>,
     manufacturer_names: HashSet<String>,
+    country: counter::Counter<String>,
 }
 fn run() -> Result<()> {
     let mut args = Args::parse();
