@@ -14,7 +14,7 @@ fi
 cp data/* israel-prices-data -r
 cd israel-prices-data
 git add *
-git commit -a -m"Data for `date +%F`"
+git commit -a -m"Data for `date +%F`" --quiet
 git tag "`date +%F`"
 echo "Pushing to git"
 git push --quiet
