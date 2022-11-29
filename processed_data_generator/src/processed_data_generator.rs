@@ -135,12 +135,28 @@ fn write_all_product_data(all_data: &HashMap<ItemKey, Product>, output: &str) ->
     std::fs::create_dir_all(&dir)?;
     println!("{}", all_data.len());
 
+    let mut all_products_writer =
+        csv::Writer::from_path(std::path::Path::new(output).join("products.csv"))?;
+
+    all_products_writer.write_record(&[
+        "item_code",
+        "name",
+        "manufacturer_name",
+        "manufacturer_country",
+    ])?;
+
     for (key, data) in all_data.iter() {
-        let mut filename = key.item_code.to_string();
+        let mut code = key.item_code.to_string();
         if let Some(chain_id) = key.chain_id {
-            filename += &format!("_{}", chain_id);
+            code += &format!("_{}", chain_id);
         }
-        serde_json::to_writer(&std::fs::File::create(dir.join(filename + ".json"))?, &data)?;
+        all_products_writer.write_record(&[
+            &code,
+            &data.item_name,
+            &data.manufacturer_name,
+            &data.manufacture_country,
+        ])?;
+        serde_json::to_writer(&std::fs::File::create(dir.join(code + ".json"))?, &data)?;
     }
 
     Ok(())
