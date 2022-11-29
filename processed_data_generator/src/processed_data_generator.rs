@@ -7,7 +7,7 @@ use std::{
 use anyhow::anyhow;
 use anyhow::{Ok, Result};
 use clap::Parser;
-use models::Item;
+use models::{ChainId, Item};
 use serde::Serialize;
 use slog::{self, debug, info, o, Drain, Logger};
 use slog_async;
@@ -105,6 +105,7 @@ fn read_all_price_data(input: &str, debug: bool) -> Result<HashMap<ItemKey, Aggr
             if !item.manufacture_country.is_empty() {
                 aggregated_data.country[&item.manufacture_country] += 1;
             }
+            aggregated_data.chains.insert(chain_id);
         }
     }
     Ok(all_aggregated_data)
@@ -150,6 +151,7 @@ struct Product {
     item_name: String,
     manufacturer_name: String,
     manufacture_country: String,
+    chains: Vec<ChainId>,
 }
 
 fn get_canonical_data(
@@ -176,6 +178,7 @@ fn get_canonical_data(
                     .get(0)
                     .map_or("", |v| &v.0)
                     .to_string(),
+                chains: Vec::from_iter(data.chains.clone()),
             },
         );
     }
@@ -230,6 +233,7 @@ struct AggregatedData {
     names: HashSet<String>,
     manufacturer_names: HashSet<String>,
     country: counter::Counter<String>,
+    chains: HashSet<models::ChainId>,
 }
 fn run() -> Result<()> {
     let mut args = Args::parse();
