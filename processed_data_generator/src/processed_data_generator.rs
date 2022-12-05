@@ -142,7 +142,7 @@ fn write_all_product_data(all_data: &HashMap<ItemKey, Product>, output: &str) ->
         "item_code",
         "name",
         "manufacturer_name",
-        "manufacturer_country",
+        "manufacture_country",
     ])?;
 
     for (key, data) in all_data.iter() {
