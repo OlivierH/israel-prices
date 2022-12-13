@@ -18,7 +18,7 @@ do
         if [ "$charset" = "unknown-8bit" ] || [ "$charset" = "iso-8859-1" ]; then
             charset=`head -n 1 $f | sed 's/.*encoding="//' | cut -d'"' -f1`
         fi
-        echo "Converting $f from $charset to utf-8"
+        # echo "Converting $f from $charset to utf-8"
         iconv -f "$charset" -t utf8 -o "$f.new" "$f"  
         mv -f "$f.new" "$f"
     fi
