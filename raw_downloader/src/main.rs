@@ -548,8 +548,6 @@ async fn download_store_data(
     file_limit: Option<usize>,
     log: &Logger,
 ) -> Result<()> {
-    let log = log.new(o!("store" => store.name));
-
     info!(log, "Start handling store");
     let downloads = match store.website {
         Website::PublishedPrice(username) => {
@@ -583,11 +581,14 @@ async fn download_all_stores_data(
     quick: bool,
     file_limit: Option<usize>,
     log: &Logger,
-) -> Result<()> {
+) {
     for store in stores {
-        download_store_data(store.clone(), quick, file_limit, &log).await?;
+        let log = log.new(o!("store" => store.name));
+        match download_store_data(store.clone(), quick, file_limit, &log).await {
+            Ok(()) => info!(log, "Success!"),
+            Err(e) => error!(log, "Failure: {e}"),
+        };
     }
-    Ok(())
 }
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 10)]
@@ -617,8 +618,5 @@ async fn main() {
         true => get_debug_store_configs(),
     };
 
-    match download_all_stores_data(&stores, quick, file_limit, &log).await {
-        Ok(()) => info!(log, "Success!"),
-        Err(e) => error!(log, "Failure: {e}"),
-    };
+    download_all_stores_data(&stores, quick, file_limit, &log).await;
 }
