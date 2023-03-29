@@ -18,7 +18,7 @@ fn curate_data_raw(log: &Logger) -> Result<()> {
     );
     std::process::Command::new("bash")
         .arg("-c")
-        .arg("rm data_raw/rami_levy/storesfull*")
+        .arg("rm data_raw/rami_levy/storesfull* -f")
         .output()?;
     Ok(())
 }
