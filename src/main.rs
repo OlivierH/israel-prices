@@ -3,12 +3,27 @@ mod parallel_download;
 mod store;
 mod store_data_download;
 use anyhow::Result;
-use slog::{self, error, info, o, Drain, Logger};
+use slog::{self, debug, error, info, o, Drain, Logger};
 use slog_async;
 use slog_term;
 use std::env;
 use store::*;
 use tokio;
+
+fn run(command: &str, log: &Logger) -> Result<()> {
+    debug!(log, "Running command {}", command);
+    let output = std::process::Command::new("bash")
+        .arg("-c")
+        .arg(command)
+        .output()?;
+    if !output.stdout.is_empty() {
+        debug!(log, "Output: {}", String::from_utf8(output.stdout)?);
+    }
+    if !output.stderr.is_empty() {
+        debug!(log, "Error: {}", String::from_utf8(output.stderr)?);
+    }
+    Ok(())
+}
 
 fn curate_data_raw(log: &Logger) -> Result<()> {
     // Rami levy has two different stores files, one of them with a single store that is already present in the first stores file.
@@ -16,15 +31,19 @@ fn curate_data_raw(log: &Logger) -> Result<()> {
         log,
         "Deleting superfluous and incomplete Rami levy store file"
     );
-    std::process::Command::new("bash")
-        .arg("-c")
-        .arg("rm data_raw/rami_levy/storesfull* -f")
-        .output()?;
+    run("rm data_raw/rami_levy/storesfull* -f", &log)?;
+
+    info!(log, "Deleting empty files");
+    run("find data_raw -type f -empty -print -delete", &log)?;
+
+    info!(log, "Deleting x1 files");
+    run("find data_raw -type f -name \"*.x1\" -print -delete", &log)?;
+
     Ok(())
 }
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 10)]
-async fn main() {
+async fn main() -> Result<()> {
     let decorator = slog_term::TermDecorator::new().build();
     let drain = slog_term::FullFormat::new(decorator).build().fuse();
     let drain = slog_async::Async::new(drain).build().fuse();
@@ -52,8 +71,6 @@ async fn main() {
 
     store_data_download::download_all_stores_data(&stores, quick, file_limit, &log).await;
 
-    if let Err(e) = curate_data_raw(&log) {
-        error!(log, "Error in curate_data_raw: {e}");
-        return;
-    }
+    curate_data_raw(&log)?;
+    Ok(())
 }
