@@ -47,6 +47,7 @@ impl FileType {
             || name.starts_with("created")
             || name.starts_with("Events")
             || name.starts_with("New")
+            || name.ends_with(".jpg")
             || name.is_empty()
         {
             return (FileType::Ignored, "");
