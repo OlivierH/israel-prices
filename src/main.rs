@@ -3,7 +3,7 @@ mod parallel_download;
 mod store;
 mod store_data_download;
 use anyhow::Result;
-use slog::{self, debug, error, info, o, Drain, Logger};
+use slog::{self, debug, info, o, Drain, Logger};
 use slog_async;
 use slog_term;
 use std::env;
@@ -38,6 +38,9 @@ fn curate_data_raw(log: &Logger) -> Result<()> {
 
     info!(log, "Deleting x1 files");
     run("find data_raw -type f -name \"*.x1\" -print -delete", &log)?;
+
+    info!(log, "Unzipping all files");
+    run("gunzip data_raw/*/*.gz", &log)?;
 
     Ok(())
 }
