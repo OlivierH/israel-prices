@@ -65,6 +65,7 @@ async fn get_downloads_publishedprice(
     username: &str,
     password: &str,
     file_limit: Option<usize>,
+    log: &Logger,
     download_semaphore: Arc<Semaphore>,
 ) -> Result<Vec<Download>> {
     let client = Client::builder().cookie_store(true).build()?;
@@ -108,6 +109,7 @@ async fn get_downloads_publishedprice(
             .into_iter()
             .map(|elem| elem["fname"].to_string().replace("\"", "")),
         file_limit,
+        &log,
     )
     .map(|file_info| parallel_download::Download {
         path: format!(
@@ -127,6 +129,7 @@ async fn get_downloads_simple_json_to_get(
     file_limit: Option<usize>,
     initial_url: &str,
     download_prefix: &str,
+    log: &Logger,
 ) -> Result<Vec<Download>> {
     let text = get_text(initial_url).await?;
 
@@ -147,6 +150,7 @@ async fn get_downloads_simple_json_to_get(
                     .to_string()
             }),
         file_limit,
+        &log,
     )
     .map(|fi| Download {
         dest: format!("data_raw/{}/{}", store.name, fi.filename),
@@ -297,6 +301,7 @@ async fn get_downloads_superpharm(
 async fn get_downloads_netiv_hahesed(
     store: &Store,
     file_limit: Option<usize>,
+    log: &Logger,
 ) -> Result<Vec<Download>> {
     fn get_links(document: &Html) -> Vec<String> {
         let selector = Selector::parse("#download_content a").unwrap();
@@ -368,7 +373,7 @@ async fn get_downloads_netiv_hahesed(
         }
     }
 
-    let downloads: Vec<Download> = FileInfo::from_str_iter(all_links.into_iter(), file_limit)
+    let downloads: Vec<Download> = FileInfo::from_str_iter(all_links.into_iter(), file_limit, &log)
         .map(|fi| Download {
             dest: format!("data_raw/{}/{}", store.name, fi.filename),
             path: format!("http://141.226.222.202/prices/{}", fi.filename),
@@ -383,6 +388,7 @@ async fn get_downloads_publish_price(
     store: &Store,
     file_limit: Option<usize>,
     url: &str,
+    log: &Logger,
 ) -> Result<Vec<Download>> {
     // e.g. http://publishprice.mega.co.il/20221031/
     let data_url = {
@@ -414,6 +420,7 @@ async fn get_downloads_publish_price(
             .skip(3) // header
             .map(|a| a.value().attr("href").unwrap().to_string()),
         file_limit,
+        &log,
     )
     .map(|fi| Download {
         dest: format!("data_raw/{}/{}", store.name, fi.filename),
@@ -429,6 +436,7 @@ async fn get_downloads_matrix_catalog(
     store: &Store,
     file_limit: Option<usize>,
     chain: &str,
+    log: &Logger,
 ) -> Result<Vec<Download>> {
     let html = get_text("http://matrixcatalog.co.il/NBCompetitionRegulations.aspx").await?;
     let selector = Selector::parse("#download_content tr").unwrap();
@@ -469,6 +477,7 @@ async fn get_downloads_matrix_catalog(
                 .to_string()
             }),
         file_limit,
+        &log,
     )
     .map(|fi| parallel_download::Download {
         dest: format!("data_raw/{}/{}", store.name, fi.filename),
@@ -532,7 +541,7 @@ async fn get_downloads_shufersal(
         }
     }
 
-    let downloads: Vec<Download> = FileInfo::from_str_iter(all_links.into_iter(), file_limit)
+    let downloads: Vec<Download> = FileInfo::from_str_iter(all_links.into_iter(), file_limit, &log)
         .map(|fi| parallel_download::Download {
             dest: format!("data_raw/{}/{}", store.name, fi.filename),
             path: fi.source,
@@ -557,6 +566,7 @@ async fn download_store_data(
                 username,
                 "",
                 file_limit,
+                &log,
                 download_semaphore.clone(),
             )
             .await?
@@ -567,20 +577,23 @@ async fn download_store_data(
                 username,
                 password,
                 file_limit,
+                &log,
                 download_semaphore.clone(),
             )
             .await?
         }
         Website::Shufersal => get_downloads_shufersal(&store, file_limit, &log).await?,
         Website::SimpleJsonToGet(initial_url, download_prefix) => {
-            get_downloads_simple_json_to_get(&store, file_limit, initial_url, download_prefix)
+            get_downloads_simple_json_to_get(&store, file_limit, initial_url, download_prefix, &log)
                 .await?
         }
         Website::MatrixCatalog(chain) => {
-            get_downloads_matrix_catalog(&store, file_limit, chain).await?
+            get_downloads_matrix_catalog(&store, file_limit, chain, &log).await?
         }
-        Website::PublishPrice(url) => get_downloads_publish_price(&store, file_limit, url).await?,
-        Website::NetivHahesed => get_downloads_netiv_hahesed(&store, file_limit).await?,
+        Website::PublishPrice(url) => {
+            get_downloads_publish_price(&store, file_limit, url, &log).await?
+        }
+        Website::NetivHahesed => get_downloads_netiv_hahesed(&store, file_limit, &log).await?,
         Website::SuperPharm => get_downloads_superpharm(&store, file_limit, &log).await?,
     };
     info!(log, "Found a total of {} elements", downloads.len());

@@ -1,6 +1,8 @@
+use anyhow::{anyhow, Result};
+use result_inspect::ResultInspectErr;
+use slog::Logger;
 use std::collections::HashMap;
 use std::str::FromStr;
-use std::string::ParseError;
 
 #[derive(PartialEq, Eq, Hash, Copy, Clone, Debug)]
 pub enum FileType {
@@ -12,36 +14,36 @@ pub enum FileType {
     Ignored,
 }
 impl FileType {
-    fn extract_prefix(name: &str) -> (FileType, &str) {
+    fn extract_prefix(name: &str) -> Result<(FileType, &str)> {
         if name.starts_with("PriceFull") {
-            return (FileType::PriceFull, "PriceFull");
+            return Ok((FileType::PriceFull, "PriceFull"));
         }
         if name.starts_with("pricefull") {
-            return (FileType::PriceFull, "pricefull");
+            return Ok((FileType::PriceFull, "pricefull"));
         }
         if name.starts_with("StoresFull") {
-            return (FileType::StoresFull, "StoresFull");
+            return Ok((FileType::StoresFull, "StoresFull"));
         }
         if name.starts_with("storesfull") {
-            return (FileType::StoresFull, "storesfull");
+            return Ok((FileType::StoresFull, "storesfull"));
         }
         if name.starts_with("Stores") {
-            return (FileType::StoresFull, "Stores");
+            return Ok((FileType::StoresFull, "Stores"));
         }
         if name.starts_with("PromoFull") {
-            return (FileType::PromoFull, "PromoFull");
+            return Ok((FileType::PromoFull, "PromoFull"));
         }
         if name.starts_with("Price") {
-            return (FileType::Price, "Price");
+            return Ok((FileType::Price, "Price"));
         }
         if name.starts_with("price") {
-            return (FileType::Price, "price");
+            return Ok((FileType::Price, "price"));
         }
         if name.starts_with("Promo") {
-            return (FileType::Promo, "Promo");
+            return Ok((FileType::Promo, "Promo"));
         }
         if name.starts_with("promo") {
-            return (FileType::Promo, "promo");
+            return Ok((FileType::Promo, "promo"));
         }
         if name.starts_with("NULL")
             || name.starts_with("created")
@@ -50,10 +52,9 @@ impl FileType {
             || name.ends_with(".jpg")
             || name.is_empty()
         {
-            return (FileType::Ignored, "");
+            return Ok((FileType::Ignored, ""));
         }
-        // TODO: in development, panic, but in prod, return "Ignored" everytime.
-        panic!("Unparseable file: '{name}'")
+        return Err(anyhow!("Unrecognized file type: {name}"));
     }
     fn is_interesting(self: &Self) -> bool {
         return FileType::PriceFull == *self || *self == FileType::StoresFull;
@@ -93,14 +94,20 @@ impl FileInfo {
         return (self.file_type, self.chain.clone(), self.store.clone());
     }
 
+    #[allow(unstable_name_collisions)]
     pub fn from_str_iter(
         vals: impl Iterator<Item = String>,
         file_limit: Option<usize>,
+        log: &Logger,
     ) -> std::vec::IntoIter<FileInfo> {
         FileInfo::keep_most_recents(
-            vals.map(|link| link.parse::<FileInfo>().unwrap())
-                .filter(|fi| fi.is_interesting())
-                .collect(),
+            vals.filter_map(|link| {
+                link.parse::<FileInfo>()
+                    .inspect_err(|e| slog::error!(log, "Error parsing filename: {e}"))
+                    .ok()
+            })
+            .filter(|fi| fi.is_interesting())
+            .collect(),
             file_limit,
         )
         .into_iter()
@@ -151,11 +158,11 @@ fn extract_filename(url: &str) -> &str {
 }
 
 impl FromStr for FileInfo {
-    type Err = ParseError;
+    type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let filename = extract_filename(s);
-        let (file_type, prefix) = FileType::extract_prefix(filename);
+        let (file_type, prefix) = FileType::extract_prefix(filename)?;
 
         if file_type == FileType::Ignored {
             return Ok(FileInfo {
