@@ -610,6 +610,7 @@ pub async fn download_all_stores_data(
     file_limit: Option<usize>,
     log: &Logger,
 ) {
+    let log = log.new(o!("P" => "raw_downloader"));
     let download_semaphore = Arc::new(Semaphore::new(30));
 
     let tasks: Vec<_> = stores

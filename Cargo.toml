@@ -18,3 +18,11 @@ slog-async = "2.7.0"
 slog-term = "2.9.0"
 slog = "2.7.0"
 result-inspect = "0.3.0"
+clap = { version = "4.2.4", features = ["derive"] }
+walkdir = "2.3.3"
+encoding_rs = "0.8.32"
+roxmltree = "0.18.0"
+serde = "1.0.160"
+csv = "1.1.6"
+lazy_static = "1.4.0"
+
