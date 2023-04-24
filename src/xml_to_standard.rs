@@ -1,9 +1,12 @@
+use anyhow::anyhow;
 use anyhow::bail;
 use anyhow::Result;
 
 use encoding_rs::UTF_16LE;
 use models::*;
 use roxmltree::{Document, Node};
+use slog::debug;
+use slog::Logger;
 use std::collections::HashMap;
 use std::io::prelude::*;
 use std::time::Instant;
@@ -47,9 +50,9 @@ fn to_full_store(node: &roxmltree::Node, path: &str) -> Result<FullStore> {
     Ok(full_store)
 }
 
-pub fn hande_price_file(path: &str) -> Result<Prices> {
+pub fn hande_price_file(path: &str, log: &Logger) -> Result<Prices> {
     let current = Instant::now();
-    let contents = read_as_utf_8(&path)?;
+    let contents = read_as_utf_8(&path, &log)?;
 
     let doc = Document::parse(&contents).unwrap();
     println!(
@@ -266,8 +269,8 @@ fn get_chain_from_root(root: Node, path: &str) -> Result<Chain> {
 }
 
 // This method returs all subchains found, so that data about them can be printed if needed.
-pub fn handle_stores_file(path: &str) -> Result<Chain> {
-    let contents = read_as_utf_8(path)?;
+pub fn handle_stores_file(path: &str, log: &Logger) -> Result<Chain> {
+    let contents = read_as_utf_8(path, log)?;
 
     let doc = Document::parse(&contents).unwrap();
 
@@ -302,14 +305,35 @@ pub fn handle_stores_file(path: &str) -> Result<Chain> {
     Ok(chain)
 }
 
-fn read_as_utf_8(path: &str) -> Result<String> {
+fn read_as_utf_8(path: &str, log: &Logger) -> Result<String> {
     let mut file: std::fs::File = std::fs::File::open(&path)?;
     let mut buf = Vec::new();
     file.read_to_end(&mut buf)?;
+
     let out = String::from_utf8(buf.clone());
     if let Ok(s) = out {
+        debug!(log, "Using encoding utf-8");
         return Ok(s);
     }
+    let (first_line, _, _) = encoding_rs::UTF_8.decode(&buf[..80]);
+    if first_line.contains("encoding") {
+        debug!(log, "Found encoding in first line of file");
+        let encoding = first_line
+            .split_whitespace()
+            .find(|s| s.starts_with("encoding"))
+            .and_then(|s| s.rsplit_once('='))
+            .ok_or(anyhow!("Counldn't exract encoding"))?
+            .1
+            .trim_matches('"');
+        let encoding = encoding_rs::Encoding::for_label(encoding.as_bytes())
+            .ok_or(anyhow!("Couldn't find encoding for {encoding}"))?;
+
+        debug!(log, "Found encoding {}", encoding.name());
+        let (decoded, _, _) = encoding.decode(&buf);
+        return Ok(decoded.into_owned());
+    }
+
+    debug!(log, "Using encoding utf-16 le");
     let (decoded, _, _) = UTF_16LE.decode(&buf);
     Ok(decoded.into_owned())
 }
