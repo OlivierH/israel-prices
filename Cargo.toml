@@ -26,3 +26,6 @@ serde = "1.0.160"
 csv = "1.1.6"
 lazy_static = "1.4.0"
 
+[profile.dev.package."*"]
+opt-level = 3
+
