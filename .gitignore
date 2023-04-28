@@ -9,3 +9,5 @@ israel-prices-data
 israel-prices-browser
 */target
 /target
+chains.json
+prices.json

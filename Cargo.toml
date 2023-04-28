@@ -25,6 +25,10 @@ roxmltree = "0.18.0"
 serde = "1.0.160"
 csv = "1.1.6"
 lazy_static = "1.4.0"
+multiset = "0.0.5"
+counter = "0.5.7"
+itertools = "0.10.5"
+slog-envlogger = "2.2.0"
 
 [profile.dev.package."*"]
 opt-level = 3
