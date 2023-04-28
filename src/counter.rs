@@ -27,6 +27,10 @@ where
     pub fn values(self: &Self) -> std::collections::hash_map::Keys<K, usize> {
         self.elems.keys()
     }
+
+    pub fn len(self: &Self) -> usize {
+        self.elems.len()
+    }
 }
 
 pub fn longest(counter: &Counter<String>) -> Result<&String> {
