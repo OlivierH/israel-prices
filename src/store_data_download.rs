@@ -9,11 +9,10 @@ use reqwest::header;
 use reqwest::{Client, Response}; // 0.10.6
 use scraper::{ElementRef, Html, Selector};
 use serde_json::Value;
-use slog::{self, error, info, Logger};
-use slog::{debug, o};
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 use tokio::sync::Semaphore;
+use tracing::{debug, error, info, instrument, Instrument, Span};
 
 async fn get_text(url: &str) -> Result<String> {
     let client = Client::builder()
@@ -65,7 +64,6 @@ async fn get_downloads_publishedprice(
     username: &str,
     password: &str,
     file_limit: Option<usize>,
-    log: &Logger,
     download_semaphore: Arc<Semaphore>,
 ) -> Result<Vec<Download>> {
     let client = Client::builder().cookie_store(true).build()?;
@@ -109,7 +107,6 @@ async fn get_downloads_publishedprice(
             .into_iter()
             .map(|elem| elem["fname"].to_string().replace("\"", "")),
         file_limit,
-        &log,
     )
     .map(|file_info| parallel_download::Download {
         path: format!(
@@ -129,7 +126,6 @@ async fn get_downloads_simple_json_to_get(
     file_limit: Option<usize>,
     initial_url: &str,
     download_prefix: &str,
-    log: &Logger,
 ) -> Result<Vec<Download>> {
     let text = get_text(initial_url).await?;
 
@@ -150,7 +146,6 @@ async fn get_downloads_simple_json_to_get(
                     .to_string()
             }),
         file_limit,
-        &log,
     )
     .map(|fi| Download {
         dest: format!("data_raw/{}/{}", store.name, fi.filename),
@@ -164,7 +159,6 @@ async fn get_downloads_simple_json_to_get(
 async fn get_downloads_superpharm(
     store: &Store,
     file_limit: Option<usize>,
-    log: &Logger,
 ) -> Result<Vec<Download>> {
     // The flow is complex here.
     // First, we get the total number of pages.
@@ -197,7 +191,7 @@ async fn get_downloads_superpharm(
                     let cookie = get_cookie_from_resp(&resp).unwrap();
                     match &resp.text().await {
                         Ok(html) => {
-                            debug!(log, "Success reading {path}");
+                            debug!("Success reading {path}");
                             let selector = Selector::parse(".file_list tr").unwrap();
                             Ok(Html::parse_document(&html)
                                 .select(&selector)
@@ -240,7 +234,7 @@ async fn get_downloads_superpharm(
             Ok(links) => {
                 all_links.extend(links);
             }
-            Err(e) => error!(log, "Error: {e}"),
+            Err(e) => error!("Error: {e}"),
         }
     }
     let file_infos = FileInfo::keep_most_recents(
@@ -301,7 +295,6 @@ async fn get_downloads_superpharm(
 async fn get_downloads_netiv_hahesed(
     store: &Store,
     file_limit: Option<usize>,
-    log: &Logger,
 ) -> Result<Vec<Download>> {
     fn get_links(document: &Html) -> Vec<String> {
         let selector = Selector::parse("#download_content a").unwrap();
@@ -373,7 +366,7 @@ async fn get_downloads_netiv_hahesed(
         }
     }
 
-    let downloads: Vec<Download> = FileInfo::from_str_iter(all_links.into_iter(), file_limit, &log)
+    let downloads: Vec<Download> = FileInfo::from_str_iter(all_links.into_iter(), file_limit)
         .map(|fi| Download {
             dest: format!("data_raw/{}/{}", store.name, fi.filename),
             path: format!("http://141.226.222.202/prices/{}", fi.filename),
@@ -388,13 +381,12 @@ async fn get_downloads_publish_price(
     store: &Store,
     file_limit: Option<usize>,
     url: &str,
-    log: &Logger,
 ) -> Result<Vec<Download>> {
     // e.g. http://publishprice.mega.co.il/20221031/
     let data_url = {
-        println!("Downloading {url} ...");
+        debug!("Downloading {url} ...");
         let html = get_text(url).await?;
-        println!("Done.");
+        debug!("Done downloading {url}.");
         let selector = Selector::parse("#files tr:nth-child(4) a").unwrap();
         let document = Html::parse_document(&html);
         let date = document
@@ -407,9 +399,9 @@ async fn get_downloads_publish_price(
         format!("{url}{date}")
     };
 
-    println!("Downloading {data_url} ...");
+    debug!("Downloading {data_url}");
     let html = reqwest::get(&data_url).await?.text().await?;
-    println!("Done.");
+    debug!("Done.");
 
     let selector = Selector::parse("#files a").unwrap();
     let document = Html::parse_document(&html);
@@ -420,7 +412,6 @@ async fn get_downloads_publish_price(
             .skip(3) // header
             .map(|a| a.value().attr("href").unwrap().to_string()),
         file_limit,
-        &log,
     )
     .map(|fi| Download {
         dest: format!("data_raw/{}/{}", store.name, fi.filename),
@@ -436,7 +427,6 @@ async fn get_downloads_matrix_catalog(
     store: &Store,
     file_limit: Option<usize>,
     chain: &str,
-    log: &Logger,
 ) -> Result<Vec<Download>> {
     let html = get_text("http://matrixcatalog.co.il/NBCompetitionRegulations.aspx").await?;
     let selector = Selector::parse("#download_content tr").unwrap();
@@ -477,7 +467,6 @@ async fn get_downloads_matrix_catalog(
                 .to_string()
             }),
         file_limit,
-        &log,
     )
     .map(|fi| parallel_download::Download {
         dest: format!("data_raw/{}/{}", store.name, fi.filename),
@@ -492,7 +481,6 @@ async fn get_downloads_matrix_catalog(
 async fn get_downloads_shufersal(
     store: &Store,
     file_limit: Option<usize>,
-    log: &Logger,
 ) -> Result<Vec<Download>> {
     let html = get_text("http://prices.shufersal.co.il/FileObject/UpdateCategory?page=1").await?;
     let selector = Selector::parse("tfoot a").unwrap();
@@ -515,7 +503,7 @@ async fn get_downloads_shufersal(
             match reqwest::get(&path).await {
                 Ok(resp) => match resp.text().await {
                     Ok(html) => {
-                        debug!(log, "Success reading {path}");
+                        debug!("Success reading {path}");
                         let selector = Selector::parse("tbody a").unwrap();
                         Ok(Html::parse_document(&html)
                             .select(&selector)
@@ -537,11 +525,11 @@ async fn get_downloads_shufersal(
             Ok(links) => {
                 all_links.extend(links);
             }
-            Err(e) => error!(log, "Error: {e}"),
+            Err(e) => error!("Error: {e}"),
         }
     }
 
-    let downloads: Vec<Download> = FileInfo::from_str_iter(all_links.into_iter(), file_limit, &log)
+    let downloads: Vec<Download> = FileInfo::from_str_iter(all_links.into_iter(), file_limit)
         .map(|fi| parallel_download::Download {
             dest: format!("data_raw/{}/{}", store.name, fi.filename),
             path: fi.source,
@@ -551,14 +539,14 @@ async fn get_downloads_shufersal(
     Ok(downloads)
 }
 
+#[instrument(fields(store_name=store.name), skip_all)]
 async fn download_store_data(
     store: Store,
     quick: bool,
     file_limit: Option<usize>,
     download_semaphore: Arc<Semaphore>,
-    log: Logger,
 ) -> Result<()> {
-    info!(log, "Start handling store");
+    info!("Start handling store");
     let downloads = match store.website {
         Website::PublishedPrice(username) => {
             get_downloads_publishedprice(
@@ -566,7 +554,6 @@ async fn download_store_data(
                 username,
                 "",
                 file_limit,
-                &log,
                 download_semaphore.clone(),
             )
             .await?
@@ -577,67 +564,53 @@ async fn download_store_data(
                 username,
                 password,
                 file_limit,
-                &log,
                 download_semaphore.clone(),
             )
             .await?
         }
-        Website::Shufersal => get_downloads_shufersal(&store, file_limit, &log).await?,
+        Website::Shufersal => get_downloads_shufersal(&store, file_limit).await?,
         Website::SimpleJsonToGet(initial_url, download_prefix) => {
-            get_downloads_simple_json_to_get(&store, file_limit, initial_url, download_prefix, &log)
+            get_downloads_simple_json_to_get(&store, file_limit, initial_url, download_prefix)
                 .await?
         }
         Website::MatrixCatalog(chain) => {
-            get_downloads_matrix_catalog(&store, file_limit, chain, &log).await?
+            get_downloads_matrix_catalog(&store, file_limit, chain).await?
         }
-        Website::PublishPrice(url) => {
-            get_downloads_publish_price(&store, file_limit, url, &log).await?
-        }
-        Website::NetivHahesed => get_downloads_netiv_hahesed(&store, file_limit, &log).await?,
-        Website::SuperPharm => get_downloads_superpharm(&store, file_limit, &log).await?,
+        Website::PublishPrice(url) => get_downloads_publish_price(&store, file_limit, url).await?,
+        Website::NetivHahesed => get_downloads_netiv_hahesed(&store, file_limit).await?,
+        Website::SuperPharm => get_downloads_superpharm(&store, file_limit).await?,
     };
-    info!(log, "Found a total of {} elements", downloads.len());
+    info!("Found a total of {} elements", downloads.len());
     if quick {
         return Ok(());
     }
-    parallel_download::parallel_download(downloads, &log, download_semaphore).await;
+    parallel_download::parallel_download(downloads, download_semaphore).await;
     Ok(())
 }
 
-pub async fn download_all_stores_data(
-    stores: &Vec<Store>,
-    quick: bool,
-    file_limit: Option<usize>,
-    log: &Logger,
-) {
-    let log = log.new(o!("P" => "raw_downloader"));
+pub async fn download_all_stores_data(stores: &Vec<Store>, quick: bool, file_limit: Option<usize>) {
     let download_semaphore = Arc::new(Semaphore::new(30));
-
     let tasks: Vec<_> = stores
         .iter()
         .map(|store| {
-            let log = log.new(o!("store" => store.name));
-
-            tokio::spawn(download_store_data(
-                store.clone(),
-                quick,
-                file_limit,
-                download_semaphore.clone(),
-                log,
-            ))
+            let span = Span::current();
+            tokio::spawn(
+                download_store_data(store.clone(), quick, file_limit, download_semaphore.clone())
+                    .instrument(span),
+            )
         })
         .collect();
     info!(
-        log,
         "All tasks are spawned. Total tasks spawned: {}.",
         tasks.len()
     );
     for task in tasks {
+        // let x = task.await;
         match task.await {
             Ok(Ok(())) => (),
-            Ok(Err(err)) => error!(log, "Error: {err}"),
-            Err(err) => error!(log, "Error: {err}"),
+            Ok(Err(err)) => error!("Error: {err}"),
+            Err(err) => error!("Error: {err}"),
         };
     }
-    info!(log, "Processing complete.");
+    info!("Processing complete.");
 }

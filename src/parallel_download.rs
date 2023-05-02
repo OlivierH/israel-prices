@@ -1,11 +1,11 @@
 use bytes::Bytes;
 use futures::StreamExt;
 use reqwest::{header::HeaderMap, Client};
-use slog::{debug, info, Logger};
 use std::fs::File;
 use std::io::Cursor;
 use std::sync::Arc;
 use tokio::sync::Semaphore;
+use tracing::{debug, info};
 pub struct Download {
     pub path: String,
     pub headers: Option<HeaderMap>,
@@ -21,15 +21,10 @@ fn write_file(content: &Bytes, dest: &str) -> std::io::Result<()> {
     std::io::copy(&mut content, &mut file)?;
     Ok(())
 }
-pub async fn parallel_download(
-    downloads: Vec<Download>,
-    log: &Logger,
-    download_semaphore: Arc<Semaphore>,
-) {
-    info!(log, "Starting parallel download");
+pub async fn parallel_download(downloads: Vec<Download>, download_semaphore: Arc<Semaphore>) {
+    info!("Starting parallel download");
     futures::stream::iter(downloads)
         .map(|download| {
-            let log = log.clone();
             let download_semaphore = download_semaphore.clone();
             async move {
                 let mut should_retry = true;
@@ -50,7 +45,7 @@ pub async fn parallel_download(
                     let permit = match download_semaphore.acquire_owned().await {
                         Ok(permit) => permit,
                         Err(e) => {
-                            debug!(log, "Error in writing {dest}: {e}");
+                            debug!("Error in writing {dest}: {e}");
                             break;
                         }
                     };
@@ -58,26 +53,26 @@ pub async fn parallel_download(
                         Ok(resp) => match resp.bytes().await {
                             Ok(content) => match write_file(&content, dest) {
                                 Ok(()) => {
-                                    debug!(log, "Success in writing {dest}");
+                                    debug!("Success in writing {dest}");
                                     false
                                 }
                                 Err(e) => {
-                                    debug!(log, "Error in writing {dest}: {e}");
+                                    debug!("Error in writing {dest}: {e}");
                                     false
                                 }
                             },
                             Err(e) => {
-                                debug!(log, "ERROR reading {path}: {e}");
+                                debug!("ERROR reading {path}: {e}");
                                 false
                             }
                         },
                         Err(e) => {
-                            debug!(log, "ERROR downloading {path}: {e}");
+                            debug!("ERROR downloading {path}: {e}");
                             true
                         }
                     };
                     if should_retry {
-                        debug!(log, "Retrying {path}");
+                        debug!("Retrying {path}");
                     }
                     drop(permit);
                 }

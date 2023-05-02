@@ -7,49 +7,48 @@ mod store_data_download;
 mod xml_to_standard;
 use crate::models::ItemKey;
 use crate::{counter::Counter, models::ItemInfo};
-use anyhow::Result;
+use anyhow::{anyhow, Context, Result};
 use clap::Parser;
-use slog::{self, debug, info, o, Drain, Logger};
-use slog_async;
-use slog_term;
 use std::collections::HashMap;
 use store::*;
 use tokio;
+use tracing::{debug, error, info, span, Level};
+use tracing_subscriber::EnvFilter;
 mod country_code;
 mod sanitization;
 mod xml;
-fn run(command: &str, log: &Logger) -> Result<()> {
-    debug!(log, "Running command {}", command);
+fn run(command: &str) -> Result<()> {
+    let span = span!(Level::INFO, "Run command", command);
+    let _enter = span.enter();
+    debug!("Start");
     let output = std::process::Command::new("bash")
         .arg("-c")
         .arg(command)
         .output()?;
     if !output.stdout.is_empty() {
-        debug!(log, "Output: {}", String::from_utf8(output.stdout)?);
+        debug!(output = String::from_utf8(output.stdout)?, "Output");
     }
     if !output.stderr.is_empty() {
-        debug!(log, "Error: {}", String::from_utf8(output.stderr)?);
+        error!(error = String::from_utf8(output.stderr)?, "Error",);
     }
     Ok(())
 }
 
-fn curate_data_raw(log: &Logger) -> Result<()> {
-    let log = log.new(o!("P" => "curate_data_raw"));
+fn curate_data_raw() -> Result<()> {
+    let span = span!(Level::INFO, "curate_data_raw");
+    let _enter = span.enter();
     // Rami levy has two different stores files, one of them with a single store that is already present in the first stores file.
-    info!(
-        log,
-        "Deleting superfluous and incomplete Rami levy store file"
-    );
-    run("rm data_raw/rami_levy/storesfull* -f", &log)?;
+    info!("Deleting superfluous and incomplete Rami levy store file");
+    run("rm data_raw/rami_levy/storesfull* -f")?;
 
-    info!(log, "Deleting empty files");
-    run("find data_raw -type f -empty -print -delete", &log)?;
+    info!("Deleting empty files");
+    run("find data_raw -type f -empty -print -delete")?;
 
-    info!(log, "Deleting x1 files");
-    run("find data_raw -type f -name \"*.x1\" -print -delete", &log)?;
+    info!("Deleting x1 files");
+    run("find data_raw -type f -name \"*.x1\" -print -delete")?;
 
-    info!(log, "Unzipping all files");
-    run("gunzip data_raw/*/*.gz", &log)?;
+    info!("Unzipping all files");
+    run("gunzip data_raw/*/*.gz")?;
 
     Ok(())
 }
@@ -91,16 +90,18 @@ struct Args {
 
     #[arg(long, default_value = "")]
     processing_filter: String,
+
+    #[arg(long, default_value = "")]
+    store: String,
 }
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 10)]
 async fn main() -> Result<()> {
-    let decorator = slog_term::TermDecorator::new().build();
-    let drain = slog_term::FullFormat::new(decorator).build().fuse();
-    let drain = slog_async::Async::new(drain).build().fuse();
-    let log = slog::Logger::root(drain, o!());
-    info!(log, "Start info");
-    debug!(log, "Start_debug");
+    tracing_subscriber::fmt()
+        .with_env_filter(EnvFilter::from_default_env())
+        .init();
+
+    info!("Starting");
 
     let args = Args::parse();
 
@@ -117,17 +118,23 @@ async fn main() -> Result<()> {
         false => stores,
         true => get_debug_store_configs(),
     };
+    let stores = match args.store.as_str() {
+        "" => stores,
+        store => {
+            vec![get_store_config(store).ok_or(anyhow!("{store} is not an existing store name"))?]
+        }
+    };
 
     if args.clear_files {
-        info!(log, "Deleting data_raw");
+        info!("Deleting data_raw");
         std::fs::remove_dir_all("./data_raw")?;
     }
 
     if !args.no_download {
-        store_data_download::download_all_stores_data(&stores, args.quick, file_limit, &log).await;
+        store_data_download::download_all_stores_data(&stores, args.quick, file_limit).await;
     }
     if !args.no_curate {
-        curate_data_raw(&log)?;
+        curate_data_raw()?;
     }
 
     if !args.no_process {
@@ -136,13 +143,15 @@ async fn main() -> Result<()> {
 
         if args.load_from_json {
             let chains_file = std::io::BufReader::new(std::fs::File::open("chains.json")?);
+            info!("Reading chains from chains.json");
             chains = serde_json::from_reader(chains_file)?;
-            info!(log, "Read {} chains from chains.json", chains.len());
-            debug!(log, "test_debug");
+            info!("Read {} chains from chains.json", chains.len());
+            debug!("test_debug");
 
             let prices_file = std::io::BufReader::new(std::fs::File::open("prices.json")?);
+            info!("Reading prices from prices.json - this may take some time");
             prices = serde_json::from_reader(prices_file)?;
-            info!(log, "Read {} prices from prices.json", prices.len());
+            info!("Read {} prices from prices.json", prices.len());
         } else {
             let paths = walkdir::WalkDir::new(std::path::Path::new("data_raw"))
                 .into_iter()
@@ -160,16 +169,16 @@ async fn main() -> Result<()> {
                 filename.starts_with("Price") || filename.starts_with("price")
             });
             for store_path in stores_paths {
-                debug!(log, "Reading file: {store_path}");
-                let chain = xml_to_standard::handle_stores_file(&store_path, &log)?;
+                debug!("Reading file: {store_path}");
+                let chain = xml_to_standard::handle_stores_file(&store_path)?;
                 chains.push(chain);
             }
             if args.save_to_json {
                 std::fs::write("chains.json", serde_json::to_string(&chains).unwrap())?;
             }
             for price_path in price_paths {
-                debug!(log, "Reading file: {price_path}");
-                let price = xml_to_standard::hande_price_file(&price_path, &log)?;
+                debug!("Reading file: {price_path}");
+                let price = xml_to_standard::hande_price_file(&price_path)?;
                 prices.push(price);
             }
             if args.save_to_json {
@@ -189,7 +198,13 @@ async fn main() -> Result<()> {
             names: Counter<String>,
             manufacturer_names: Counter<String>,
             manufacture_country: Counter<String>,
+            manufacturer_item_description: Counter<String>,
             chains: Counter<models::ChainId>,
+            unit_qty: Counter<String>,
+            quantity: Counter<String>,
+            unit_of_measure: Counter<String>,
+            b_is_weighted: Counter<bool>,
+            qty_in_package: Counter<String>,
         }
 
         let mut items_aggregated_data: HashMap<ItemKey, AggregatedData> = HashMap::new();
@@ -207,7 +222,14 @@ async fn main() -> Result<()> {
                     data.names.inc(sanitization::sanitize_name(&item.item_name));
                     data.manufacturer_names.inc(item.manufacturer_name);
                     data.manufacture_country.inc(item.manufacture_country);
+                    data.manufacturer_item_description
+                        .inc(item.manufacturer_item_description);
                     data.chains.inc(price.chain_id);
+                    data.unit_qty.inc(item.unit_qty);
+                    data.quantity.inc(item.quantity);
+                    data.unit_of_measure.inc(item.unit_of_measure);
+                    data.b_is_weighted.inc(item.b_is_weighted);
+                    data.qty_in_package.inc(item.qty_in_package);
                 };
                 items_aggregated_data
                     .entry(item_key)
@@ -221,9 +243,33 @@ async fn main() -> Result<()> {
 
         let mut item_infos: HashMap<ItemKey, ItemInfo> = HashMap::new();
 
-        for (key, data) in items_aggregated_data.iter_mut() {
-            data.names.remove_rare_elements();
-            let name = counter::longest(&data.names)?;
+        for (key, data) in items_aggregated_data.into_iter() {
+            item_infos.insert(
+                key,
+                ItemInfo {
+                    item_name: counter::longest(&data.names).context(key)?.to_string(),
+                    manufacturer_name: counter::longest(&data.manufacturer_names)
+                        .context(key)?
+                        .to_string(),
+                    manufacturer_item_description: counter::longest(
+                        &data.manufacturer_item_description,
+                    )
+                    .context(key)?
+                    .to_string(),
+                    manufacture_country: counter::longest(&data.manufacture_country)
+                        .context(key)?
+                        .to_string(),
+                    unit_qty: counter::longest(&data.unit_qty).context(key)?.to_string(),
+                    quantity: counter::longest(&data.quantity).context(key)?.to_string(),
+                    unit_of_measure: counter::longest(&data.unit_of_measure)
+                        .context(key)?
+                        .to_string(),
+                    b_is_weighted: data.b_is_weighted.most_common().context(key)?.clone(),
+                    qty_in_package: counter::longest(&data.qty_in_package)
+                        .context(key)?
+                        .to_string(),
+                },
+            );
         }
     }
     Ok(())

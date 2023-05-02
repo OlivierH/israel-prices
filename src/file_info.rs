@@ -1,8 +1,8 @@
 use anyhow::{anyhow, Result};
 use result_inspect::ResultInspectErr;
-use slog::Logger;
 use std::collections::HashMap;
 use std::str::FromStr;
+use tracing::error;
 
 #[derive(PartialEq, Eq, Hash, Copy, Clone, Debug)]
 pub enum FileType {
@@ -98,12 +98,11 @@ impl FileInfo {
     pub fn from_str_iter(
         vals: impl Iterator<Item = String>,
         file_limit: Option<usize>,
-        log: &Logger,
     ) -> std::vec::IntoIter<FileInfo> {
         FileInfo::keep_most_recents(
             vals.filter_map(|link| {
                 link.parse::<FileInfo>()
-                    .inspect_err(|e| slog::error!(log, "Error parsing filename: {e}"))
+                    .inspect_err(|e| error!("Error parsing filename: {e}"))
                     .ok()
             })
             .filter(|fi| fi.is_interesting())

@@ -1,6 +1,5 @@
 use serde::Deserialize;
 use serde::Serialize;
-
 pub type Barcode = i64;
 pub type ChainId = i64;
 pub type SubchainId = i32;
@@ -38,7 +37,7 @@ pub struct Item {
     pub last_update_time: String,
 }
 
-#[derive(Debug, PartialEq, Eq, Hash)]
+#[derive(Debug, PartialEq, Eq, Hash, Default)]
 pub struct ItemInfo {
     pub item_name: String,
     pub manufacturer_name: String,
@@ -51,23 +50,7 @@ pub struct ItemInfo {
     pub qty_in_package: String,
 }
 
-impl ItemInfo {
-    pub fn from_item(item: &Item) -> Self {
-        ItemInfo {
-            item_name: item.item_name.clone(),
-            manufacturer_name: item.manufacturer_name.clone(),
-            manufacture_country: item.manufacture_country.clone(),
-            manufacturer_item_description: item.manufacturer_item_description.clone(),
-            unit_qty: item.unit_qty.clone(),
-            quantity: item.quantity.clone(),
-            unit_of_measure: item.unit_of_measure.clone(),
-            b_is_weighted: item.b_is_weighted,
-            qty_in_package: item.qty_in_package.clone(),
-        }
-    }
-}
-
-#[derive(Debug, PartialEq, Eq, Hash)]
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
 pub struct ItemKey {
     pub item_code: Barcode,
     pub chain_id: Option<ChainId>,
@@ -82,6 +65,12 @@ impl ItemKey {
                 false => None,
             },
         }
+    }
+}
+
+impl std::fmt::Display for ItemKey {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} <{:?}>", self.item_code, self.chain_id)
     }
 }
 

@@ -19,17 +19,27 @@ where
     }
 
     // Remove any elements that occur less than 10% of the times.
-    pub fn remove_rare_elements(self: &mut Self) {
-        self.elems.retain(|_, value| value >= &mut (self.size / 10));
-        self.size = self.elems.iter().map(|pair| pair.1).sum();
-    }
+    // pub fn remove_rare_elements(self: &mut Self) {
+    //     self.elems.retain(|_, value| value >= &mut (self.size / 10));
+    //     self.size = self.elems.iter().map(|pair| pair.1).sum();
+    // }
 
     pub fn values(self: &Self) -> std::collections::hash_map::Keys<K, usize> {
         self.elems.keys()
     }
 
-    pub fn len(self: &Self) -> usize {
-        self.elems.len()
+    // pub fn len(self: &Self) -> usize {
+    //     self.elems.len()
+    // }
+
+    pub fn most_common(self: &Self) -> Result<&K> {
+        Ok(self
+            .elems
+            .iter()
+            .sorted_by(|a, b| Ord::cmp(&b.1, &a.1))
+            .next()
+            .map(|pair| pair.0)
+            .ok_or(anyhow!("no value is most_common"))?)
     }
 }
 

@@ -14,9 +14,6 @@ scraper = {version = "0.15.0", features = ["atomic"]}
 bytes = "1.2.1"
 chrono = "0.4.23"
 anyhow = "1.0.66"
-slog-async = "2.7.0"
-slog-term = "2.9.0"
-slog = "2.7.0"
 result-inspect = "0.3.0"
 clap = { version = "4.2.4", features = ["derive"] }
 walkdir = "2.3.3"
@@ -28,7 +25,8 @@ lazy_static = "1.4.0"
 multiset = "0.0.5"
 counter = "0.5.7"
 itertools = "0.10.5"
-slog-envlogger = "2.2.0"
+tracing = "0.1.38"
+tracing-subscriber = {version = "0.3.17", features = ["env-filter"]}
 
 [profile.dev.package."*"]
 opt-level = 3
