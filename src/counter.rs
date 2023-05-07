@@ -3,7 +3,7 @@ use itertools::Itertools;
 use std::collections::HashMap;
 use std::hash::Hash;
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct Counter<K> {
     elems: HashMap<K, usize>,
     size: usize,
@@ -11,7 +11,7 @@ pub struct Counter<K> {
 
 impl<K> Counter<K>
 where
-    K: Eq + Hash + Clone,
+    K: Eq + Hash + Clone + std::fmt::Debug,
 {
     pub fn inc(self: &mut Self, k: K) {
         self.elems.entry(k).and_modify(|e| *e += 1).or_insert(1);

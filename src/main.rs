@@ -9,6 +9,7 @@ use crate::models::ItemKey;
 use crate::{counter::Counter, models::ItemInfo};
 use anyhow::{anyhow, Context, Result};
 use clap::Parser;
+use serde_with::serde_as;
 use std::collections::HashMap;
 use store::*;
 use tokio;
@@ -72,6 +73,9 @@ struct Args {
 
     #[arg(long)]
     save_to_json: bool,
+
+    #[arg(long)]
+    save_item_infos_to_json: bool,
 
     #[arg(long)]
     no_process: bool,
@@ -146,7 +150,6 @@ async fn main() -> Result<()> {
             info!("Reading chains from chains.json");
             chains = serde_json::from_reader(chains_file)?;
             info!("Read {} chains from chains.json", chains.len());
-            debug!("test_debug");
 
             let prices_file = std::io::BufReader::new(std::fs::File::open("prices.json")?);
             info!("Reading prices from prices.json - this may take some time");
@@ -186,13 +189,13 @@ async fn main() -> Result<()> {
             }
         }
 
-        #[derive(Default, serde::Serialize)]
+        #[derive(Default, serde::Serialize, Debug)]
         struct ItemPrice {
             chain_id: i64,
             store_id: i32,
             price: String,
         }
-        #[derive(Default)]
+        #[derive(Default, Debug)]
         struct AggregatedData {
             prices: Vec<ItemPrice>,
             names: Counter<String>,
@@ -208,43 +211,45 @@ async fn main() -> Result<()> {
         }
 
         let mut items_aggregated_data: HashMap<ItemKey, AggregatedData> = HashMap::new();
-
+        info!("Starting to build Aggregated data");
         for price in prices {
             for item in price.items {
                 let item_key = ItemKey::from_item_and_chain(&item, price.chain_id);
 
-                let add_to_data = |data: &mut AggregatedData| {
-                    data.prices.push(ItemPrice {
-                        chain_id: price.chain_id,
-                        store_id: price.store_id,
-                        price: item.item_price,
-                    });
-                    data.names.inc(sanitization::sanitize_name(&item.item_name));
-                    data.manufacturer_names.inc(item.manufacturer_name);
-                    data.manufacture_country.inc(item.manufacture_country);
-                    data.manufacturer_item_description
-                        .inc(item.manufacturer_item_description);
-                    data.chains.inc(price.chain_id);
-                    data.unit_qty.inc(item.unit_qty);
-                    data.quantity.inc(item.quantity);
-                    data.unit_of_measure.inc(item.unit_of_measure);
-                    data.b_is_weighted.inc(item.b_is_weighted);
-                    data.qty_in_package.inc(item.qty_in_package);
-                };
-                items_aggregated_data
+                let data = items_aggregated_data
                     .entry(item_key)
-                    .and_modify(add_to_data)
-                    .or_insert_with(|| {
-                        let data = AggregatedData::default();
-                        data
-                    });
+                    .or_insert(AggregatedData::default());
+                data.prices.push(ItemPrice {
+                    chain_id: price.chain_id,
+                    store_id: price.store_id,
+                    price: item.item_price,
+                });
+                data.names.inc(sanitization::sanitize_name(&item.item_name));
+                data.manufacturer_names.inc(item.manufacturer_name);
+                data.manufacture_country.inc(item.manufacture_country);
+                data.manufacturer_item_description
+                    .inc(item.manufacturer_item_description);
+                data.chains.inc(price.chain_id);
+                data.unit_qty.inc(item.unit_qty);
+                data.quantity.inc(item.quantity);
+                data.unit_of_measure.inc(item.unit_of_measure);
+                data.b_is_weighted.inc(item.b_is_weighted);
+                data.qty_in_package.inc(item.qty_in_package);
             }
         }
+        info!("Finished to build Aggregated data");
 
-        let mut item_infos: HashMap<ItemKey, ItemInfo> = HashMap::new();
+        #[serde_as]
+        #[derive(Default, serde::Serialize, Debug)]
+        struct ItemInfos {
+            #[serde_as(as = "Vec<(_, _)>")]
+            data: HashMap<ItemKey, ItemInfo>,
+        }
+
+        let mut item_infos: ItemInfos = ItemInfos::default();
 
         for (key, data) in items_aggregated_data.into_iter() {
-            item_infos.insert(
+            item_infos.data.insert(
                 key,
                 ItemInfo {
                     item_name: counter::longest(&data.names).context(key)?.to_string(),
@@ -270,6 +275,13 @@ async fn main() -> Result<()> {
                         .to_string(),
                 },
             );
+        }
+
+        if args.save_item_infos_to_json {
+            std::fs::write(
+                "item_infos.json",
+                serde_json::to_string(&item_infos).unwrap(),
+            )?;
         }
     }
     Ok(())
