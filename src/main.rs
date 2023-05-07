@@ -57,10 +57,10 @@ fn curate_data_raw() -> Result<()> {
 #[derive(Parser, Debug, Clone)]
 struct Args {
     #[arg(short, long, default_value = "../data")]
-    input: String,
+    input: String, // unused
 
     #[arg(short, long, default_value = "")]
-    output: String,
+    output: String, // unused
 
     #[arg(long)]
     no_download: bool,
