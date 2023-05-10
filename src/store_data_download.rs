@@ -109,6 +109,7 @@ async fn get_downloads_publishedprice(
         file_limit,
     )
     .map(|file_info| parallel_download::Download {
+        store: store.name.to_string(),
         path: format!(
             "https://url.publishedprices.co.il/file/d/{}",
             file_info.filename
@@ -148,6 +149,7 @@ async fn get_downloads_simple_json_to_get(
         file_limit,
     )
     .map(|fi| Download {
+        store: store.name.to_string(),
         dest: format!("data_raw/{}/{}", store.name, fi.filename),
         path: format!("{}{}", download_prefix, fi.filename),
         headers: None,
@@ -280,6 +282,7 @@ async fn get_downloads_superpharm(
             let mut headers = header::HeaderMap::new();
             headers.insert(header::COOKIE, (&file_info.cookie).parse().unwrap());
             Download {
+                store: store.name.to_string(),
                 dest: format!("data_raw/{}/{}", store.name, file_info.filename),
                 headers: Some(headers),
                 path: url,
@@ -368,6 +371,7 @@ async fn get_downloads_netiv_hahesed(
 
     let downloads: Vec<Download> = FileInfo::from_str_iter(all_links.into_iter(), file_limit)
         .map(|fi| Download {
+            store: store.name.to_string(),
             dest: format!("data_raw/{}/{}", store.name, fi.filename),
             path: format!("http://141.226.222.202/prices/{}", fi.filename),
             headers: None,
@@ -414,6 +418,7 @@ async fn get_downloads_publish_price(
         file_limit,
     )
     .map(|fi| Download {
+        store: store.name.to_string(),
         dest: format!("data_raw/{}/{}", store.name, fi.filename),
         path: format!("{data_url}{}", fi.filename),
         headers: None,
@@ -469,6 +474,7 @@ async fn get_downloads_matrix_catalog(
         file_limit,
     )
     .map(|fi| parallel_download::Download {
+        store: store.name.to_string(),
         dest: format!("data_raw/{}/{}", store.name, fi.filename),
         path: format!("{}{}", "http://matrixcatalog.co.il/", fi.source),
         headers: None,
@@ -531,6 +537,7 @@ async fn get_downloads_shufersal(
 
     let downloads: Vec<Download> = FileInfo::from_str_iter(all_links.into_iter(), file_limit)
         .map(|fi| parallel_download::Download {
+            store: store.name.to_string(),
             dest: format!("data_raw/{}/{}", store.name, fi.filename),
             path: fi.source,
             headers: None,

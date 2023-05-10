@@ -1,12 +1,14 @@
 use bytes::Bytes;
 use futures::StreamExt;
+use metrics::increment_counter;
 use reqwest::{header::HeaderMap, Client};
 use std::fs::File;
 use std::io::Cursor;
 use std::sync::Arc;
 use tokio::sync::Semaphore;
-use tracing::{debug, info};
+use tracing::{debug, error, info, warn};
 pub struct Download {
+    pub store: String,
     pub path: String,
     pub headers: Option<HeaderMap>,
     pub dest: String,
@@ -25,12 +27,14 @@ pub async fn parallel_download(downloads: Vec<Download>, download_semaphore: Arc
     info!("Starting parallel download");
     futures::stream::iter(downloads)
         .map(|download| {
+            increment_counter!("download_start", "store" => download.store.clone());
             let download_semaphore = download_semaphore.clone();
             async move {
                 let mut should_retry = true;
 
                 while should_retry {
                     let download_semaphore = download_semaphore.clone();
+                    let store = download.store.clone();
 
                     let path = &download.path;
                     let client = Client::builder()
@@ -54,25 +58,30 @@ pub async fn parallel_download(downloads: Vec<Download>, download_semaphore: Arc
                             Ok(content) => match write_file(&content, dest) {
                                 Ok(()) => {
                                     debug!("Success in writing {dest}");
+                                    increment_counter!("download_success", "store" => download.store.clone());
                                     false
                                 }
                                 Err(e) => {
-                                    debug!("Error in writing {dest}: {e}");
+                                    error!("Error in writing {dest}: {e}");
+                                    increment_counter!("download_failure: writing", "store" => download.store.clone());
                                     false
                                 }
                             },
                             Err(e) => {
-                                debug!("ERROR reading {path}: {e}");
-                                false
+                                warn!("ERROR reading {path}: {e}");
+                                increment_counter!("download_failure: reading", "store" => download.store.clone());
+                                true
                             }
                         },
                         Err(e) => {
                             debug!("ERROR downloading {path}: {e}");
+                            increment_counter!("download_failure: downloading", "store" => download.store.clone());
                             true
                         }
                     };
                     if should_retry {
                         debug!("Retrying {path}");
+                        increment_counter!("download retry", "store" => download.store.clone());
                     }
                     drop(permit);
                 }
