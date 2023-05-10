@@ -4,12 +4,12 @@ use std::collections::HashMap;
 use std::hash::Hash;
 
 #[derive(Default, Debug)]
-pub struct Counter<K> {
+pub struct DataCounter<K> {
     elems: HashMap<K, usize>,
     size: usize,
 }
 
-impl<K> Counter<K>
+impl<K> DataCounter<K>
 where
     K: Eq + Hash + Clone + std::fmt::Debug,
 {
@@ -43,7 +43,7 @@ where
     }
 }
 
-pub fn longest(counter: &Counter<String>) -> Result<&String> {
+pub fn longest(counter: &DataCounter<String>) -> Result<&String> {
     counter
         .values()
         .sorted_by(|a, b| Ord::cmp(&a.len(), &b.len()))

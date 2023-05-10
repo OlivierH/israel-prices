@@ -542,6 +542,7 @@ async fn get_downloads_shufersal(
 #[instrument(fields(store_name=store.name), skip_all)]
 async fn download_store_data(
     store: Store,
+    dir: String,
     quick: bool,
     file_limit: Option<usize>,
     download_semaphore: Arc<Semaphore>,
@@ -588,15 +589,26 @@ async fn download_store_data(
     Ok(())
 }
 
-pub async fn download_all_stores_data(stores: &Vec<Store>, quick: bool, file_limit: Option<usize>) {
+pub async fn download_all_stores_data(
+    stores: &Vec<Store>,
+    quick: bool,
+    file_limit: Option<usize>,
+    dir: String,
+) {
     let download_semaphore = Arc::new(Semaphore::new(30));
     let tasks: Vec<_> = stores
         .iter()
         .map(|store| {
             let span = Span::current();
             tokio::spawn(
-                download_store_data(store.clone(), quick, file_limit, download_semaphore.clone())
-                    .instrument(span),
+                download_store_data(
+                    store.clone(),
+                    dir.clone(),
+                    quick,
+                    file_limit,
+                    download_semaphore.clone(),
+                )
+                .instrument(span),
             )
         })
         .collect();

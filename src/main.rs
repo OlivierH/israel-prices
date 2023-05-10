@@ -6,11 +6,13 @@ mod store;
 mod store_data_download;
 mod xml_to_standard;
 use crate::models::ItemKey;
-use crate::{counter::Counter, models::ItemInfo};
-use anyhow::{anyhow, Context, Result};
+use crate::{counter::DataCounter, models::ItemInfo};
+use anyhow::{anyhow, bail, Context, Result};
 use clap::Parser;
+use metrics_exporter_prometheus::PrometheusBuilder;
 use serde_with::serde_as;
 use std::collections::HashMap;
+use std::io::ErrorKind;
 use store::*;
 use tokio;
 use tracing::{debug, error, info, span, Level};
@@ -56,8 +58,8 @@ fn curate_data_raw() -> Result<()> {
 
 #[derive(Parser, Debug, Clone)]
 struct Args {
-    #[arg(short, long, default_value = "../data")]
-    input: String, // unused
+    #[arg(short, long, default_value = "./data_raw")]
+    dir: String,
 
     #[arg(short, long, default_value = "")]
     output: String, // unused
@@ -101,6 +103,9 @@ struct Args {
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 10)]
 async fn main() -> Result<()> {
+    let prometheus = PrometheusBuilder::new()
+        .install_recorder()
+        .expect("failed to install prometheus exporter");
     tracing_subscriber::fmt()
         .with_env_filter(EnvFilter::from_default_env())
         .init();
@@ -131,11 +136,19 @@ async fn main() -> Result<()> {
 
     if args.clear_files {
         info!("Deleting data_raw");
-        std::fs::remove_dir_all("./data_raw")?;
+        let res = std::fs::remove_dir_all("./data_raw");
+        if let Err(e) = res {
+            if e.kind() == ErrorKind::NotFound {
+                info!("Data_raw doesn't exist already");
+            } else {
+                bail!(e);
+            }
+        }
     }
 
     if !args.no_download {
-        store_data_download::download_all_stores_data(&stores, args.quick, file_limit).await;
+        store_data_download::download_all_stores_data(&stores, args.quick, file_limit, args.dir)
+            .await;
     }
     if !args.no_curate {
         curate_data_raw()?;
@@ -198,16 +211,16 @@ async fn main() -> Result<()> {
         #[derive(Default, Debug)]
         struct AggregatedData {
             prices: Vec<ItemPrice>,
-            names: Counter<String>,
-            manufacturer_names: Counter<String>,
-            manufacture_country: Counter<String>,
-            manufacturer_item_description: Counter<String>,
-            chains: Counter<models::ChainId>,
-            unit_qty: Counter<String>,
-            quantity: Counter<String>,
-            unit_of_measure: Counter<String>,
-            b_is_weighted: Counter<bool>,
-            qty_in_package: Counter<String>,
+            names: DataCounter<String>,
+            manufacturer_names: DataCounter<String>,
+            manufacture_country: DataCounter<String>,
+            manufacturer_item_description: DataCounter<String>,
+            chains: DataCounter<models::ChainId>,
+            unit_qty: DataCounter<String>,
+            quantity: DataCounter<String>,
+            unit_of_measure: DataCounter<String>,
+            b_is_weighted: DataCounter<bool>,
+            qty_in_package: DataCounter<String>,
         }
 
         let mut items_aggregated_data: HashMap<ItemKey, AggregatedData> = HashMap::new();
@@ -284,5 +297,6 @@ async fn main() -> Result<()> {
             )?;
         }
     }
+    info!("{}", prometheus.render());
     Ok(())
 }
