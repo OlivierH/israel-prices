@@ -85,6 +85,12 @@ struct Args {
     load_item_infos_to_json: bool,
 
     #[arg(long)]
+    save_to_sqlite: bool,
+
+    #[arg(long)]
+    delete_sqlite: bool,
+
+    #[arg(long)]
     no_process: bool,
 
     #[arg(long)]
@@ -144,10 +150,20 @@ async fn main() -> Result<()> {
         let res = std::fs::remove_dir_all("./data_raw");
         if let Err(e) = res {
             if e.kind() == ErrorKind::NotFound {
-                info!("Data_raw doesn't exist already");
+                info!("data_raw doesn't exist already");
             } else {
                 bail!(e);
             }
+        }
+    }
+
+    if args.delete_sqlite {
+        info!("Deleting data.sqlite");
+        let path = std::path::Path::new("data.sqlite");
+        if !path.exists() {
+            info!("data.sqlite doesn't exist already");
+        } else {
+            std::fs::remove_file("data.sqlite")?;
         }
     }
 
