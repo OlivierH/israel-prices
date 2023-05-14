@@ -37,7 +37,7 @@ pub struct Item {
     pub last_update_time: String,
 }
 
-#[derive(Debug, PartialEq, Eq, Hash, Default, Serialize)]
+#[derive(Debug, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 pub struct ItemInfo {
     pub item_name: String,
     pub manufacturer_name: String,
@@ -50,7 +50,7 @@ pub struct ItemInfo {
     pub qty_in_package: String,
 }
 
-#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, Serialize)]
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, Serialize, Deserialize)]
 pub struct ItemKey {
     pub item_code: Barcode,
     pub chain_id: Option<ChainId>,
