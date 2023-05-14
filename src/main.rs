@@ -10,6 +10,7 @@ use crate::{counter::DataCounter, models::ItemInfo};
 use anyhow::{anyhow, bail, Context, Result};
 use clap::Parser;
 use metrics_exporter_prometheus::PrometheusBuilder;
+use rusqlite::params;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_with::serde_as;
@@ -325,6 +326,23 @@ async fn main() -> Result<()> {
                     "item_infos.json",
                     serde_json::to_string(&item_infos).unwrap(),
                 )?;
+            }
+        }
+        if args.save_to_sqlite {
+            let path = "data.sqlite";
+            let connection = rusqlite::Connection::open(path)?;
+            connection.execute(
+                "CREATE TABLE Chains (
+                ChainId int NOT NULL PRIMARY KEY,
+                ChainName TEXT);",
+                (),
+            )?;
+            {
+                let mut statement = connection
+                    .prepare("INSERT INTO Chains  (ChainID, ChainName) VALUES (?1,?2)")?;
+                for chain in chains {
+                    statement.execute(params![chain.chain_id, chain.chain_name])?;
+                }
             }
         }
     }
