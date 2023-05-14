@@ -213,20 +213,6 @@ async fn main() -> Result<()> {
             store_id: i32,
             price: String,
         }
-        #[derive(Default, Debug)]
-        struct AggregatedData {
-            prices: Vec<ItemPrice>,
-            names: DataCounter<String>,
-            manufacturer_names: DataCounter<String>,
-            manufacture_country: DataCounter<String>,
-            manufacturer_item_description: DataCounter<String>,
-            chains: DataCounter<models::ChainId>,
-            unit_qty: DataCounter<String>,
-            quantity: DataCounter<String>,
-            unit_of_measure: DataCounter<String>,
-            b_is_weighted: DataCounter<bool>,
-            qty_in_package: DataCounter<String>,
-        }
 
         #[serde_as]
         #[derive(Default, Serialize, Deserialize, Debug)]
@@ -246,6 +232,21 @@ async fn main() -> Result<()> {
                 item_infos.data.len()
             );
         } else {
+            #[derive(Default, Debug)]
+            struct AggregatedData {
+                prices: Vec<ItemPrice>,
+                names: DataCounter<String>,
+                manufacturer_names: DataCounter<String>,
+                manufacture_country: DataCounter<String>,
+                manufacturer_item_description: DataCounter<String>,
+                chains: DataCounter<models::ChainId>,
+                unit_qty: DataCounter<String>,
+                quantity: DataCounter<String>,
+                unit_of_measure: DataCounter<String>,
+                b_is_weighted: DataCounter<bool>,
+                qty_in_package: DataCounter<String>,
+            }
+
             let mut items_aggregated_data: HashMap<ItemKey, AggregatedData> = HashMap::new();
             info!("Starting to build Aggregated data");
             for price in prices {
