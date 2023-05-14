@@ -10,6 +10,8 @@ use crate::{counter::DataCounter, models::ItemInfo};
 use anyhow::{anyhow, bail, Context, Result};
 use clap::Parser;
 use metrics_exporter_prometheus::PrometheusBuilder;
+use serde::Deserialize;
+use serde::Serialize;
 use serde_with::serde_as;
 use std::collections::HashMap;
 use std::io::ErrorKind;
@@ -78,6 +80,9 @@ struct Args {
 
     #[arg(long)]
     save_item_infos_to_json: bool,
+
+    #[arg(long)]
+    load_item_infos_to_json: bool,
 
     #[arg(long)]
     no_process: bool,
@@ -223,37 +228,8 @@ async fn main() -> Result<()> {
             qty_in_package: DataCounter<String>,
         }
 
-        let mut items_aggregated_data: HashMap<ItemKey, AggregatedData> = HashMap::new();
-        info!("Starting to build Aggregated data");
-        for price in prices {
-            for item in price.items {
-                let item_key = ItemKey::from_item_and_chain(&item, price.chain_id);
-
-                let data = items_aggregated_data
-                    .entry(item_key)
-                    .or_insert(AggregatedData::default());
-                data.prices.push(ItemPrice {
-                    chain_id: price.chain_id,
-                    store_id: price.store_id,
-                    price: item.item_price,
-                });
-                data.names.inc(sanitization::sanitize_name(&item.item_name));
-                data.manufacturer_names.inc(item.manufacturer_name);
-                data.manufacture_country.inc(item.manufacture_country);
-                data.manufacturer_item_description
-                    .inc(item.manufacturer_item_description);
-                data.chains.inc(price.chain_id);
-                data.unit_qty.inc(item.unit_qty);
-                data.quantity.inc(item.quantity);
-                data.unit_of_measure.inc(item.unit_of_measure);
-                data.b_is_weighted.inc(item.b_is_weighted);
-                data.qty_in_package.inc(item.qty_in_package);
-            }
-        }
-        info!("Finished to build Aggregated data");
-
         #[serde_as]
-        #[derive(Default, serde::Serialize, Debug)]
+        #[derive(Default, Serialize, Deserialize, Debug)]
         struct ItemInfos {
             #[serde_as(as = "Vec<(_, _)>")]
             data: HashMap<ItemKey, ItemInfo>,
@@ -261,40 +237,78 @@ async fn main() -> Result<()> {
 
         let mut item_infos: ItemInfos = ItemInfos::default();
 
-        for (key, data) in items_aggregated_data.into_iter() {
-            item_infos.data.insert(
-                key,
-                ItemInfo {
-                    item_name: counter::longest(&data.names).context(key)?.to_string(),
-                    manufacturer_name: counter::longest(&data.manufacturer_names)
-                        .context(key)?
-                        .to_string(),
-                    manufacturer_item_description: counter::longest(
-                        &data.manufacturer_item_description,
-                    )
-                    .context(key)?
-                    .to_string(),
-                    manufacture_country: counter::longest(&data.manufacture_country)
-                        .context(key)?
-                        .to_string(),
-                    unit_qty: counter::longest(&data.unit_qty).context(key)?.to_string(),
-                    quantity: counter::longest(&data.quantity).context(key)?.to_string(),
-                    unit_of_measure: counter::longest(&data.unit_of_measure)
-                        .context(key)?
-                        .to_string(),
-                    b_is_weighted: data.b_is_weighted.most_common().context(key)?.clone(),
-                    qty_in_package: counter::longest(&data.qty_in_package)
-                        .context(key)?
-                        .to_string(),
-                },
+        if args.load_item_infos_to_json {
+            let item_infos_file = std::io::BufReader::new(std::fs::File::open("item_infos.json")?);
+            info!("Reading item_infos from item_infos.json");
+            item_infos = serde_json::from_reader(item_infos_file)?;
+            info!(
+                "Read {} item_infos from item_infos.json",
+                item_infos.data.len()
             );
-        }
+        } else {
+            let mut items_aggregated_data: HashMap<ItemKey, AggregatedData> = HashMap::new();
+            info!("Starting to build Aggregated data");
+            for price in prices {
+                for item in price.items {
+                    let item_key = ItemKey::from_item_and_chain(&item, price.chain_id);
 
-        if args.save_item_infos_to_json {
-            std::fs::write(
-                "item_infos.json",
-                serde_json::to_string(&item_infos).unwrap(),
-            )?;
+                    let data = items_aggregated_data
+                        .entry(item_key)
+                        .or_insert(AggregatedData::default());
+                    data.prices.push(ItemPrice {
+                        chain_id: price.chain_id,
+                        store_id: price.store_id,
+                        price: item.item_price,
+                    });
+                    data.names.inc(sanitization::sanitize_name(&item.item_name));
+                    data.manufacturer_names.inc(item.manufacturer_name);
+                    data.manufacture_country.inc(item.manufacture_country);
+                    data.manufacturer_item_description
+                        .inc(item.manufacturer_item_description);
+                    data.chains.inc(price.chain_id);
+                    data.unit_qty.inc(item.unit_qty);
+                    data.quantity.inc(item.quantity);
+                    data.unit_of_measure.inc(item.unit_of_measure);
+                    data.b_is_weighted.inc(item.b_is_weighted);
+                    data.qty_in_package.inc(item.qty_in_package);
+                }
+            }
+            info!("Finished to build Aggregated data");
+            for (key, data) in items_aggregated_data.into_iter() {
+                item_infos.data.insert(
+                    key,
+                    ItemInfo {
+                        item_name: counter::longest(&data.names).context(key)?.to_string(),
+                        manufacturer_name: counter::longest(&data.manufacturer_names)
+                            .context(key)?
+                            .to_string(),
+                        manufacturer_item_description: counter::longest(
+                            &data.manufacturer_item_description,
+                        )
+                        .context(key)?
+                        .to_string(),
+                        manufacture_country: counter::longest(&data.manufacture_country)
+                            .context(key)?
+                            .to_string(),
+                        unit_qty: counter::longest(&data.unit_qty).context(key)?.to_string(),
+                        quantity: counter::longest(&data.quantity).context(key)?.to_string(),
+                        unit_of_measure: counter::longest(&data.unit_of_measure)
+                            .context(key)?
+                            .to_string(),
+                        b_is_weighted: data.b_is_weighted.most_common().context(key)?.clone(),
+                        qty_in_package: counter::longest(&data.qty_in_package)
+                            .context(key)?
+                            .to_string(),
+                    },
+                );
+            }
+
+            if args.save_item_infos_to_json {
+                std::fs::write(
+                    "item_infos.json",
+                    serde_json::to_string(&item_infos).unwrap(),
+                )?;
+            }
         }
     }
     info!("{}", prometheus.render());
