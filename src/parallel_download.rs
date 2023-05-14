@@ -34,7 +34,6 @@ pub async fn parallel_download(downloads: Vec<Download>, download_semaphore: Arc
 
                 while should_retry {
                     let download_semaphore = download_semaphore.clone();
-                    let store = download.store.clone();
 
                     let path = &download.path;
                     let client = Client::builder()
