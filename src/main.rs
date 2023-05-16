@@ -5,7 +5,7 @@ mod parallel_download;
 mod store;
 mod store_data_download;
 mod xml_to_standard;
-use crate::models::ItemKey;
+use crate::models::{ItemKey, ItemPrice};
 use crate::{counter::DataCounter, models::ItemInfo};
 use anyhow::{anyhow, bail, Context, Result};
 use clap::Parser;
@@ -224,13 +224,6 @@ async fn main() -> Result<()> {
             }
         }
 
-        #[derive(Default, serde::Serialize, Debug)]
-        struct ItemPrice {
-            chain_id: i64,
-            store_id: i32,
-            price: String,
-        }
-
         #[serde_as]
         #[derive(Default, Serialize, Deserialize, Debug)]
         struct ItemInfos {
@@ -277,6 +270,7 @@ async fn main() -> Result<()> {
                         chain_id: price.chain_id,
                         store_id: price.store_id,
                         price: item.item_price,
+                        unit_of_measure_price: item.unit_of_measure_price,
                     });
                     data.names.inc(sanitization::sanitize_name(&item.item_name));
                     data.manufacturer_names.inc(item.manufacturer_name);
@@ -317,11 +311,13 @@ async fn main() -> Result<()> {
                         qty_in_package: counter::longest(&data.qty_in_package)
                             .context(key)?
                             .to_string(),
+                        prices: data.prices.clone(),
                     },
                 );
             }
 
             if args.save_item_infos_to_json {
+                info!("Saving item_infos.json");
                 std::fs::write(
                     "item_infos.json",
                     serde_json::to_string(&item_infos).unwrap(),
@@ -330,19 +326,79 @@ async fn main() -> Result<()> {
         }
         if args.save_to_sqlite {
             let path = "data.sqlite";
-            let connection = rusqlite::Connection::open(path)?;
-            connection.execute(
-                "CREATE TABLE Chains (
-                ChainId int NOT NULL PRIMARY KEY,
-                ChainName TEXT);",
-                (),
-            )?;
+            let mut connection = rusqlite::Connection::open(path)?;
             {
-                let mut statement = connection
-                    .prepare("INSERT INTO Chains  (ChainID, ChainName) VALUES (?1,?2)")?;
-                for chain in chains {
+                info!("Saving table Chains to sqlite");
+                connection.execute(
+                    "CREATE TABLE Chains (
+                                ChainId int NOT NULL PRIMARY KEY,
+                                ChainName TEXT);",
+                    (),
+                )?;
+                let mut statement =
+                    connection.prepare("INSERT INTO Chains (ChainID, ChainName) VALUES (?1,?2)")?;
+                for chain in &chains {
                     statement.execute(params![chain.chain_id, chain.chain_name])?;
                 }
+            }
+            {
+                info!("Saving table Subchains to sqlite");
+                connection.execute(
+                    "CREATE TABLE Subchains (
+                                ChainId int NOT NULL,
+                                ChainName TEXT,
+                                SubchainId int NOT NULL,
+                                SubchainName TEXT,
+                                PRIMARY KEY(ChainId,SubChainId)) ",
+                    (),
+                )?;
+                let mut statement = connection
+                    .prepare("INSERT INTO Subchains (ChainID, ChainName, SubchainId, SubchainName) VALUES (?1,?2,?3,?4)")?;
+                for chain in chains {
+                    for subchain in chain.subchains {
+                        statement.execute(params![
+                            chain.chain_id,
+                            chain.chain_name,
+                            subchain.subchain_id,
+                            subchain.subchain_name
+                        ])?;
+                    }
+                }
+            }
+            {
+                info!("Saving table Prices to sqlite");
+                connection.execute(
+                    "CREATE TABLE Prices (
+                                ChainId int NOT NULL,
+                                StoreId int NOT NULL,
+                                ItemCode TEXT,
+                                ItemPrice TEXT,
+                                UnitOfMeasurePrice TEXT,
+                                PRIMARY KEY(ChainId, StoreId, ItemCode)) ",
+                    (),
+                )?;
+                let transaction = connection.transaction()?;
+                {
+                    let tx = &transaction;
+                    let mut statement = tx
+                    .prepare("INSERT INTO Prices (ChainID, StoreId, ItemCode, ItemPrice, UnitOfMeasurePrice) VALUES (?1,?2,?3,?4,?5)")?;
+                    for (item_key, item_info) in &item_infos.data {
+                        for price in &item_info.prices {
+                            statement
+                                .execute(params![
+                                    price.chain_id,
+                                    price.store_id,
+                                    item_key.item_code,
+                                    price.price,
+                                    price.unit_of_measure_price
+                                ])
+                                .with_context(|| {
+                                    format!("With item_key = {:?}, price = {:?}", item_key, price)
+                                })?;
+                        }
+                    }
+                }
+                transaction.commit()?;
             }
         }
     }

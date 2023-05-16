@@ -37,6 +37,14 @@ pub struct Item {
     pub last_update_time: String,
 }
 
+#[derive(Default, Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
+pub struct ItemPrice {
+    pub chain_id: i64,
+    pub store_id: i32,
+    pub price: String,
+    pub unit_of_measure_price: String,
+}
+
 #[derive(Debug, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 pub struct ItemInfo {
     pub item_name: String,
@@ -48,6 +56,7 @@ pub struct ItemInfo {
     pub unit_of_measure: String,
     pub b_is_weighted: bool,
     pub qty_in_package: String,
+    pub prices: Vec<ItemPrice>,
 }
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, Serialize, Deserialize)]
