@@ -366,6 +366,61 @@ async fn main() -> Result<()> {
                 }
             }
             {
+                info!("Saving table Items to sqlite");
+                connection.execute(
+                    "CREATE TABLE Items (
+                                ChainId int,
+                                ItemCode int NOT NULL,
+                                ItemName TEXT,
+                                ManufactureName TEXT,
+                                ManufactureCountry TEXT,
+                                ManufactureItemDescription TEXT,
+                                UnitQuantity TEXT,
+                                Quantity TEXT,
+                                UnitOfMeasure TEXT,
+                                IsWeighted TEXT,
+                                QuantityInPackage TEXT,
+                                PRIMARY KEY(ChainId, ItemCode)) ",
+                    (),
+                )?;
+                let transaction = connection.transaction()?;
+                {
+                    let tx = &transaction;
+                    let mut statement = tx.prepare(
+                        "INSERT INTO Items (
+                            ChainId,
+                            ItemCode,
+                            ItemName,
+                            ManufactureName,
+                            ManufactureCountry,
+                            ManufactureItemDescription,
+                            UnitQuantity,
+                            Quantity,
+                            UnitOfMeasure,
+                            IsWeighted,
+                            QuantityInPackage) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+                    )?;
+                    for (item_key, item_info) in &item_infos.data {
+                        statement
+                            .execute(params![
+                                item_key.chain_id,
+                                item_key.item_code,
+                                item_info.item_name,
+                                item_info.manufacturer_name,
+                                item_info.manufacture_country,
+                                item_info.manufacturer_item_description,
+                                item_info.unit_qty,
+                                item_info.quantity,
+                                item_info.unit_of_measure,
+                                item_info.b_is_weighted,
+                                item_info.qty_in_package
+                            ])
+                            .with_context(|| format!("With item_key = {:?}", item_key))?;
+                    }
+                }
+                transaction.commit()?;
+            }
+            {
                 info!("Saving table Prices to sqlite");
                 connection.execute(
                     "CREATE TABLE Prices (
