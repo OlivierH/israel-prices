@@ -133,7 +133,8 @@ pub fn hande_price_file(path: &str) -> Result<Prices> {
         prices.items.push(i);
     }
 
-    // prices.items.sort_by_key(|i| i.item_code);
+    prices.items.sort_by_key(|i| i.item_code);
+    prices.items.dedup_by_key(|i| i.item_code);
 
     // match args.format.as_str() {
     //     "json" => {
