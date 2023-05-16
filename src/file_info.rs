@@ -179,7 +179,11 @@ impl FromStr for FileInfo {
             .strip_prefix(prefix)
             .and_then(|s| s.split_once("."))
             .map(|s| s.0)
-            .map(|s| s.split("-").map(|s| s.to_string()).collect())
+            .map(|s| {
+                s.split("-")
+                    .map(|s| s.trim_start_matches('0').to_string())
+                    .collect()
+            })
             .expect(format!("Error parsing {}", s).as_str());
         while parts.len() > 3 {
             parts.pop();
