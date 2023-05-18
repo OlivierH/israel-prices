@@ -133,3 +133,11 @@ pub struct SubchainRecord {
     pub subchain_id: SubchainId,
     pub subchain_name: String,
 }
+
+#[derive(Debug, Serialize)]
+pub struct ShufersalMetadata {
+    pub categories: Option<String>,
+    pub nutrition_info: Option<String>,
+    pub ingredients: Option<String>,
+    pub product_symbols: Option<String>,
+}
