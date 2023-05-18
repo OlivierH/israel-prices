@@ -1,10 +1,9 @@
-use core::num;
 use std::{str::FromStr, string::ParseError};
 
 use tracing::debug;
 
 #[derive(Debug)]
-enum NutritionType {
+pub enum NutritionType {
     B1,
     B12,
     B2,
@@ -46,6 +45,11 @@ enum NutritionType {
     VitaminK,
     Zinc,
     Undefined(String),
+}
+impl NutritionType {
+    fn str(&self) -> String {
+        format!("{self}")
+    }
 }
 impl std::fmt::Display for NutritionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -187,7 +191,7 @@ impl FromStr for NutritionType {
 }
 
 #[derive(Debug)]
-enum Unit {
+pub enum Unit {
     Kcal,
     Microgram,
     Milligram,
@@ -196,17 +200,23 @@ enum Unit {
     Undefined(String),
 }
 
-impl std::fmt::Display for Unit {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        let s = match self {
+impl Unit {
+    pub fn str(&self) -> String {
+        match self {
             Unit::Kcal => "kcal",
             Unit::Microgram => "µg",
             Unit::Milligram => "mg",
             Unit::Gram => "g",
             Unit::Teaspoon => "teaspoon",
             Unit::Undefined(s) => s,
-        };
-        write!(f, "{s}")
+        }
+        .to_string()
+    }
+}
+
+impl std::fmt::Display for Unit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{}", self.str())
     }
 }
 impl FromStr for Unit {
@@ -231,17 +241,17 @@ impl FromStr for Unit {
 }
 
 #[derive(Debug)]
-struct NutritionalValue {
+pub struct NutritionalValue {
     number: String,
     unit: Unit,
     nutrition_type: NutritionType,
 }
 
 impl NutritionalValue {
-    fn new(number: &str, unit: &str, nutrition_type: &str) -> Option<NutritionalValue> {
+    pub fn new(number: String, unit: String, nutrition_type: String) -> Option<NutritionalValue> {
         if unit == "" && nutrition_type == "כפיות סוכר" {
             return Some(NutritionalValue {
-                number: number.to_string(),
+                number: number,
                 unit: Unit::Teaspoon,
                 nutrition_type: NutritionType::Sugar,
             });
@@ -250,9 +260,16 @@ impl NutritionalValue {
             return None;
         }
         return Some(NutritionalValue {
-            number: number.to_string(),
+            number: number,
             unit: unit.parse().unwrap(),
             nutrition_type: nutrition_type.parse().unwrap(),
         });
+    }
+    pub fn to_tuple(&self) -> (String, String, String) {
+        (
+            self.number.clone(),
+            self.unit.str(),
+            self.nutrition_type.str(),
+        )
     }
 }

@@ -21,6 +21,8 @@ use tokio;
 use tracing::{debug, error, info, span, Level};
 use tracing_subscriber::EnvFilter;
 mod country_code;
+mod nutrition;
+mod online_store_data;
 mod sanitization;
 mod xml;
 fn run(command: &str) -> Result<()> {
@@ -111,6 +113,9 @@ struct Args {
 
     #[arg(long, default_value = "")]
     store: String,
+
+    #[arg(long)]
+    fetch_shufersal_metadata: bool,
 }
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 10)]
@@ -233,6 +238,18 @@ async fn main() -> Result<()> {
 
         let mut item_infos: ItemInfos = ItemInfos::default();
 
+        let shufersal_item_codes = prices
+            .iter()
+            .filter(|price| price.chain_id == 7290027600007)
+            .next()
+            .map(|price| {
+                price
+                    .items
+                    .iter()
+                    .map(|item| item.item_code)
+                    .collect::<Vec<_>>()
+            });
+
         if args.load_item_infos_to_json {
             let item_infos_file = std::io::BufReader::new(std::fs::File::open("item_infos.json")?);
             info!("Reading item_infos from item_infos.json");
@@ -323,6 +340,21 @@ async fn main() -> Result<()> {
                     serde_json::to_string(&item_infos).unwrap(),
                 )?;
             }
+        }
+        let shufersal_metadata = if args.fetch_shufersal_metadata {
+            info!("Fetching Shufersal data");
+            match shufersal_item_codes {
+                Some(codes) => Some(online_store_data::fetch_shufersal_metadata(codes).await?),
+                None => None,
+            }
+        } else {
+            None
+        };
+        if let Some(shufersal_metadata) = &shufersal_metadata {
+            std::fs::write(
+                "shufersal_metadata.json",
+                serde_json::to_string(&shufersal_metadata).unwrap(),
+            )?;
         }
         if args.save_to_sqlite {
             let path = "data.sqlite";
@@ -451,6 +483,36 @@ async fn main() -> Result<()> {
                                     format!("With item_key = {:?}, price = {:?}", item_key, price)
                                 })?;
                         }
+                    }
+                }
+                transaction.commit()?;
+            }
+            if let Some(shufersal_metadata) = shufersal_metadata {
+                info!("Saving table ShufersalMetadata to sqlite");
+                connection.execute(
+                    "CREATE TABLE ShufersalMetadata (
+                                ItemCode TEXT NOT NULL PRIMARY KEY,
+                                Categories TEXT,
+                                NutritionInfo TEXT,
+                                Ingredients TEXT,
+                                ProductSymbols TEXT )",
+                    (),
+                )?;
+                let transaction = connection.transaction()?;
+                {
+                    let tx = &transaction;
+                    let mut statement = tx
+                    .prepare("INSERT INTO ShufersalMetadata (ItemCode, Categories, NutritionInfo, Ingredients, ProductSymbols) VALUES (?1,?2,?3,?4,?5)")?;
+                    for (item_code, metadata) in shufersal_metadata.iter() {
+                        statement
+                            .execute(params![
+                                item_code,
+                                metadata.categories,
+                                metadata.nutrition_info,
+                                metadata.ingredients,
+                                metadata.product_symbols
+                            ])
+                            .with_context(|| format!("With item_code = {:?}", item_code))?;
                     }
                 }
                 transaction.commit()?;
