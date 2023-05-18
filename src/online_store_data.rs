@@ -5,6 +5,7 @@ use crate::{
 use anyhow::{anyhow, Result};
 use futures::{stream::FuturesUnordered, StreamExt};
 use itertools::Itertools;
+use metrics::gauge;
 use scraper::{ElementRef, Html, Selector};
 use std::collections::HashMap;
 use tracing::{debug, info, instrument};
@@ -141,10 +142,11 @@ async fn fetch(item_code: Barcode) -> Result<(Barcode, ShufersalMetadata)> {
     ))
 }
 
-#[instrument]
+#[instrument(skip_all)]
 pub async fn fetch_shufersal_metadata(
     item_codes: Vec<Barcode>,
 ) -> Result<HashMap<i64, ShufersalMetadata>> {
+    let start = std::time::Instant::now();
     let mut data = HashMap::new();
     let futures = FuturesUnordered::new();
 
@@ -165,6 +167,15 @@ pub async fn fetch_shufersal_metadata(
         }
         data.insert(result.0, result.1);
     }
-
+    info!("Finished to await tasks");
+    gauge!(
+        "fetch_shufersal_metadata_time",
+        start.elapsed().as_secs_f64()
+    );
+    info!(
+        "It took {} mins and {} secs to fetch all shufersal metadata",
+        start.elapsed().as_secs() / 60,
+        start.elapsed().as_secs()
+    );
     Ok(data)
 }
