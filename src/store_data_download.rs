@@ -549,7 +549,7 @@ async fn get_downloads_shufersal(
 #[instrument(fields(store_name=store.name), skip_all)]
 async fn download_store_data(
     store: Store,
-    dir: String,
+    _dir: String,
     quick: bool,
     file_limit: Option<usize>,
     download_semaphore: Arc<Semaphore>,
