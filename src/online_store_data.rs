@@ -145,14 +145,21 @@ async fn fetch(item_code: Barcode) -> Result<(Barcode, ShufersalMetadata)> {
 #[instrument(skip_all)]
 pub async fn fetch_shufersal_metadata(
     item_codes: Vec<Barcode>,
+    limit: usize,
 ) -> Result<HashMap<i64, ShufersalMetadata>> {
     let start = std::time::Instant::now();
     let mut data = HashMap::new();
     let futures = FuturesUnordered::new();
 
+    let item_codes = if limit == 0 {
+        &item_codes[0..item_codes.len()]
+    } else {
+        &item_codes[0..limit]
+    };
+
     info!("Starting to create tasks");
     for (i, item_code) in item_codes.into_iter().enumerate() {
-        futures.push(tokio::spawn(fetch(item_code)));
+        futures.push(tokio::spawn(fetch(*item_code)));
         if (i % 100 == 0 && i < 1000) || (i % 1000 == 0) {
             debug!("Created task {i}");
         }

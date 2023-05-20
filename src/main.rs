@@ -116,6 +116,9 @@ struct Args {
 
     #[arg(long)]
     fetch_shufersal_metadata: bool,
+
+    #[arg(long, default_value = "0")]
+    metadata_fetch_limit: usize,
 }
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 10)]
@@ -344,7 +347,10 @@ async fn main() -> Result<()> {
         let shufersal_metadata = if args.fetch_shufersal_metadata {
             info!("Fetching Shufersal data");
             match shufersal_item_codes {
-                Some(codes) => Some(online_store_data::fetch_shufersal_metadata(codes).await?),
+                Some(codes) => Some(
+                    online_store_data::fetch_shufersal_metadata(codes, args.metadata_fetch_limit)
+                        .await?,
+                ),
                 None => None,
             }
         } else {
