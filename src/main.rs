@@ -10,7 +10,6 @@ use crate::{counter::DataCounter, models::ItemInfo};
 use anyhow::{anyhow, bail, Context, Result};
 use clap::Parser;
 use metrics_exporter_prometheus::PrometheusBuilder;
-use rusqlite::params;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_with::serde_as;
