@@ -90,6 +90,9 @@ struct Args {
     #[arg(long)]
     save_to_sqlite: bool,
 
+    #[arg(long, default_value = "")]
+    save_to_sqlite_only: String,
+
     #[arg(long)]
     delete_sqlite: bool,
 
@@ -363,7 +366,12 @@ async fn main() -> Result<()> {
             )?;
         }
         if args.save_to_sqlite {
-            sqlite_utils::save_to_sqlite(&chains, &item_infos.data, &shufersal_metadata)?;
+            sqlite_utils::save_to_sqlite(
+                &chains,
+                &item_infos.data,
+                &shufersal_metadata,
+                &args.save_to_sqlite_only,
+            )?;
         }
     }
     info!("{}", prometheus.render());

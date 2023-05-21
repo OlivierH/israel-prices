@@ -140,4 +140,5 @@ pub struct ShufersalMetadata {
     pub nutrition_info: Option<String>,
     pub ingredients: Option<String>,
     pub product_symbols: Option<String>,
+    pub image_url: Option<String>,
 }

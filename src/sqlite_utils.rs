@@ -10,10 +10,11 @@ pub fn save_to_sqlite(
     chains: &Vec<Chain>,
     item_infos: &HashMap<ItemKey, ItemInfo>,
     shufersal_metadata: &Option<HashMap<Barcode, ShufersalMetadata>>,
+    save_to_sqlite_only: &str,
 ) -> Result<()> {
     let path = "data.sqlite";
     let mut connection = rusqlite::Connection::open(path)?;
-    {
+    if save_to_sqlite_only.is_empty() || save_to_sqlite_only.eq_ignore_ascii_case("chains") {
         info!("Saving table Chains to sqlite");
         connection.execute(
             "CREATE TABLE Chains (
@@ -27,7 +28,7 @@ pub fn save_to_sqlite(
             statement.execute(params![chain.chain_id, chain.chain_name])?;
         }
     }
-    {
+    if save_to_sqlite_only.is_empty() || save_to_sqlite_only.eq_ignore_ascii_case("subchains") {
         info!("Saving table Subchains to sqlite");
         connection.execute(
             "CREATE TABLE Subchains (
@@ -51,7 +52,7 @@ pub fn save_to_sqlite(
             }
         }
     }
-    {
+    if save_to_sqlite_only.is_empty() || save_to_sqlite_only.eq_ignore_ascii_case("items") {
         info!("Saving table Items to sqlite");
         connection.execute(
             "CREATE TABLE Items (
@@ -106,7 +107,7 @@ pub fn save_to_sqlite(
         }
         transaction.commit()?;
     }
-    {
+    if save_to_sqlite_only.is_empty() || save_to_sqlite_only.eq_ignore_ascii_case("prices") {
         info!("Saving table Prices to sqlite");
         connection.execute(
             "CREATE TABLE Prices (
@@ -141,35 +142,39 @@ pub fn save_to_sqlite(
         }
         transaction.commit()?;
     }
-    if let Some(shufersal_metadata) = shufersal_metadata {
-        info!("Saving table ShufersalMetadata to sqlite");
-        connection.execute(
-            "CREATE TABLE ShufersalMetadata (
+    if save_to_sqlite_only.is_empty() || save_to_sqlite_only.eq_ignore_ascii_case("shufersal") {
+        if let Some(shufersal_metadata) = shufersal_metadata {
+            info!("Saving table ShufersalMetadata to sqlite");
+            connection.execute(
+                "CREATE TABLE ShufersalMetadata (
                         ItemCode TEXT NOT NULL PRIMARY KEY,
                         Categories TEXT,
                         NutritionInfo TEXT,
                         Ingredients TEXT,
-                        ProductSymbols TEXT )",
-            (),
-        )?;
-        let transaction = connection.transaction()?;
-        {
-            let tx = &transaction;
-            let mut statement = tx
-            .prepare("INSERT INTO ShufersalMetadata (ItemCode, Categories, NutritionInfo, Ingredients, ProductSymbols) VALUES (?1,?2,?3,?4,?5)")?;
-            for (item_code, metadata) in shufersal_metadata.iter() {
-                statement
-                    .execute(params![
-                        item_code,
-                        metadata.categories,
-                        metadata.nutrition_info,
-                        metadata.ingredients,
-                        metadata.product_symbols
-                    ])
-                    .with_context(|| format!("With item_code = {:?}", item_code))?;
+                        ProductSymbols TEXT,
+                        ImageUrl TEXT )",
+                (),
+            )?;
+            let transaction = connection.transaction()?;
+            {
+                let tx = &transaction;
+                let mut statement = tx
+            .prepare("INSERT INTO ShufersalMetadata (ItemCode, Categories, NutritionInfo, Ingredients, ProductSymbols, ImageUrl) VALUES (?1,?2,?3,?4,?5,?6)")?;
+                for (item_code, metadata) in shufersal_metadata.iter() {
+                    statement
+                        .execute(params![
+                            item_code,
+                            metadata.categories,
+                            metadata.nutrition_info,
+                            metadata.ingredients,
+                            metadata.product_symbols,
+                            metadata.image_url,
+                        ])
+                        .with_context(|| format!("With item_code = {:?}", item_code))?;
+                }
             }
+            transaction.commit()?;
         }
-        transaction.commit()?;
     }
     Ok(())
 }

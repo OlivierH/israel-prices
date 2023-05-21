@@ -120,6 +120,16 @@ fn get_product_symbols(document: &Html) -> Result<Option<String>> {
     Ok(Some(serde_json::to_string(&symbols)?))
 }
 
+fn get_image_url(document: &Html) -> Result<Option<String>> {
+    let image_url_selector = create_selector(".img-responsive")?;
+    let url = document
+        .select(&image_url_selector)
+        .next()
+        .and_then(|e| e.value().attr("src"))
+        .map(|s| s.to_string());
+    return Ok(url);
+}
+
 async fn fetch(item_code: Barcode) -> Result<(Barcode, ShufersalMetadata)> {
     let url = format!("https://www.shufersal.co.il/online/he/p/P_{item_code}/json");
     debug!("Fetching url {url} for itemcode {item_code}");
@@ -130,6 +140,7 @@ async fn fetch(item_code: Barcode) -> Result<(Barcode, ShufersalMetadata)> {
     let nutrition_info = get_nutrition_info(&document)?;
     let ingredients = get_ingredients(&document)?;
     let product_symbols = get_product_symbols(&document)?;
+    let image_url = get_image_url(&document)?;
 
     Ok((
         item_code,
@@ -138,6 +149,7 @@ async fn fetch(item_code: Barcode) -> Result<(Barcode, ShufersalMetadata)> {
             nutrition_info,
             ingredients,
             product_symbols,
+            image_url,
         },
     ))
 }
