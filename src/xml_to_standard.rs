@@ -9,6 +9,7 @@ use std::collections::HashMap;
 use std::io::prelude::*;
 use std::time::Instant;
 use tracing::debug;
+use tracing::instrument;
 use tracing::span;
 use tracing::Level;
 
@@ -51,6 +52,7 @@ fn to_full_store(node: &roxmltree::Node, path: &str) -> Result<FullStore> {
     Ok(full_store)
 }
 
+#[instrument]
 pub fn hande_price_file(path: &str) -> Result<Prices> {
     let current = Instant::now();
     let contents = read_as_utf_8(&path)?;
