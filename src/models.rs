@@ -149,5 +149,8 @@ pub struct RamiLevyMetadata {
     pub nutrition_info: Option<String>,
     pub ingredients: Option<String>,
     pub product_symbols: Option<String>,
-    pub image_url: Option<String>,
+    pub image_url_small: Option<String>,
+    pub image_url_original: Option<String>,
+    pub image_url_trim: Option<String>,
+    pub image_url_transparent: Option<String>,
 }

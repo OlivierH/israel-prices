@@ -104,6 +104,9 @@ struct Args {
     no_process: bool,
 
     #[arg(long)]
+    no_build_item_infos: bool,
+
+    #[arg(long)]
     clear_files: bool,
 
     #[arg(long)]
@@ -299,7 +302,7 @@ async fn main() -> Result<()> {
                 "Read {} item_infos from item_infos.json",
                 item_infos.data.len()
             );
-        } else {
+        } else if !args.no_build_item_infos {
             #[derive(Default, Debug)]
             struct AggregatedData {
                 prices: Vec<ItemPrice>,
@@ -398,18 +401,19 @@ async fn main() -> Result<()> {
                 }
             }
         }
-        let rami_levy_metadata = if args.fetch_rami_levy_metadata {
-            info!("Fetching Rami Levy data - not ready yet");
-            Some(
-                online_store_data::fetch_rami_levy_metadata(
-                    rami_levy_item_codes,
-                    args.metadata_fetch_limit,
-                )
-                .await?,
-            )
-        } else {
-            None
-        };
+        if args.fetch_rami_levy_metadata {
+            let num_of_chunks = rami_levy_item_codes.len() / 1000;
+            for (i, chunk) in rami_levy_item_codes.chunks(1000).enumerate() {
+                info!("Fetching rami levy metadata chunk {i}/{num_of_chunks}");
+                let rami_levy_metadata =
+                    online_store_data::fetch_rami_levy_metadata(chunk, args.metadata_fetch_limit)
+                        .await?;
+                sqlite_utils::save_rami_levy_metadata_to_sqlite(&rami_levy_metadata)?;
+                if args.metadata_fetch_limit > 0 {
+                    break;
+                }
+            }
+        }
     }
     info!("{}", prometheus.render());
     Ok(())

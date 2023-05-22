@@ -5,8 +5,9 @@ use crate::{
 use anyhow::{anyhow, Result};
 use futures::{stream::FuturesUnordered, StreamExt};
 use itertools::Itertools;
-use metrics::{gauge, increment_counter};
+use metrics::increment_counter;
 use scraper::{ElementRef, Html, Selector};
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use tracing::{debug, info, instrument};
 
@@ -187,37 +188,118 @@ pub async fn fetch_shufersal_metadata(
         data.insert(result.0, result.1);
     }
     info!("Finished to await tasks");
-    gauge!(
-        "fetch_shufersal_metadata_time",
-        start.elapsed().as_secs_f64()
-    );
-    info!(
-        "It took {} mins and {} secs to fetch all shufersal metadata",
-        start.elapsed().as_secs() / 60,
-        start.elapsed().as_secs()
-    );
     Ok(data)
 }
 
 async fn fetch_rami_levy(item_code: Barcode) -> Result<(Barcode, RamiLevyMetadata)> {
-    let url = format!("https://www.shufersal.co.il/online/he/p/P_{item_code}/json");
+    let url = "https://www.rami-levy.co.il/api/items";
     debug!("Fetching url {url} for itemcode {item_code}");
 
+    #[derive(Deserialize, Debug)]
+    struct RamiLevyJsonFoodSymbol {
+        value: String,
+    }
+    #[derive(Serialize, Deserialize, Debug)]
+    struct RamiLevyJsonImages {
+        small: String,
+        original: String,
+        trim: String,
+        transparent: String,
+    }
+    #[derive(Deserialize, Debug)]
+    struct RamiLevyJsonNutritionalValueField {
+        #[serde(rename = "UOM")]
+        unit_of_measurement: String,
+        value: String,
+    }
+    #[derive(Deserialize, Debug)]
+    struct RamiLevyJsonNutritionalValues {
+        label: String,
+        fields: Vec<RamiLevyJsonNutritionalValueField>,
+    }
+    #[derive(Deserialize, Debug)]
+    struct RamiLevyJsonDetails {
+        #[serde(rename = "Nutritional_Values")]
+        nutritional_values: Vec<RamiLevyJsonNutritionalValues>,
+        #[serde(rename = "Ingredient_Sequence_and_Name")]
+        ingredient_sequence_and_name: String,
+        #[serde(rename = "Food_Symbol_Red")]
+        product_symbols: Option<Vec<RamiLevyJsonFoodSymbol>>,
+    }
+    #[derive(Deserialize, Debug)]
+    struct RamiLevyJsonCategory {
+        name: String,
+    }
+    #[derive(Deserialize, Debug)]
+    struct RamiLevyJsonData {
+        department: RamiLevyJsonCategory,
+        group: RamiLevyJsonCategory,
+        #[serde(rename = "subGroup")]
+        sub_group: RamiLevyJsonCategory,
+        #[serde(rename = "gs")]
+        details: RamiLevyJsonDetails,
+        images: RamiLevyJsonImages,
+    }
+
+    #[derive(Deserialize, Debug)]
+    struct RamiLevyJsonValue {
+        data: Vec<RamiLevyJsonData>,
+    }
+
     let client = reqwest::Client::new();
-    let document = client
+    let response_str = &client
         .post(url)
         .header("content-type", "application/json;charset=UTF-8")
-        .body(format!("{{\"aggs\":1,\"type\":\"barcode\"}}"))
+        .body(format!("{{\"ids\":\"{item_code}\",\"type\":\"barcode\"}}"))
         .send()
         .await?
         .text()
         .await?;
-    let document = Html::parse_document(&document);
-    let categories = get_categories(&document)?;
-    let nutrition_info = get_nutrition_info(&document)?;
-    let ingredients = get_ingredients(&document)?;
-    let product_symbols = get_product_symbols(&document)?;
-    let image_url = get_image_url(&document)?;
+    let data: RamiLevyJsonValue = serde_json::from_str::<RamiLevyJsonValue>(response_str)?;
+    let data = data
+        .data
+        .get(0)
+        .ok_or(anyhow!("no data in Rami levi response"))?;
+    let categories = Some(serde_json::to_string(&[
+        &data.department.name,
+        &data.group.name,
+        &data.sub_group.name,
+    ])?);
+    let ingredients =
+        Some(data.details.ingredient_sequence_and_name.to_string()).filter(|s| !s.is_empty());
+    let product_symbols = data.details.product_symbols.as_ref().and_then(|symbols| {
+        let symbols = symbols
+            .iter()
+            .map(|p| p.value.clone())
+            .collect::<Vec<String>>();
+        if symbols.is_empty() {
+            None
+        } else {
+            Some(symbols)
+        }
+    });
+    let product_symbols = match product_symbols {
+        Some(product_symbols) => Some(serde_json::to_string(&product_symbols)?),
+        None => None,
+    };
+    let nutrition_info = data
+        .details
+        .nutritional_values
+        .iter()
+        .map(|v| {
+            let (value, unit) = if let Some(field) = v.fields.get(0) {
+                (field.value.as_str(), field.unit_of_measurement.as_str())
+            } else {
+                ("", "")
+            };
+            (unit.to_string(), value.to_string(), v.label.clone())
+        })
+        .collect::<Vec<(String, String, String)>>();
+    let nutrition_info = if nutrition_info.is_empty() {
+        None
+    } else {
+        Some(serde_json::to_string(&nutrition_info)?)
+    };
 
     Ok((
         item_code,
@@ -226,35 +308,38 @@ async fn fetch_rami_levy(item_code: Barcode) -> Result<(Barcode, RamiLevyMetadat
             nutrition_info,
             ingredients,
             product_symbols,
-            image_url,
+            image_url_original: Some(data.images.original.clone()),
+            image_url_small: Some(data.images.small.clone()),
+            image_url_transparent: Some(data.images.transparent.clone()),
+            image_url_trim: Some(data.images.trim.clone()),
         },
     ))
 }
 
-#[instrument(skip_all)]
-pub async fn fetch_rami_levy_metadata(
-    item_codes: Vec<Barcode>,
-    limit: usize,
-) -> Result<HashMap<i64, RamiLevyMetadata>> {
-    let start = std::time::Instant::now();
-    let mut data = HashMap::new();
-    let futures = FuturesUnordered::new();
-
-    let item_codes = if limit == 0 {
+fn limit_item_codes(item_codes: &[Barcode], limit: usize) -> &[Barcode] {
+    if limit == 0 {
         &item_codes[0..item_codes.len()]
     } else {
         &item_codes[0..limit]
-    };
+    }
+}
+
+#[instrument(skip_all)]
+pub async fn fetch_rami_levy_metadata(
+    item_codes: &[Barcode],
+    limit: usize,
+) -> Result<HashMap<i64, RamiLevyMetadata>> {
+    let mut data = HashMap::new();
+    let futures = FuturesUnordered::new();
 
     info!("Starting to create tasks");
-    for (i, item_code) in item_codes.into_iter().enumerate() {
+    for (i, item_code) in limit_item_codes(&item_codes, limit).into_iter().enumerate() {
         futures.push(tokio::spawn(fetch_rami_levy(*item_code)));
         if (i % 100 == 0 && i < 1000) || (i % 1000 == 0) {
             debug!("Created task {i}");
         }
     }
-    info!("Finished to create tasks");
-    info!("Starting to await tasks");
+    info!("Finished to create tasks, starting to await tasks");
     let mut stream = futures.enumerate();
     while let Some((i, result)) = stream.next().await {
         let result = result??;
@@ -263,15 +348,5 @@ pub async fn fetch_rami_levy_metadata(
         }
         data.insert(result.0, result.1);
     }
-    info!("Finished to await tasks");
-    gauge!(
-        "fetch_rami_levy_metadata_time",
-        start.elapsed().as_secs_f64()
-    );
-    info!(
-        "It took {} mins and {} secs to fetch all shufersal metadata",
-        start.elapsed().as_secs() / 60,
-        start.elapsed().as_secs()
-    );
     Ok(data)
 }

@@ -4,7 +4,7 @@ use anyhow::{Context, Result};
 use rusqlite::{params, Connection};
 use tracing::info;
 
-use crate::models::{Barcode, Chain, ItemInfo, ItemKey, ShufersalMetadata};
+use crate::models::{Barcode, Chain, ItemInfo, ItemKey, RamiLevyMetadata, ShufersalMetadata};
 
 fn connection() -> Result<Connection> {
     let path = "data.sqlite";
@@ -41,6 +41,50 @@ pub fn save_shufersal_metadata_to_sqlite(
                     metadata.ingredients,
                     metadata.product_symbols,
                     metadata.image_url,
+                ])
+                .with_context(|| format!("With item_code = {:?}", item_code))?;
+        }
+    }
+    transaction.commit()?;
+    Ok(())
+}
+
+pub fn save_rami_levy_metadata_to_sqlite(
+    rami_levy_metadata: &HashMap<Barcode, RamiLevyMetadata>,
+) -> Result<()> {
+    let mut connection = connection()?;
+
+    info!("Saving table RamiLevyMetadata to sqlite");
+    connection.execute(
+        "CREATE TABLE IF NOT EXISTS RamiLevyMetadata (
+                        ItemCode TEXT NOT NULL PRIMARY KEY,
+                        Categories TEXT,
+                        NutritionInfo TEXT,
+                        Ingredients TEXT,
+                        ProductSymbols TEXT,
+                        ImageUrlSmall TEXT,
+                        ImageUrlOriginal TEXT,
+                        ImageUrlTrim TEXT,
+                        ImageUrlTransparent TEXT)",
+        (),
+    )?;
+    let transaction = connection.transaction()?;
+    {
+        let tx = &transaction;
+        let mut statement = tx
+            .prepare("INSERT INTO RamiLevyMetadata (ItemCode, Categories, NutritionInfo, Ingredients, ProductSymbols, ImageUrlSmall, ImageUrlOriginal, ImageUrlTrim, ImageUrlTransparent) VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9)")?;
+        for (item_code, metadata) in rami_levy_metadata.iter() {
+            statement
+                .execute(params![
+                    item_code,
+                    metadata.categories,
+                    metadata.nutrition_info,
+                    metadata.ingredients,
+                    metadata.product_symbols,
+                    metadata.image_url_small,
+                    metadata.image_url_original,
+                    metadata.image_url_trim,
+                    metadata.image_url_transparent,
                 ])
                 .with_context(|| format!("With item_code = {:?}", item_code))?;
         }
