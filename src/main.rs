@@ -14,11 +14,13 @@ use serde::Deserialize;
 use serde::Serialize;
 use serde_with::serde_as;
 use std::collections::HashMap;
+use std::fs::File;
 use std::io::ErrorKind;
+use std::sync::Mutex;
 use store::*;
 use tokio;
 use tracing::{debug, error, info, span, Level};
-use tracing_subscriber::EnvFilter;
+use tracing_subscriber::prelude::*;
 mod country_code;
 mod nutrition;
 mod online_store_data;
@@ -55,8 +57,10 @@ fn curate_data_raw() -> Result<()> {
     info!("Deleting x1 files");
     run("find data_raw -type f -name \"*.x1\" -print -delete")?;
 
+    // Note: we need a loop here in case a gz file is malformed and causes an error
     info!("Unzipping all files");
-    run("gunzip data_raw/*/*.gz")?;
+    run("for file in data_raw/*/*.gz; do gunzip $file; done")?;
+    // run("gunzip data_raw/*/*.gz")?;
 
     Ok(())
 }
@@ -120,6 +124,9 @@ struct Args {
     #[arg(long)]
     fetch_shufersal_metadata: bool,
 
+    #[arg(long)]
+    fetch_rami_levy_metadata: bool,
+
     #[arg(long, default_value = "0")]
     metadata_fetch_limit: usize,
 }
@@ -129,9 +136,13 @@ async fn main() -> Result<()> {
     let prometheus = PrometheusBuilder::new()
         .install_recorder()
         .expect("failed to install prometheus exporter");
-    tracing_subscriber::fmt()
-        .with_env_filter(EnvFilter::from_default_env())
-        .init();
+    let log_file = File::create("log.txt")?;
+    let subscriber = tracing_subscriber::registry()
+        .with(tracing_subscriber::fmt::layer())
+        .with(tracing_subscriber::EnvFilter::from_default_env())
+        .with(tracing_subscriber::fmt::layer().with_writer(Mutex::new(log_file)));
+
+    tracing::subscriber::set_global_default(subscriber)?;
 
     info!("Starting");
 
@@ -202,6 +213,7 @@ async fn main() -> Result<()> {
             prices = serde_json::from_reader(prices_file)?;
             info!("Read {} prices from prices.json", prices.len());
         } else {
+            info!("Starting processing of files");
             let paths = walkdir::WalkDir::new(std::path::Path::new("data_raw"))
                 .into_iter()
                 .filter_map(|e| e.ok())
@@ -217,22 +229,32 @@ async fn main() -> Result<()> {
                 let filename = path.rsplit_once("/").unwrap().1;
                 filename.starts_with("Price") || filename.starts_with("price")
             });
+            info!(
+                "There are {} stores files and {} prices files",
+                stores_paths.len(),
+                price_paths.len()
+            );
+            info!("Starting to handle stores");
             for store_path in stores_paths {
                 debug!("Reading file: {store_path}");
                 let chain = xml_to_standard::handle_stores_file(&store_path)?;
                 chains.push(chain);
             }
             if args.save_to_json {
+                info!("Writing chains.json");
                 std::fs::write("chains.json", serde_json::to_string(&chains).unwrap())?;
             }
+            info!("Finished to handle stores, starting to handle prices");
             for price_path in price_paths {
                 debug!("Reading file: {price_path}");
                 let price = xml_to_standard::hande_price_file(&price_path)?;
                 prices.push(price);
             }
             if args.save_to_json {
+                info!("Writing prices.json");
                 std::fs::write("prices.json", serde_json::to_string(&prices).unwrap())?;
             }
+            info!("Finished to handle prices");
         }
 
         #[serde_as]
@@ -244,17 +266,30 @@ async fn main() -> Result<()> {
 
         let mut item_infos: ItemInfos = ItemInfos::default();
 
-        let shufersal_item_codes = prices
-            .iter()
-            .filter(|price| price.chain_id == 7290027600007)
-            .next()
-            .map(|price| {
-                price
-                    .items
-                    .iter()
-                    .map(|item| item.item_code)
-                    .collect::<Vec<_>>()
-            });
+        fn get_item_codes_for_chain(
+            chain_id: models::ChainId,
+            prices: &Vec<models::Prices>,
+        ) -> Vec<models::Barcode> {
+            let mut codes = prices
+                .iter()
+                .filter(|price| price.chain_id == chain_id)
+                .flat_map(|price| price.items.iter().map(|item| item.item_code))
+                .collect::<Vec<_>>();
+            codes.sort();
+            codes.dedup();
+            codes
+        }
+
+        let shufersal_item_codes = get_item_codes_for_chain(7290027600007, &prices);
+        info!(
+            "Found {} barcodes for shufersal",
+            shufersal_item_codes.len()
+        );
+        let rami_levy_item_codes = get_item_codes_for_chain(7290058140886, &prices);
+        info!(
+            "Found {} barcodes for rami_levy",
+            rami_levy_item_codes.len()
+        );
 
         if args.load_item_infos_to_json {
             let item_infos_file = std::io::BufReader::new(std::fs::File::open("item_infos.json")?);
@@ -347,32 +382,34 @@ async fn main() -> Result<()> {
                 )?;
             }
         }
-        let shufersal_metadata = if args.fetch_shufersal_metadata {
-            info!("Fetching Shufersal data");
-            match shufersal_item_codes {
-                Some(codes) => Some(
-                    online_store_data::fetch_shufersal_metadata(codes, args.metadata_fetch_limit)
-                        .await?,
-                ),
-                None => None,
+        if args.save_to_sqlite {
+            sqlite_utils::save_to_sqlite(&chains, &item_infos.data, &args.save_to_sqlite_only)?;
+        }
+        if args.fetch_shufersal_metadata {
+            let num_of_chunks = shufersal_item_codes.len() / 1000;
+            for (i, chunk) in shufersal_item_codes.chunks(1000).enumerate() {
+                info!("Fetching shufersal metadata chunk {i}/{num_of_chunks}");
+                let shufersal_metadata =
+                    online_store_data::fetch_shufersal_metadata(chunk, args.metadata_fetch_limit)
+                        .await?;
+                sqlite_utils::save_shufersal_metadata_to_sqlite(&shufersal_metadata)?;
+                if args.metadata_fetch_limit > 0 {
+                    break;
+                }
             }
+        }
+        let rami_levy_metadata = if args.fetch_rami_levy_metadata {
+            info!("Fetching Rami Levy data - not ready yet");
+            Some(
+                online_store_data::fetch_rami_levy_metadata(
+                    rami_levy_item_codes,
+                    args.metadata_fetch_limit,
+                )
+                .await?,
+            )
         } else {
             None
         };
-        if let Some(shufersal_metadata) = &shufersal_metadata {
-            std::fs::write(
-                "shufersal_metadata.json",
-                serde_json::to_string(&shufersal_metadata).unwrap(),
-            )?;
-        }
-        if args.save_to_sqlite {
-            sqlite_utils::save_to_sqlite(
-                &chains,
-                &item_infos.data,
-                &shufersal_metadata,
-                &args.save_to_sqlite_only,
-            )?;
-        }
     }
     info!("{}", prometheus.render());
     Ok(())

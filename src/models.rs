@@ -142,3 +142,12 @@ pub struct ShufersalMetadata {
     pub product_symbols: Option<String>,
     pub image_url: Option<String>,
 }
+
+#[derive(Debug, Serialize)]
+pub struct RamiLevyMetadata {
+    pub categories: Option<String>,
+    pub nutrition_info: Option<String>,
+    pub ingredients: Option<String>,
+    pub product_symbols: Option<String>,
+    pub image_url: Option<String>,
+}

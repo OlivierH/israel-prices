@@ -1,11 +1,11 @@
 use crate::{
-    models::{Barcode, ShufersalMetadata},
+    models::{Barcode, RamiLevyMetadata, ShufersalMetadata},
     nutrition,
 };
 use anyhow::{anyhow, Result};
 use futures::{stream::FuturesUnordered, StreamExt};
 use itertools::Itertools;
-use metrics::gauge;
+use metrics::{gauge, increment_counter};
 use scraper::{ElementRef, Html, Selector};
 use std::collections::HashMap;
 use tracing::{debug, info, instrument};
@@ -141,7 +141,7 @@ async fn fetch(item_code: Barcode) -> Result<(Barcode, ShufersalMetadata)> {
     let ingredients = get_ingredients(&document)?;
     let product_symbols = get_product_symbols(&document)?;
     let image_url = get_image_url(&document)?;
-
+    increment_counter!("fetch_shufersal_item_completed");
     Ok((
         item_code,
         ShufersalMetadata {
@@ -156,7 +156,7 @@ async fn fetch(item_code: Barcode) -> Result<(Barcode, ShufersalMetadata)> {
 
 #[instrument(skip_all)]
 pub async fn fetch_shufersal_metadata(
-    item_codes: Vec<Barcode>,
+    item_codes: &[Barcode],
     limit: usize,
 ) -> Result<HashMap<i64, ShufersalMetadata>> {
     let start = std::time::Instant::now();
@@ -189,6 +189,83 @@ pub async fn fetch_shufersal_metadata(
     info!("Finished to await tasks");
     gauge!(
         "fetch_shufersal_metadata_time",
+        start.elapsed().as_secs_f64()
+    );
+    info!(
+        "It took {} mins and {} secs to fetch all shufersal metadata",
+        start.elapsed().as_secs() / 60,
+        start.elapsed().as_secs()
+    );
+    Ok(data)
+}
+
+async fn fetch_rami_levy(item_code: Barcode) -> Result<(Barcode, RamiLevyMetadata)> {
+    let url = format!("https://www.shufersal.co.il/online/he/p/P_{item_code}/json");
+    debug!("Fetching url {url} for itemcode {item_code}");
+
+    let client = reqwest::Client::new();
+    let document = client
+        .post(url)
+        .header("content-type", "application/json;charset=UTF-8")
+        .body(format!("{{\"aggs\":1,\"type\":\"barcode\"}}"))
+        .send()
+        .await?
+        .text()
+        .await?;
+    let document = Html::parse_document(&document);
+    let categories = get_categories(&document)?;
+    let nutrition_info = get_nutrition_info(&document)?;
+    let ingredients = get_ingredients(&document)?;
+    let product_symbols = get_product_symbols(&document)?;
+    let image_url = get_image_url(&document)?;
+
+    Ok((
+        item_code,
+        RamiLevyMetadata {
+            categories,
+            nutrition_info,
+            ingredients,
+            product_symbols,
+            image_url,
+        },
+    ))
+}
+
+#[instrument(skip_all)]
+pub async fn fetch_rami_levy_metadata(
+    item_codes: Vec<Barcode>,
+    limit: usize,
+) -> Result<HashMap<i64, RamiLevyMetadata>> {
+    let start = std::time::Instant::now();
+    let mut data = HashMap::new();
+    let futures = FuturesUnordered::new();
+
+    let item_codes = if limit == 0 {
+        &item_codes[0..item_codes.len()]
+    } else {
+        &item_codes[0..limit]
+    };
+
+    info!("Starting to create tasks");
+    for (i, item_code) in item_codes.into_iter().enumerate() {
+        futures.push(tokio::spawn(fetch_rami_levy(*item_code)));
+        if (i % 100 == 0 && i < 1000) || (i % 1000 == 0) {
+            debug!("Created task {i}");
+        }
+    }
+    info!("Finished to create tasks");
+    info!("Starting to await tasks");
+    let mut stream = futures.enumerate();
+    while let Some((i, result)) = stream.next().await {
+        let result = result??;
+        if (i % 100 == 0 && i < 1000) || (i % 1000 == 0) {
+            debug!("Finished task {i}");
+        }
+        data.insert(result.0, result.1);
+    }
+    info!("Finished to await tasks");
+    gauge!(
+        "fetch_rami_levy_metadata_time",
         start.elapsed().as_secs_f64()
     );
     info!(
