@@ -1,6 +1,6 @@
 use crate::{
     models::{Barcode, RamiLevyMetadata, ShufersalMetadata},
-    nutrition,
+    nutrition, reqwest_utils,
 };
 use anyhow::{anyhow, Result};
 use futures::{stream::FuturesUnordered, StreamExt};
@@ -8,7 +8,8 @@ use itertools::Itertools;
 use metrics::increment_counter;
 use scraper::{ElementRef, Html, Selector};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::{collections::HashMap, sync::Arc};
+use tokio::sync::Semaphore;
 use tracing::{debug, info, instrument};
 
 fn create_selector(selectors: &str) -> Result<Selector> {
@@ -160,7 +161,6 @@ pub async fn fetch_shufersal_metadata(
     item_codes: &[Barcode],
     limit: usize,
 ) -> Result<HashMap<i64, ShufersalMetadata>> {
-    let start = std::time::Instant::now();
     let mut data = HashMap::new();
     let futures = FuturesUnordered::new();
 
@@ -191,7 +191,10 @@ pub async fn fetch_shufersal_metadata(
     Ok(data)
 }
 
-async fn fetch_rami_levy(item_code: Barcode) -> Result<(Barcode, RamiLevyMetadata)> {
+async fn fetch_rami_levy(
+    item_code: Barcode,
+    download_semaphore: Arc<Semaphore>,
+) -> Result<Option<(Barcode, RamiLevyMetadata)>> {
     let url = "https://www.rami-levy.co.il/api/items";
     debug!("Fetching url {url} for itemcode {item_code}");
 
@@ -201,10 +204,10 @@ async fn fetch_rami_levy(item_code: Barcode) -> Result<(Barcode, RamiLevyMetadat
     }
     #[derive(Serialize, Deserialize, Debug)]
     struct RamiLevyJsonImages {
-        small: String,
-        original: String,
-        trim: String,
-        transparent: String,
+        small: Option<String>,
+        original: Option<String>,
+        trim: Option<String>,
+        transparent: Option<String>,
     }
     #[derive(Deserialize, Debug)]
     struct RamiLevyJsonNutritionalValueField {
@@ -232,10 +235,10 @@ async fn fetch_rami_levy(item_code: Barcode) -> Result<(Barcode, RamiLevyMetadat
     }
     #[derive(Deserialize, Debug)]
     struct RamiLevyJsonData {
-        department: RamiLevyJsonCategory,
-        group: RamiLevyJsonCategory,
+        department: Option<RamiLevyJsonCategory>,
+        group: Option<RamiLevyJsonCategory>,
         #[serde(rename = "subGroup")]
-        sub_group: RamiLevyJsonCategory,
+        sub_group: Option<RamiLevyJsonCategory>,
         #[serde(rename = "gs")]
         details: RamiLevyJsonDetails,
         images: RamiLevyJsonImages,
@@ -247,24 +250,70 @@ async fn fetch_rami_levy(item_code: Barcode) -> Result<(Barcode, RamiLevyMetadat
     }
 
     let client = reqwest::Client::new();
-    let response_str = &client
-        .post(url)
-        .header("content-type", "application/json;charset=UTF-8")
-        .body(format!("{{\"ids\":\"{item_code}\",\"type\":\"barcode\"}}"))
-        .send()
-        .await?
-        .text()
-        .await?;
-    let data: RamiLevyJsonValue = serde_json::from_str::<RamiLevyJsonValue>(response_str)?;
-    let data = data
-        .data
-        .get(0)
-        .ok_or(anyhow!("no data in Rami levi response"))?;
-    let categories = Some(serde_json::to_string(&[
-        &data.department.name,
-        &data.group.name,
-        &data.sub_group.name,
-    ])?);
+    let mut response_str = match reqwest_utils::post_to_text_with_retries(
+        &client,
+        url,
+        format!("{{\"ids\":\"{item_code}\",\"type\":\"barcode\"}}"),
+        download_semaphore.clone(),
+    )
+    .await
+    {
+        None => return Ok(None),
+        Some(s) => s,
+    };
+    let mut data = serde_json::from_str::<RamiLevyJsonValue>(&response_str);
+    while data.is_err() {
+        if response_str.starts_with("<!DOCTYPE html>") {
+            let doc = Html::parse_document(&response_str);
+            let selector = create_selector("form")?;
+            let action = doc
+                .select(&selector)
+                .next()
+                .unwrap()
+                .value()
+                .attr("action")
+                .unwrap();
+            let url = format!("https://www.rami-levy.co.il{action}");
+            let selector = create_selector("input")?;
+            let md_value = doc
+                .select(&selector)
+                .next()
+                .unwrap()
+                .value()
+                .attr("value")
+                .unwrap();
+            response_str = match reqwest_utils::post_to_text_with_retries(
+                &client,
+                &url,
+                format!("{{\"ids\":\"{item_code}\",\"type\":\"barcode\",\"md\":\"{md_value}\"}}"),
+                download_semaphore.clone(),
+            )
+            .await
+            {
+                None => return Ok(None),
+                Some(s) => s,
+            };
+            data = serde_json::from_str::<RamiLevyJsonValue>(&response_str);
+        } else {
+            println!("{response_str}");
+            panic!()
+        }
+    }
+
+    let data = data.unwrap();
+    let data = match data.data.get(0) {
+        None => return Ok(None),
+        Some(data) => data,
+    };
+
+    let categories = Some(
+        serde_json::to_string(&[
+            &data.department.as_ref().map_or("", |c| &c.name),
+            &data.group.as_ref().map_or("", |c| &c.name),
+            &data.sub_group.as_ref().map_or("", |c| &c.name),
+        ])
+        .unwrap(),
+    );
     let ingredients =
         Some(data.details.ingredient_sequence_and_name.to_string()).filter(|s| !s.is_empty());
     let product_symbols = data.details.product_symbols.as_ref().and_then(|symbols| {
@@ -279,7 +328,7 @@ async fn fetch_rami_levy(item_code: Barcode) -> Result<(Barcode, RamiLevyMetadat
         }
     });
     let product_symbols = match product_symbols {
-        Some(product_symbols) => Some(serde_json::to_string(&product_symbols)?),
+        Some(product_symbols) => Some(serde_json::to_string(&product_symbols).unwrap()),
         None => None,
     };
     let nutrition_info = data
@@ -301,19 +350,19 @@ async fn fetch_rami_levy(item_code: Barcode) -> Result<(Barcode, RamiLevyMetadat
         Some(serde_json::to_string(&nutrition_info)?)
     };
 
-    Ok((
+    Ok(Some((
         item_code,
         RamiLevyMetadata {
             categories,
             nutrition_info,
             ingredients,
             product_symbols,
-            image_url_original: Some(data.images.original.clone()),
-            image_url_small: Some(data.images.small.clone()),
-            image_url_transparent: Some(data.images.transparent.clone()),
-            image_url_trim: Some(data.images.trim.clone()),
+            image_url_original: data.images.original.clone(),
+            image_url_small: data.images.small.clone(),
+            image_url_transparent: data.images.transparent.clone(),
+            image_url_trim: data.images.trim.clone(),
         },
-    ))
+    )))
 }
 
 fn limit_item_codes(item_codes: &[Barcode], limit: usize) -> &[Barcode] {
@@ -331,10 +380,14 @@ pub async fn fetch_rami_levy_metadata(
 ) -> Result<HashMap<i64, RamiLevyMetadata>> {
     let mut data = HashMap::new();
     let futures = FuturesUnordered::new();
-
     info!("Starting to create tasks");
+    let download_semaphore = Arc::new(Semaphore::new(30));
+
     for (i, item_code) in limit_item_codes(&item_codes, limit).into_iter().enumerate() {
-        futures.push(tokio::spawn(fetch_rami_levy(*item_code)));
+        futures.push(tokio::spawn(fetch_rami_levy(
+            *item_code,
+            download_semaphore.clone(),
+        )));
         if (i % 100 == 0 && i < 1000) || (i % 1000 == 0) {
             debug!("Created task {i}");
         }
@@ -346,7 +399,9 @@ pub async fn fetch_rami_levy_metadata(
         if (i % 100 == 0 && i < 1000) || (i % 1000 == 0) {
             debug!("Finished task {i}");
         }
-        data.insert(result.0, result.1);
+        if let Some(result) = result {
+            data.insert(result.0, result.1);
+        }
     }
     Ok(data)
 }

@@ -24,6 +24,7 @@ use tracing_subscriber::prelude::*;
 mod country_code;
 mod nutrition;
 mod online_store_data;
+mod reqwest_utils;
 mod sanitization;
 mod sqlite_utils;
 mod xml;
