@@ -386,7 +386,7 @@ async fn main() -> Result<()> {
                 )?;
             }
         }
-        if args.save_to_sqlite {
+        if args.save_to_sqlite || !args.save_to_sqlite_only.is_empty() {
             sqlite_utils::save_to_sqlite(&chains, &item_infos.data, &args.save_to_sqlite_only)?;
         }
         if args.fetch_shufersal_metadata {

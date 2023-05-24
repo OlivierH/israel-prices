@@ -137,6 +137,40 @@ pub fn save_to_sqlite(
             }
         }
     }
+    if save_to_sqlite_only.is_empty() || save_to_sqlite_only.eq_ignore_ascii_case("stores") {
+        info!("Saving table Stores to sqlite");
+        connection.execute(
+            "CREATE TABLE Stores (
+                        ChainId int NOT NULL,
+                        SubchainId int NOT NULL,
+                        StoreId int NOT NULL,
+                        StoreType TEXT,
+                        StoreName TEXT,
+                        Address TEXT,
+                        City TEXT,
+                        ZipCode TEXT,
+                        PRIMARY KEY(ChainId,SubChainId,StoreId)) ",
+            (),
+        )?;
+        let mut statement = connection
+            .prepare("INSERT INTO Stores (ChainId,SubchainId, StoreId, StoreType, StoreName, Address, City, ZipCode) VALUES (?1,?2,?3,?4,?5,?6,?7,?8)")?;
+        for chain in chains {
+            for subchain in &chain.subchains {
+                for store in &subchain.stores {
+                    statement.execute(params![
+                        chain.chain_id,
+                        subchain.subchain_id,
+                        store.store_id,
+                        store.store_type,
+                        store.store_name,
+                        store.address,
+                        store.city,
+                        store.zip_code,
+                    ])?;
+                }
+            }
+        }
+    }
     if save_to_sqlite_only.is_empty() || save_to_sqlite_only.eq_ignore_ascii_case("items") {
         info!("Saving table Items to sqlite");
         connection.execute(
