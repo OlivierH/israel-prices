@@ -1,6 +1,7 @@
 use crate::{
-    models::{Barcode, RamiLevyMetadata, ShufersalMetadata},
-    nutrition, reqwest_utils,
+    models::{Barcode, RamiLevyMetadata, ShufersalMetadata, VictoryMetadata},
+    nutrition::{self, NutritionalValue, NutritionalValues},
+    reqwest_utils,
 };
 use anyhow::{anyhow, Result};
 use futures::{stream::FuturesUnordered, StreamExt};
@@ -404,4 +405,145 @@ pub async fn fetch_rami_levy_metadata(
         }
     }
     Ok(data)
+}
+
+#[instrument]
+pub async fn fetch_victory_metadata() -> Result<HashMap<String, VictoryMetadata>> {
+    #[derive(Deserialize, Debug)]
+    struct VictoryJsonSizeValues {
+        #[serde(rename = "unitOfMeasure")]
+        unit_of_measure: Option<VictoryJsonNames>,
+        value: Option<f32>,
+        #[serde(rename = "valueLessThan")]
+        value_less_than: bool,
+    }
+
+    #[derive(Deserialize, Debug)]
+    struct VictoryJsonImage {
+        url: String,
+    }
+    #[derive(Deserialize, Debug)]
+    struct OneStringField {
+        #[serde(rename = "1")]
+        name: Option<String>,
+    }
+    #[derive(Deserialize, Debug)]
+    struct VictoryJsonFamily {
+        categories: Option<Vec<VictoryJsonNames>>,
+    }
+    #[derive(Deserialize, Debug)]
+    struct VictoryJsonNames {
+        names: Option<OneStringField>,
+    }
+    impl VictoryJsonNames {
+        fn str(&self) -> String {
+            self.names
+                .as_ref()
+                .and_then(|n| n.name.clone())
+                .unwrap_or_default()
+        }
+    }
+    #[derive(Deserialize, Debug)]
+    struct VictoryJsonNutritionValue {
+        names: Option<OneStringField>,
+        #[serde(rename = "sizeValues")]
+        size: Vec<VictoryJsonSizeValues>,
+    }
+    #[derive(Deserialize, Debug)]
+    struct VictoryJsonNutritionValues {
+        values: Vec<VictoryJsonNutritionValue>,
+        sizes: Vec<VictoryJsonNames>,
+    }
+    #[derive(Deserialize, Debug)]
+    struct VictoryJsonData {
+        ingredients: Option<String>,
+    }
+    #[derive(Deserialize, Debug)]
+    struct VictoryJsonDataWrapper {
+        #[serde(rename = "1")]
+        data: Option<VictoryJsonData>,
+    }
+
+    #[derive(Deserialize, Debug)]
+    struct VictoryJsonProduct {
+        barcode: String,
+        data: Option<VictoryJsonDataWrapper>,
+        family: Option<VictoryJsonFamily>,
+        #[serde(rename = "nutritionValues")]
+        nutrition: Option<VictoryJsonNutritionValues>,
+        image: Option<VictoryJsonImage>,
+    }
+
+    #[derive(Deserialize, Debug)]
+    struct VictoryJsonResponse {
+        products: Vec<VictoryJsonProduct>,
+    }
+
+    let mut v = HashMap::new();
+
+    // We expect to need <150 requests, but this protects against infinite loops while being future proof.
+    for i in 0..1000 {
+        let from = i * 500;
+        let url = format!("https://www.victoryonline.co.il/v2/retailers/1470/branches/2331/products?filters={{\"must\":{{}}}}&from={from}&size=500");
+        info!("{i}: fetching url {url}");
+        let text = reqwest_utils::get_to_text_with_retries(&url).await;
+        if let Some(t) = &text {
+            std::fs::write("last_victory.json", t)?;
+        }
+        let response: VictoryJsonResponse = serde_json::from_str(&text.unwrap()).unwrap();
+
+        if response.products.is_empty() {
+            break;
+        }
+        for product in response.products {
+            let nutritional_values = product.nutrition.map(|n| NutritionalValues {
+                size: n.sizes.get(0).map(|s| s.str()),
+                values: n
+                    .values
+                    .iter()
+                    .flat_map(|nutrition_value| {
+                        let size = match nutrition_value.size.get(0) {
+                            Some(x) => x,
+                            None => return None,
+                        };
+
+                        nutrition::NutritionalValue::create(
+                            size.value.unwrap_or(0.0).to_string(),
+                            size.unit_of_measure
+                                .as_ref()
+                                .map_or(String::default(), |n| n.str()),
+                            nutrition_value
+                                .names
+                                .as_ref()
+                                .map_or(String::default(), |n| {
+                                    n.name.clone().unwrap_or_default().replace("‎", "")
+                                }),
+                            size.value_less_than,
+                        )
+                    })
+                    .collect::<Vec<NutritionalValue>>(),
+            });
+
+            let ingredients = product
+                .data
+                .and_then(|d| d.data)
+                .and_then(|d| d.ingredients);
+            let categories = product.family.and_then(|f| {
+                f.categories
+                    .map(|cs| cs.iter().map(|c| c.str()).collect::<Vec<String>>())
+            });
+            let barcode = product.barcode;
+            let image_url = product.image.map(|i| i.url);
+            v.insert(
+                barcode,
+                VictoryMetadata {
+                    categories,
+                    nutrition_info: nutritional_values,
+                    ingredients,
+                    image_url,
+                },
+            );
+        }
+    }
+    Ok(v)
 }
