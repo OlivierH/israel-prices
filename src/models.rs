@@ -1,5 +1,7 @@
 use serde::Deserialize;
 use serde::Serialize;
+
+use crate::nutrition::NutritionalValues;
 pub type Barcode = i64;
 pub type ChainId = i64;
 pub type SubchainId = i32;
@@ -134,6 +136,8 @@ pub struct SubchainRecord {
     pub subchain_name: String,
 }
 
+// The following structs represent the data scrappable
+// from supermarkets online websites.
 #[derive(Debug, Serialize)]
 pub struct ShufersalMetadata {
     pub categories: Option<String>,
@@ -153,4 +157,15 @@ pub struct RamiLevyMetadata {
     pub image_url_original: Option<String>,
     pub image_url_trim: Option<String>,
     pub image_url_transparent: Option<String>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct VictoryMetadata {
+    pub categories: Option<Vec<String>>,
+    pub nutrition_info: Option<NutritionalValues>,
+    pub ingredients: Option<String>,
+    pub image_url: Option<String>,
+    // It should be possible to extract the products symbols for Victory, but
+    // I wasn't able to.
+    // pub product_symbols: Option<String>,
 }
