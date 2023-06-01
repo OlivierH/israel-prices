@@ -5,6 +5,7 @@ use tracing::debug;
 
 #[derive(Debug, Serialize)]
 pub enum NutritionType {
+    AceticAcid,
     AdditionalSugar,
     Ash,
     B1,
@@ -81,6 +82,9 @@ impl FromStr for NutritionType {
         }
         if s.contains("סוכרים מתוך פחמימות") || s.contains("סוכרים") {
             return Ok(NutritionType::Sugar);
+        }
+        if s.contains("חומצת חומץ") {
+            return Ok(NutritionType::AceticAcid);
         }
         if s.contains("מתוכם סוכר מוסף") {
             return Ok(NutritionType::AdditionalSugar);

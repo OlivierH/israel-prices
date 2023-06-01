@@ -4,7 +4,9 @@ use anyhow::{Context, Result};
 use rusqlite::{params, Connection};
 use tracing::info;
 
-use crate::models::{Barcode, Chain, ItemInfo, ItemKey, RamiLevyMetadata, ShufersalMetadata};
+use crate::models::{
+    Barcode, Chain, ItemInfo, ItemKey, RamiLevyMetadata, ShufersalMetadata, VictoryMetadata,
+};
 
 fn connection() -> Result<Connection> {
     let path = "data.sqlite";
@@ -261,5 +263,50 @@ pub fn save_to_sqlite(
         }
         transaction.commit()?;
     }
+    Ok(())
+}
+
+pub fn save_victory_metadata_to_sqlite(
+    victory_metadata: &HashMap<String, VictoryMetadata>,
+) -> Result<()> {
+    let mut connection = connection()?;
+
+    info!("Saving table VictoryMetadata to sqlite");
+    connection.execute(
+        "CREATE TABLE IF NOT EXISTS VictoryMetadata (
+                        ItemCode TEXT NOT NULL PRIMARY KEY,
+                        Categories TEXT,
+                        NutritionInfo TEXT,
+                        Ingredients TEXT,
+                        ImageUrl TEXT)",
+        (),
+    )?;
+
+    let transaction = connection.transaction()?;
+    {
+        let tx = &transaction;
+        let mut statement = tx
+            .prepare("INSERT INTO VictoryMetadata (ItemCode, Categories, NutritionInfo, Ingredients, ImageUrl) VALUES (?1,?2,?3,?4,?5)")?;
+        for (item_code, metadata) in victory_metadata.iter() {
+            let categories = match metadata.categories.as_ref() {
+                Some(v) => Some(serde_json::to_string(&v)?),
+                None => None,
+            };
+            let nutrition_info = match metadata.nutrition_info.as_ref() {
+                Some(n) => Some(serde_json::to_string(&n)?),
+                None => None,
+            };
+            statement
+                .execute(params![
+                    item_code,
+                    categories,
+                    nutrition_info,
+                    metadata.ingredients,
+                    metadata.image_url,
+                ])
+                .with_context(|| format!("With item_code = {:?}", item_code))?;
+        }
+    }
+    transaction.commit()?;
     Ok(())
 }

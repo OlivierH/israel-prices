@@ -131,6 +131,9 @@ struct Args {
     #[arg(long)]
     fetch_rami_levy_metadata: bool,
 
+    #[arg(long)]
+    fetch_victory_metadata: bool,
+
     #[arg(long, default_value = "0")]
     metadata_fetch_limit: usize,
 }
@@ -414,6 +417,10 @@ async fn main() -> Result<()> {
                     break;
                 }
             }
+        }
+        if args.fetch_victory_metadata {
+            let victory_metadata = online_store_data::fetch_victory_metadata().await?;
+            sqlite_utils::save_victory_metadata_to_sqlite(&victory_metadata)?;
         }
     }
     info!("{}", prometheus.render());
