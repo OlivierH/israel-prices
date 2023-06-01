@@ -134,6 +134,12 @@ struct Args {
     #[arg(long)]
     fetch_victory_metadata: bool,
 
+    #[arg(long)]
+    fetch_yenot_bitan_metadata: bool,
+
+    #[arg(long)]
+    fetch_mega_metadata: bool,
+
     #[arg(long, default_value = "0")]
     metadata_fetch_limit: usize,
 }
@@ -419,8 +425,28 @@ async fn main() -> Result<()> {
             }
         }
         if args.fetch_victory_metadata {
-            let victory_metadata = online_store_data::fetch_victory_metadata().await?;
-            sqlite_utils::save_victory_metadata_to_sqlite(&victory_metadata)?;
+            let victory_metadata = online_store_data::fetch_victory_metadata(
+                "https://www.victoryonline.co.il/v2/retailers/1470/branches/2331",
+                args.metadata_fetch_limit,
+            )
+            .await?;
+            sqlite_utils::save_victory_metadata_to_sqlite("Victory", &victory_metadata)?;
+        }
+        if args.fetch_yenot_bitan_metadata {
+            let yenot_bitan_metadata = online_store_data::fetch_victory_metadata(
+                "https://www.ybitan.co.il/v2/retailers/1131/branches/958",
+                args.metadata_fetch_limit,
+            )
+            .await?;
+            sqlite_utils::save_victory_metadata_to_sqlite("YenotBitan", &yenot_bitan_metadata)?;
+        }
+        if args.fetch_mega_metadata {
+            let mega_metadata = online_store_data::fetch_victory_metadata(
+                "https://www.mega.co.il/v2/retailers/1182/branches/1976",
+                args.metadata_fetch_limit,
+            )
+            .await?;
+            sqlite_utils::save_victory_metadata_to_sqlite("Mega", &mega_metadata)?;
         }
     }
     info!("{}", prometheus.render());

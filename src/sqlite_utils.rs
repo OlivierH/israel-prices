@@ -267,18 +267,21 @@ pub fn save_to_sqlite(
 }
 
 pub fn save_victory_metadata_to_sqlite(
+    table_prefix: &str,
     victory_metadata: &HashMap<String, VictoryMetadata>,
 ) -> Result<()> {
     let mut connection = connection()?;
 
-    info!("Saving table VictoryMetadata to sqlite");
+    info!("Saving table {table_prefix}Metadata to sqlite");
     connection.execute(
-        "CREATE TABLE IF NOT EXISTS VictoryMetadata (
+        &format!(
+            "CREATE TABLE IF NOT EXISTS {table_prefix}Metadata (
                         ItemCode TEXT NOT NULL PRIMARY KEY,
                         Categories TEXT,
                         NutritionInfo TEXT,
                         Ingredients TEXT,
-                        ImageUrl TEXT)",
+                        ImageUrl TEXT)"
+        ),
         (),
     )?;
 
@@ -286,7 +289,7 @@ pub fn save_victory_metadata_to_sqlite(
     {
         let tx = &transaction;
         let mut statement = tx
-            .prepare("INSERT INTO VictoryMetadata (ItemCode, Categories, NutritionInfo, Ingredients, ImageUrl) VALUES (?1,?2,?3,?4,?5)")?;
+            .prepare(&format!("INSERT INTO {table_prefix}Metadata (ItemCode, Categories, NutritionInfo, Ingredients, ImageUrl) VALUES (?1,?2,?3,?4,?5)"))?;
         for (item_code, metadata) in victory_metadata.iter() {
             let categories = match metadata.categories.as_ref() {
                 Some(v) => Some(serde_json::to_string(&v)?),

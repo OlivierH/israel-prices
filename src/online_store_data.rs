@@ -408,7 +408,10 @@ pub async fn fetch_rami_levy_metadata(
 }
 
 #[instrument]
-pub async fn fetch_victory_metadata() -> Result<HashMap<String, VictoryMetadata>> {
+pub async fn fetch_victory_metadata(
+    url_start: &str,
+    fetch_limit: usize,
+) -> Result<HashMap<String, VictoryMetadata>> {
     #[derive(Deserialize, Debug)]
     struct VictoryJsonSizeValues {
         #[serde(rename = "unitOfMeasure")]
@@ -484,7 +487,7 @@ pub async fn fetch_victory_metadata() -> Result<HashMap<String, VictoryMetadata>
     // We expect to need <150 requests, but this protects against infinite loops while being future proof.
     for i in 0..1000 {
         let from = i * 500;
-        let url = format!("https://www.victoryonline.co.il/v2/retailers/1470/branches/2331/products?filters={{\"must\":{{}}}}&from={from}&size=500");
+        let url = format!("{url_start}/products?filters={{\"must\":{{}}}}&from={from}&size=500");
         info!("{i}: fetching url {url}");
         let text = reqwest_utils::get_to_text_with_retries(&url).await;
         if let Some(t) = &text {
@@ -543,6 +546,9 @@ pub async fn fetch_victory_metadata() -> Result<HashMap<String, VictoryMetadata>
                     image_url,
                 },
             );
+        }
+        if fetch_limit > 0 && fetch_limit < v.len() {
+            break;
         }
     }
     Ok(v)
