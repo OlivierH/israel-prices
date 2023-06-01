@@ -17,3 +17,5 @@ shufersal_metadata.json
 log.txt
 *.sqlite
 *.bak
+*.json
+*.txt
