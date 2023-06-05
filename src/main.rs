@@ -147,6 +147,9 @@ struct Args {
     #[arg(long)]
     fetch_am_pm_metadata: bool,
 
+    #[arg(long)]
+    fetch_tiv_taam_metadata: bool,
+
     #[arg(long, default_value = "0")]
     metadata_fetch_limit: usize,
 }
@@ -462,6 +465,14 @@ async fn main() -> Result<()> {
             )
             .await?;
             sqlite_utils::save_victory_metadata_to_sqlite("Am_pm", &am_pm_metadata)?;
+        }
+        if args.fetch_tiv_taam_metadata {
+            let tiv_taam_metadata = online_store_data::fetch_victory_metadata(
+                "https://www.tivtaam.co.il/v2/retailers/1062",
+                args.metadata_fetch_limit,
+            )
+            .await?;
+            sqlite_utils::save_victory_metadata_to_sqlite("TivTaam", &tiv_taam_metadata)?;
         }
     }
     info!("{}", prometheus.render());
