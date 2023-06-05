@@ -141,6 +141,9 @@ struct Args {
     #[arg(long)]
     fetch_mega_metadata: bool,
 
+    #[arg(long)]
+    fetch_maayan_2000_metadata: bool,
+
     #[arg(long, default_value = "0")]
     metadata_fetch_limit: usize,
 }
@@ -440,6 +443,17 @@ async fn main() -> Result<()> {
             )
             .await?;
             sqlite_utils::save_victory_metadata_to_sqlite("Mega", &mega_metadata)?;
+        }
+        if args.fetch_maayan_2000_metadata {
+            let maayan_2000_metadata = online_store_data::fetch_victory_metadata(
+                "https://www.m2000.co.il/v2/retailers/1404/branches/2146",
+                args.metadata_fetch_limit,
+            )
+            .await?;
+            sqlite_utils::save_victory_metadata_to_sqlite(
+                "Maayan_2000_metadata",
+                &maayan_2000_metadata,
+            )?;
         }
     }
     info!("{}", prometheus.render());
