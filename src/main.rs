@@ -28,6 +28,7 @@ mod reqwest_utils;
 mod sanitization;
 mod sqlite_utils;
 mod xml;
+
 fn run(command: &str) -> Result<()> {
     let span = span!(Level::INFO, "Run command", command);
     let _enter = span.enter();
@@ -412,17 +413,9 @@ async fn main() -> Result<()> {
             }
         }
         if args.fetch_rami_levy_metadata {
-            let num_of_chunks = rami_levy_item_codes.len() / 1000;
-            for (i, chunk) in rami_levy_item_codes.chunks(1000).enumerate() {
-                info!("Fetching rami levy metadata chunk {i}/{num_of_chunks}");
-                let rami_levy_metadata =
-                    online_store_data::fetch_rami_levy_metadata(chunk, args.metadata_fetch_limit)
-                        .await?;
-                sqlite_utils::save_rami_levy_metadata_to_sqlite(&rami_levy_metadata)?;
-                if args.metadata_fetch_limit > 0 {
-                    break;
-                }
-            }
+            info!("Fetching rami levy metadata chunk");
+            let rami_levy_metadata = online_store_data::fetch_rami_levy_metadata().await?;
+            sqlite_utils::save_rami_levy_metadata_to_sqlite(&rami_levy_metadata)?;
         }
         if args.fetch_victory_metadata {
             let victory_metadata = online_store_data::fetch_victory_metadata(

@@ -7,10 +7,15 @@ pub async fn post_to_text_with_retries(
     client: &Client,
     url: &str,
     body: String,
-    download_semaphore: Arc<Semaphore>,
+    download_semaphore: Option<Arc<Semaphore>>,
 ) -> Option<String> {
     for _ in 0..10 {
-        let _permit = download_semaphore.clone().acquire_owned().await.unwrap();
+        let _permit = match download_semaphore.as_ref() {
+            Some(download_semaphore) => {
+                Some(download_semaphore.clone().acquire_owned().await.unwrap())
+            }
+            None => None,
+        };
 
         match client
             .post(url)
