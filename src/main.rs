@@ -144,6 +144,9 @@ struct Args {
     #[arg(long)]
     fetch_maayan_2000_metadata: bool,
 
+    #[arg(long)]
+    fetch_am_pm_metadata: bool,
+
     #[arg(long, default_value = "0")]
     metadata_fetch_limit: usize,
 }
@@ -422,7 +425,7 @@ async fn main() -> Result<()> {
         }
         if args.fetch_victory_metadata {
             let victory_metadata = online_store_data::fetch_victory_metadata(
-                "https://www.victoryonline.co.il/v2/retailers/1470/branches/2331",
+                "https://www.victoryonline.co.il/v2/retailers/1470",
                 args.metadata_fetch_limit,
             )
             .await?;
@@ -430,7 +433,7 @@ async fn main() -> Result<()> {
         }
         if args.fetch_yenot_bitan_metadata {
             let yenot_bitan_metadata = online_store_data::fetch_victory_metadata(
-                "https://www.ybitan.co.il/v2/retailers/1131/branches/958",
+                "https://www.ybitan.co.il/v2/retailers/1131",
                 args.metadata_fetch_limit,
             )
             .await?;
@@ -438,7 +441,7 @@ async fn main() -> Result<()> {
         }
         if args.fetch_mega_metadata {
             let mega_metadata = online_store_data::fetch_victory_metadata(
-                "https://www.mega.co.il/v2/retailers/1182/branches/1976",
+                "https://www.mega.co.il/v2/retailers/1182",
                 args.metadata_fetch_limit,
             )
             .await?;
@@ -446,14 +449,19 @@ async fn main() -> Result<()> {
         }
         if args.fetch_maayan_2000_metadata {
             let maayan_2000_metadata = online_store_data::fetch_victory_metadata(
-                "https://www.m2000.co.il/v2/retailers/1404/branches/2146",
+                "https://www.m2000.co.il/v2/retailers/1404",
                 args.metadata_fetch_limit,
             )
             .await?;
-            sqlite_utils::save_victory_metadata_to_sqlite(
-                "Maayan_2000_metadata",
-                &maayan_2000_metadata,
-            )?;
+            sqlite_utils::save_victory_metadata_to_sqlite("Maayan_2000", &maayan_2000_metadata)?;
+        }
+        if args.fetch_am_pm_metadata {
+            let am_pm_metadata = online_store_data::fetch_victory_metadata(
+                "https://www.ampm.co.il/v2/retailers/2",
+                args.metadata_fetch_limit,
+            )
+            .await?;
+            sqlite_utils::save_victory_metadata_to_sqlite("Am_pm", &am_pm_metadata)?;
         }
     }
     info!("{}", prometheus.render());
