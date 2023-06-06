@@ -107,7 +107,7 @@ pub fn get_store_configs() -> Vec<Store> {
                 "http://shuk-hayir.binaprojects.com/MainIO_Hok.aspx",
                 "http://shuk-hayir.binaprojects.com/Download/",
             ),
-            "shuk_hayir",
+            "shuk_hayir", // AKA ShukCity
         ),
         Store::new(
             Website::SimpleJsonToGet(

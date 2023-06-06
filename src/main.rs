@@ -150,6 +150,12 @@ struct Args {
     #[arg(long)]
     fetch_tiv_taam_metadata: bool,
 
+    #[arg(long)]
+    fetch_keshet_metadata: bool,
+
+    #[arg(long)]
+    fetch_shukcity_metadata: bool,
+
     #[arg(long, default_value = "0")]
     metadata_fetch_limit: usize,
 }
@@ -473,6 +479,22 @@ async fn main() -> Result<()> {
             )
             .await?;
             sqlite_utils::save_victory_metadata_to_sqlite("TivTaam", &tiv_taam_metadata)?;
+        }
+        if args.fetch_keshet_metadata {
+            let keshet_metadata = online_store_data::fetch_victory_metadata(
+                "https://www.keshet-teamim.co.il/v2/retailers/1219",
+                args.metadata_fetch_limit,
+            )
+            .await?;
+            sqlite_utils::save_victory_metadata_to_sqlite("Keshet", &keshet_metadata)?;
+        }
+        if args.fetch_shukcity_metadata {
+            let shukcity_metadata = online_store_data::fetch_victory_metadata(
+                "https://www.shukcity.co.il/v2/retailers/1254",
+                args.metadata_fetch_limit,
+            )
+            .await?;
+            sqlite_utils::save_victory_metadata_to_sqlite("ShukCity", &shukcity_metadata)?;
         }
     }
     info!("{}", prometheus.render());
