@@ -473,3 +473,49 @@ pub async fn fetch_victory_metadata(
     }
     Ok(v)
 }
+
+
+// Note: this doesn't work currently, need to pass a cookie.
+#[instrument]
+pub async fn fetch_hatzi_hinam() -> Result<()> {
+    let catalog = reqwest_utils::get_json_to_text_with_retries(
+        "https://shop.hazi-hinam.co.il/proxy/api/Catalog/get",
+    )
+    .await
+    .ok_or(anyhow!("Could not get Hatzi Hinam catalog"))?;
+
+    #[derive(Deserialize, Debug)]
+    struct HatziHinamJsonResponse {
+        #[serde(rename = "Results")]
+        results: HatziHinamJsonResults,
+    }
+    #[derive(Deserialize, Debug)]
+    struct HatziHinamJsonResults {
+        #[serde(rename = "Categories")]
+        categories: Vec<HatziHinamJsonCategory>,
+    }
+    #[derive(Deserialize, Debug)]
+    struct HatziHinamJsonCategory {
+        #[serde(rename = "SubCategories")]
+        subcategories: Vec<HatziHinamJsonSubCategory>,
+    }
+    #[derive(Deserialize, Debug)]
+    struct HatziHinamJsonSubCategory {
+        #[serde(rename = "Id")]
+        id: i32,
+    }
+    let catalog = serde_json::from_str::<HatziHinamJsonResponse>(&catalog)?;
+
+    let subcategories = catalog
+        .results
+        .categories
+        .iter()
+        .flat_map(|c| c.subcategories.iter())
+        .map(|c| c.id);
+
+    for subcategory in subcategories {
+        let url = format!("https://shop.hazi-hinam.co.il/proxy/api/item/getItemsBySubCategory?Id={subcategory}")
+        // need a cookie here
+    }
+    Ok(())
+}

@@ -16,25 +16,9 @@ async fn fetch_am_pm() -> Result<HashMap<String, VictoryMetadata>> {
 }
 
 async fn fetch_tiv_taam() -> Result<HashMap<String, VictoryMetadata>> {
-    let tiv_taam_metadata =
+    let data =
         online_store_data::fetch_victory_metadata("https://www.tivtaam.co.il/v2/retailers/1062", 0)
             .await?;
-    Ok(tiv_taam_metadata)
-}
-
-#[tokio::main(flavor = "multi_thread", worker_threads = 10)]
-async fn main() -> Result<()> {
-    let subscriber = tracing_subscriber::registry()
-        .with(tracing_subscriber::fmt::layer())
-        .with(tracing_subscriber::EnvFilter::new("israel_prices=DEBUG"));
-
-    tracing::subscriber::set_global_default(subscriber)?;
-
-    // let data = israel_prices::online_store_data::fetch_rami_levy_metadata()
-    //     .await
-    //     .unwrap();
-
-    let data = fetch_tiv_taam().await?;
     println!("Found {} elements.", data.len());
     let with_image = data.iter().filter(|e| e.1.image_url.is_some()).count();
     let with_ingredients = data
@@ -48,5 +32,18 @@ async fn main() -> Result<()> {
     dbg!(with_image);
     dbg!(with_ingredients);
     dbg!(with_categories);
+    Ok(data)
+}
+
+#[tokio::main(flavor = "multi_thread", worker_threads = 10)]
+async fn main() -> Result<()> {
+    let subscriber = tracing_subscriber::registry()
+        .with(tracing_subscriber::fmt::layer())
+        .with(tracing_subscriber::EnvFilter::new("israel_prices=DEBUG"));
+
+    tracing::subscriber::set_global_default(subscriber)?;
+
+    // fetch_tiv_taam().await?;
+    online_store_data::fetch_hatzi_hinam().await?;
     Ok(())
 }

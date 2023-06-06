@@ -50,3 +50,25 @@ pub async fn get_to_text_with_retries(url: &str) -> Option<String> {
     }
     None
 }
+
+pub async fn get_json_to_text_with_retries(url: &str) -> Option<String> {
+    let client = reqwest::Client::new();
+
+    for _ in 0..10 {
+        match client
+            .get(url)
+            .header(reqwest::header::CONTENT_TYPE, "application/json")
+            .send()
+            .await
+        {
+            Ok(resp) => match resp.text().await {
+                Ok(text) => {
+                    return Some(text);
+                }
+                Err(_) => continue,
+            },
+            Err(_) => continue,
+        };
+    }
+    None
+}
