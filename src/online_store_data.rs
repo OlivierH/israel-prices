@@ -474,7 +474,6 @@ pub async fn fetch_victory_metadata(
     Ok(v)
 }
 
-
 // Note: this doesn't work currently, need to pass a cookie.
 #[instrument]
 pub async fn fetch_hatzi_hinam() -> Result<()> {
@@ -514,7 +513,9 @@ pub async fn fetch_hatzi_hinam() -> Result<()> {
         .map(|c| c.id);
 
     for subcategory in subcategories {
-        let url = format!("https://shop.hazi-hinam.co.il/proxy/api/item/getItemsBySubCategory?Id={subcategory}")
+        let _url = format!(
+            "https://shop.hazi-hinam.co.il/proxy/api/item/getItemsBySubCategory?Id={subcategory}"
+        );
         // need a cookie here
     }
     Ok(())
