@@ -41,26 +41,34 @@ async fn index() -> Result<impl IntoResponse, AppError> {
 }
 async fn stores() -> Result<impl IntoResponse, AppError> {
     let connection = connection()?;
-    let mut stmt = connection.prepare("SELECT * FROM Stores")?;
-    let mut result = stmt.query(())?;
-
-    while let Some(value) = result.next()? {
-        print!("{:?}", &value);
+    let mut stmt = connection.prepare("SELECT subchains.ChainId, subchains.SubchainId, ChainName, SubchainName, StoreName FROM Stores JOIN Subchains on Stores.chainId = Subchains.chainId AND Stores.subchainid = Subchains.subchainid")?;
+    #[derive(Debug)]
+    struct StoreRow {
+        chain_id: i64,
+        subchain_id: i64,
+        chain_name: String,
+        subchain_name: String,
+        store_name: String,
     }
+    let mut result = stmt.query(())?;
+    let mut stores = Vec::new();
+    while let Some(row) = result.next()? {
+        stores.push(StoreRow {
+            chain_id: row.get(0)?,
+            subchain_id: row.get(1)?,
+            chain_name: row.get(2)?,
+            subchain_name: row.get(3)?,
+            store_name: row.get(4)?,
+        });
+    }
+    #[derive(Template)]
+    #[template(path = "stores.html")]
+    struct StoresTemplate {
+        stores: Vec<StoreRow>,
+    }
+    let template = StoresTemplate { stores };
 
-    // .map(|r| {
-    //     let a: i64 = r.get(0;)
-    //     a
-    // });
-    // println!("{:?}", x);
-    // stmt.query_map([], |row| {
-    //     println!("{:?}", row);
-    //     Ok(())
-    // })?;
-
-    Ok(Html(
-        std::fs::read_to_string("templates/index.html").unwrap_or("Error".to_string()),
-    ))
+    Ok(HtmlTemplate(template))
 }
 
 async fn greet(extract::Path(name): extract::Path<String>) -> impl IntoResponse {
