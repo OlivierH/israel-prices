@@ -7,7 +7,9 @@ use axum::{
     routing::get,
     Router,
 };
-use rusqlite::Connection;
+use rusqlite::{params, Connection};
+use serde::Deserialize;
+use tracing::info;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[tokio::main]
@@ -19,6 +21,7 @@ async fn main() {
 
     let app = Router::new()
         .route("/greet/:name", get(greet))
+        .route("/compare/:store_1/:store_2", get(compare))
         .route("/", get(index))
         .route("/stores", get(stores));
 
@@ -41,7 +44,7 @@ async fn index() -> Result<impl IntoResponse, AppError> {
 }
 async fn stores() -> Result<impl IntoResponse, AppError> {
     let connection = connection()?;
-    let mut stmt = connection.prepare("SELECT subchains.ChainId, subchains.SubchainId, ChainName, SubchainName, StoreName FROM Stores JOIN Subchains on Stores.chainId = Subchains.chainId AND Stores.subchainid = Subchains.subchainid")?;
+    let mut stmt = connection.prepare("SELECT subchains.ChainId, subchains.SubchainId, ChainName, SubchainName, StoreName, StoreId, City FROM Stores JOIN Subchains on Stores.chainId = Subchains.chainId AND Stores.subchainid = Subchains.subchainid")?;
     #[derive(Debug)]
     struct StoreRow {
         chain_id: i64,
@@ -49,6 +52,8 @@ async fn stores() -> Result<impl IntoResponse, AppError> {
         chain_name: String,
         subchain_name: String,
         store_name: String,
+        store_id: i64,
+        city: String,
     }
     let mut result = stmt.query(())?;
     let mut stores = Vec::new();
@@ -59,6 +64,8 @@ async fn stores() -> Result<impl IntoResponse, AppError> {
             chain_name: row.get(2)?,
             subchain_name: row.get(3)?,
             store_name: row.get(4)?,
+            store_id: row.get(5)?,
+            city: row.get(6)?,
         });
     }
     #[derive(Template)]
@@ -67,6 +74,69 @@ async fn stores() -> Result<impl IntoResponse, AppError> {
         stores: Vec<StoreRow>,
     }
     let template = StoresTemplate { stores };
+
+    Ok(HtmlTemplate(template))
+}
+
+#[derive(Deserialize)]
+struct CompareParams {
+    name1: String,
+    name2: String,
+}
+
+async fn compare(
+    name_params: extract::Query<CompareParams>,
+    extract::Path((store_1, store_2)): extract::Path<(String, String)>,
+) -> Result<impl IntoResponse, AppError> {
+    let mut store_1 = store_1.split("_");
+    let chain_id_1 = store_1.next().ok_or(anyhow!("Error parsing param"))?;
+    let subchain_id_1 = store_1.next().ok_or(anyhow!("Error parsing param"))?;
+    let store_id_1 = store_1.next().ok_or(anyhow!("Error parsing param"))?;
+
+    let mut store_2 = store_2.split("_");
+    let chain_id_2 = store_2.next().ok_or(anyhow!("Error parsing param"))?;
+    let subchain_id_2 = store_2.next().ok_or(anyhow!("Error parsing param"))?;
+    let store_id_2 = store_2.next().ok_or(anyhow!("Error parsing param"))?;
+
+    info!("Parsing finished. comparing ({chain_id_1}, {store_id_1}) with ({chain_id_2}, {store_id_2})");
+
+    let connection = connection()?;
+    let mut stmt = connection.prepare(
+        "
+    select 
+        avg(ratio) as avg, count(*) as cnt from (
+            select cast(price_1 as float) / cast(price_2 as float) as ratio from (
+                select 
+                    itemcode, 
+                    MAX(CASE WHEN storeid = ?1 and chainid = ?2 THEN ItemPrice END) as price_1,
+                    MAX(CASE WHEN storeid = ?3 and chainid = ?4 then ItemPrice END) as price_2
+                FROM PRICES 
+                WHERE (storeid = ?1 and chainid = ?2) or (storeid = ?3 and chainid = ?4)
+                GROUP BY itemcode
+            ) 
+            where 
+                price_1 is not null and
+                price_2 is not null and 
+                ratio is not null
+        );",
+    )?;
+    let mut result = stmt.query(params![store_id_1, chain_id_1, store_id_2, chain_id_2])?;
+    let row = result.next()?.ok_or(anyhow!("Failure during query"))?;
+    let avg: f64 = row.get(0)?;
+    let cnt: usize = row.get(1)?;
+
+    #[derive(Template)]
+    #[template(path = "compare.html")]
+    struct CompareTemplate {
+        avg: f64,
+        cnt: usize,
+        name_params: CompareParams,
+    }
+    let template = CompareTemplate {
+        avg,
+        cnt,
+        name_params: name_params.0,
+    };
 
     Ok(HtmlTemplate(template))
 }

@@ -1,11 +1,49 @@
 <html>
 
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <style>
+        .part {
+            width: 200px;
+            display: inline-block;
+        }
+
+        .fixed {
+            position: fixed;
+            left: 0;
+            padding: 20px;
+
+        }
+    </style>
+    <script>
+        $(document).ready(() => {
+            $("#compare_button").click(() => {
+                console.log("clicked!");
+                let checked = $('.store_checkbox:checkbox:checked');
+                if (checked.length < 2) {
+                    console.log("You need ot check at least two stores");
+                    return;
+                }
+                document.location.href = "/compare/" + checked[0].id + "/" + checked[1].id + "?name1=" + checked[0].getAttribute("data-str") + "&name2=" + checked[1].getAttribute("data-str");
+            });
+
+        })
+    </script>
+</head>
+
 <body>
-    <ul>
+    <div class="fixed"><button id="compare_button">Compare</button> </div>
+    <div style="direction: rtl;">
         {% for store in stores %}
-        <li>{{ store.store_name }}</li>
+        <input class="store_checkbox" type="checkbox" id="{{store.chain_id}}_{{store.subchain_id}}_{{store.store_id}}"
+            data-str="{{store.chain_name}} {{store.store_name}} {{store.city}}">
+        <label for="{{store.chain_id}}_{{store.subchain_id}}_{{store.store_id}}">
+            <span class="part">{{store.chain_name}}</span>
+            <span class="part" style="width: 300px;">{{store.store_name}}</span>
+            <span class="part">{{store.city}}</span>
+        </label><br>
         {% endfor %}
-    </ul>
+    </div>
 </body>
 
 </html>

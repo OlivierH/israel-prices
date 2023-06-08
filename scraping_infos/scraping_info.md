@@ -9,3 +9,4 @@ https://www.ybitan.co.il/v2/retailers/1131/branches/958/products?filters=%7B%22m
 Yohananof: Need html parsing.
 Superpharm: Need html parsing.
 politzer: need html parsing
+hatzi hinam: need cookies
