@@ -6,7 +6,7 @@ use israel_prices::models::VictoryMetadata;
 use israel_prices::online_store_data;
 use tracing_subscriber::prelude::*;
 
-async fn fetch_am_pm() -> Result<HashMap<String, VictoryMetadata>> {
+async fn _fetch_am_pm() -> Result<HashMap<String, VictoryMetadata>> {
     let am_pm_metadata = israel_prices::online_store_data::fetch_victory_metadata(
         "https://www.ampm.co.il/v2/retailers/2",
         0,
@@ -15,7 +15,7 @@ async fn fetch_am_pm() -> Result<HashMap<String, VictoryMetadata>> {
     return Ok(am_pm_metadata);
 }
 
-async fn fetch_tiv_taam() -> Result<HashMap<String, VictoryMetadata>> {
+async fn _fetch_tiv_taam() -> Result<HashMap<String, VictoryMetadata>> {
     let data =
         online_store_data::fetch_victory_metadata("https://www.tivtaam.co.il/v2/retailers/1062", 0)
             .await?;

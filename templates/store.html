@@ -32,21 +32,25 @@
 </head>
 
 <body>
-    <div class="fixed"><button id="compare_button">Compare</button> </div>
-    <div style="direction: rtl;">
-        {% for store in stores %}
-        <input class="store_checkbox" type="checkbox" id="{{store.chain_id}}_{{store.subchain_id}}_{{store.store_id}}"
-            data-str="{{store.chain_name}} {{store.store_name}} {{store.city}}">
-        <label for="{{store.chain_id}}_{{store.subchain_id}}_{{store.store_id}}">
-            <span class="part">{{store.chain_name}} {{store.subchain_name}}</span>
-            <span class="part" style="width: 300px;">{{store.store_name}}</span>
-            <span class="part">{{store.city}}</span>
-            <span class="part">{{store.chain_id}} - {{store.store_id}}</span>
-        </label>
-        <button onclick="document.location.href='/store/{{store.chain_id}}/{{store.store_id}}'">
-            Go to
-        </button><br>
+    <div class="fixed"><button id="compare_button">Compare</button><br />
+        <p> chain_id: {{chain_id}}</p>
+        <p> subchain_id: {{subchain_id}}</p>
+        <p> chain_name: {{chain_name}}</p>
+        <p> subchain_name: {{subchain_name}}</p>
+        <p> store_id: {{store_id}}</p>
+        <p> store_name: {{store_name}}</p>
+        <p> city: {{city}}</p>
+    </div>
+
+    <p style="float: right">
+        {% for item in items %}
+        <span class="part">{{item.name}}</span>
+        <span class="part">{{item.price}}</span>
+        <br />
+
         {% endfor %}
+    </p>
+    <div style="direction: rtl;">
     </div>
 </body>
 

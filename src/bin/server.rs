@@ -7,6 +7,7 @@ use axum::{
     routing::get,
     Router,
 };
+use israel_prices::models;
 use rusqlite::{params, Connection};
 use serde::Deserialize;
 use tracing::info;
@@ -20,13 +21,13 @@ async fn main() {
         .init();
 
     let app = Router::new()
-        .route("/greet/:name", get(greet))
         .route("/compare/:store_1/:store_2", get(compare))
         .route("/", get(index))
-        .route("/stores", get(stores));
+        .route("/stores", get(stores))
+        .route("/store/:chain_id/:store_id", get(store));
 
     tracing::debug!("listening on http://0.0.0.0:3000");
-    let x = axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
+    let _ = axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
         .serve(app.into_make_service())
         .await
         .unwrap();
@@ -77,6 +78,68 @@ async fn stores() -> Result<impl IntoResponse, AppError> {
 
     Ok(HtmlTemplate(template))
 }
+async fn store(
+    extract::Path((chain_id, store_id)): extract::Path<(models::ChainId, models::StoreId)>,
+) -> Result<impl IntoResponse, AppError> {
+    let connection = connection()?;
+    let mut stmt = connection.prepare("
+    SELECT 
+        subchains.SubchainId, ChainName, SubchainName, StoreName, City 
+    FROM Stores JOIN Subchains on Stores.chainId = Subchains.chainId AND Stores.subchainid = Subchains.subchainid
+    WHERE Stores.chainId = ?1 AND StoreId = ?2   
+    ")?;
+    let mut result = stmt.query(params![chain_id, store_id])?;
+    let row = result.next()?.ok_or(anyhow!("No such store found"))?;
+
+    let subchain_id: models::SubchainId = row.get(0)?;
+    let chain_name: String = row.get(1)?;
+    let subchain_name: String = row.get(2)?;
+    let store_name: String = row.get(3)?;
+    let city: String = row.get(4)?;
+
+    let mut stmt = connection.prepare("
+    SELECT items.itemname, prices.itemprice 
+    FROM prices JOIN items 
+    ON prices.itemcode = items.itemcode
+    WHERE prices.chainid = ?1 AND (items.chainid is null or items.chainid = ?1) AND prices.storeid = ?2")?;
+    let mut result = stmt.query(params![chain_id, store_id])?;
+    let mut items = Vec::new();
+    struct Item {
+        price: String,
+        name: String,
+    }
+    while let Some(row) = result.next()? {
+        items.push(Item {
+            name: row.get(0)?,
+            price: row.get(1)?,
+        });
+    }
+
+    #[derive(Template)]
+    #[template(path = "store.html")]
+    struct StoreTemplate {
+        chain_id: models::ChainId,
+        subchain_id: models::SubchainId,
+        chain_name: String,
+        subchain_name: String,
+        store_id: models::StoreId,
+        store_name: String,
+        city: String,
+        items: Vec<Item>,
+    }
+    let template = StoreTemplate {
+        chain_id,
+        subchain_id,
+        chain_name,
+        subchain_name,
+        store_id,
+        store_name,
+        city,
+        items,
+    };
+
+    Ok(HtmlTemplate(template))
+}
 
 #[derive(Deserialize)]
 struct CompareParams {
@@ -90,12 +153,12 @@ async fn compare(
 ) -> Result<impl IntoResponse, AppError> {
     let mut store_1 = store_1.split("_");
     let chain_id_1 = store_1.next().ok_or(anyhow!("Error parsing param"))?;
-    let subchain_id_1 = store_1.next().ok_or(anyhow!("Error parsing param"))?;
+    let _subchain_id_1 = store_1.next().ok_or(anyhow!("Error parsing param"))?;
     let store_id_1 = store_1.next().ok_or(anyhow!("Error parsing param"))?;
 
     let mut store_2 = store_2.split("_");
     let chain_id_2 = store_2.next().ok_or(anyhow!("Error parsing param"))?;
-    let subchain_id_2 = store_2.next().ok_or(anyhow!("Error parsing param"))?;
+    let _subchain_id_2 = store_2.next().ok_or(anyhow!("Error parsing param"))?;
     let store_id_2 = store_2.next().ok_or(anyhow!("Error parsing param"))?;
 
     info!("Parsing finished. comparing ({chain_id_1}, {store_id_1}) with ({chain_id_2}, {store_id_2})");
@@ -141,11 +204,6 @@ async fn compare(
     Ok(HtmlTemplate(template))
 }
 
-async fn greet(extract::Path(name): extract::Path<String>) -> impl IntoResponse {
-    let template = HelloTemplate { name };
-    HtmlTemplate(template)
-}
-
 /* Error handling magic */
 // Make our own error that wraps `anyhow::Error`.
 struct AppError(anyhow::Error);
@@ -170,12 +228,6 @@ where
     fn from(err: E) -> Self {
         Self(err.into())
     }
-}
-
-#[derive(Template)]
-#[template(path = "hello.html")]
-struct HelloTemplate {
-    name: String,
 }
 
 struct HtmlTemplate<T>(T);
