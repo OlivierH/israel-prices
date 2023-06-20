@@ -430,79 +430,79 @@ async fn main() -> Result<()> {
                 }
             }
         }
-        if args.fetch_rami_levy_metadata {
-            info!("Fetching rami levy metadata chunk");
-            let rami_levy_metadata = online_store_data::fetch_rami_levy_metadata().await?;
-            sqlite_utils::save_rami_levy_metadata_to_sqlite(&rami_levy_metadata)?;
-        }
-        if args.fetch_victory_metadata {
-            let victory_metadata = online_store_data::fetch_victory_metadata(
-                "https://www.victoryonline.co.il/v2/retailers/1470",
-                args.metadata_fetch_limit,
-            )
-            .await?;
-            sqlite_utils::save_victory_metadata_to_sqlite("Victory", &victory_metadata)?;
-        }
-        if args.fetch_yenot_bitan_metadata {
-            let yenot_bitan_metadata = online_store_data::fetch_victory_metadata(
-                "https://www.ybitan.co.il/v2/retailers/1131",
-                args.metadata_fetch_limit,
-            )
-            .await?;
-            sqlite_utils::save_victory_metadata_to_sqlite("YenotBitan", &yenot_bitan_metadata)?;
-        }
-        if args.fetch_mega_metadata {
-            let mega_metadata = online_store_data::fetch_victory_metadata(
-                "https://www.mega.co.il/v2/retailers/1182",
-                args.metadata_fetch_limit,
-            )
-            .await?;
-            sqlite_utils::save_victory_metadata_to_sqlite("Mega", &mega_metadata)?;
-        }
-        if args.fetch_maayan_2000_metadata {
-            let maayan_2000_metadata = online_store_data::fetch_victory_metadata(
-                "https://www.m2000.co.il/v2/retailers/1404",
-                args.metadata_fetch_limit,
-            )
-            .await?;
-            sqlite_utils::save_victory_metadata_to_sqlite("Maayan_2000", &maayan_2000_metadata)?;
-        }
-        if args.fetch_am_pm_metadata {
-            let am_pm_metadata = online_store_data::fetch_victory_metadata(
-                "https://www.ampm.co.il/v2/retailers/2",
-                args.metadata_fetch_limit,
-            )
-            .await?;
-            sqlite_utils::save_victory_metadata_to_sqlite("Am_pm", &am_pm_metadata)?;
-        }
-        if args.fetch_tiv_taam_metadata {
-            let tiv_taam_metadata = online_store_data::fetch_victory_metadata(
-                "https://www.tivtaam.co.il/v2/retailers/1062",
-                args.metadata_fetch_limit,
-            )
-            .await?;
-            sqlite_utils::save_victory_metadata_to_sqlite("TivTaam", &tiv_taam_metadata)?;
-        }
-        if args.fetch_keshet_metadata {
-            let keshet_metadata = online_store_data::fetch_victory_metadata(
-                "https://www.keshet-teamim.co.il/v2/retailers/1219",
-                args.metadata_fetch_limit,
-            )
-            .await?;
-            sqlite_utils::save_victory_metadata_to_sqlite("Keshet", &keshet_metadata)?;
-        }
-        if args.fetch_shukcity_metadata {
-            let shukcity_metadata = online_store_data::fetch_victory_metadata(
-                "https://www.shukcity.co.il/v2/retailers/1254",
-                args.metadata_fetch_limit,
-            )
-            .await?;
-            sqlite_utils::save_victory_metadata_to_sqlite("ShukCity", &shukcity_metadata)?;
-        }
-        if args.fetch_yochananof_metadata {
-            let yochananof_metadata = online_store_data::fetch_yochananof_metadata().await?;
-            sqlite_utils::save_yochananof_metadata_to_sqlite(&yochananof_metadata)?;
-        }
+    }
+    if args.fetch_rami_levy_metadata {
+        info!("Fetching rami levy metadata chunk");
+        let rami_levy_metadata = online_store_data::fetch_rami_levy_metadata().await?;
+        sqlite_utils::save_rami_levy_metadata_to_sqlite(&rami_levy_metadata)?;
+    }
+    if args.fetch_victory_metadata {
+        let victory_metadata = online_store_data::fetch_victory_metadata(
+            "https://www.victoryonline.co.il/v2/retailers/1470",
+            args.metadata_fetch_limit,
+        )
+        .await?;
+        sqlite_utils::save_victory_metadata_to_sqlite("Victory", &victory_metadata)?;
+    }
+    if args.fetch_yenot_bitan_metadata {
+        let yenot_bitan_metadata = online_store_data::fetch_victory_metadata(
+            "https://www.ybitan.co.il/v2/retailers/1131",
+            args.metadata_fetch_limit,
+        )
+        .await?;
+        sqlite_utils::save_victory_metadata_to_sqlite("YenotBitan", &yenot_bitan_metadata)?;
+    }
+    if args.fetch_mega_metadata {
+        let mega_metadata = online_store_data::fetch_victory_metadata(
+            "https://www.mega.co.il/v2/retailers/1182",
+            args.metadata_fetch_limit,
+        )
+        .await?;
+        sqlite_utils::save_victory_metadata_to_sqlite("Mega", &mega_metadata)?;
+    }
+    if args.fetch_maayan_2000_metadata {
+        let maayan_2000_metadata = online_store_data::fetch_victory_metadata(
+            "https://www.m2000.co.il/v2/retailers/1404",
+            args.metadata_fetch_limit,
+        )
+        .await?;
+        sqlite_utils::save_victory_metadata_to_sqlite("Maayan_2000", &maayan_2000_metadata)?;
+    }
+    if args.fetch_am_pm_metadata {
+        let am_pm_metadata = online_store_data::fetch_victory_metadata(
+            "https://www.ampm.co.il/v2/retailers/2",
+            args.metadata_fetch_limit,
+        )
+        .await?;
+        sqlite_utils::save_victory_metadata_to_sqlite("Am_pm", &am_pm_metadata)?;
+    }
+    if args.fetch_tiv_taam_metadata {
+        let tiv_taam_metadata = online_store_data::fetch_victory_metadata(
+            "https://www.tivtaam.co.il/v2/retailers/1062",
+            args.metadata_fetch_limit,
+        )
+        .await?;
+        sqlite_utils::save_victory_metadata_to_sqlite("TivTaam", &tiv_taam_metadata)?;
+    }
+    if args.fetch_keshet_metadata {
+        let keshet_metadata = online_store_data::fetch_victory_metadata(
+            "https://www.keshet-teamim.co.il/v2/retailers/1219",
+            args.metadata_fetch_limit,
+        )
+        .await?;
+        sqlite_utils::save_victory_metadata_to_sqlite("Keshet", &keshet_metadata)?;
+    }
+    if args.fetch_shukcity_metadata {
+        let shukcity_metadata = online_store_data::fetch_victory_metadata(
+            "https://www.shukcity.co.il/v2/retailers/1254",
+            args.metadata_fetch_limit,
+        )
+        .await?;
+        sqlite_utils::save_victory_metadata_to_sqlite("ShukCity", &shukcity_metadata)?;
+    }
+    if args.fetch_yochananof_metadata {
+        let yochananof_metadata = online_store_data::fetch_yochananof_metadata().await?;
+        sqlite_utils::save_yochananof_metadata_to_sqlite(&yochananof_metadata)?;
     }
     info!("{}", prometheus.render());
     Ok(())
