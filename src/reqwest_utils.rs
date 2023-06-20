@@ -36,6 +36,41 @@ pub async fn post_to_text_with_retries(
     None
 }
 
+pub async fn post_to_text_with_headers_with_retries(
+    client: &Client,
+    url: &str,
+    body: String,
+    download_semaphore: Option<Arc<Semaphore>>,
+    header_map: reqwest::header::HeaderMap,
+) -> Option<String> {
+    for _ in 0..10 {
+        let _permit = match download_semaphore.as_ref() {
+            Some(download_semaphore) => {
+                Some(download_semaphore.clone().acquire_owned().await.unwrap())
+            }
+            None => None,
+        };
+
+        match client
+            .post(url)
+            .headers(header_map.clone())
+            .header("content-type", "application/json;charset=UTF-8")
+            .body(body.clone())
+            .send()
+            .await
+        {
+            Ok(resp) => match resp.text().await {
+                Ok(text) => {
+                    return Some(text);
+                }
+                Err(_) => continue,
+            },
+            Err(_) => continue,
+        };
+    }
+    None
+}
+
 pub async fn get_to_text_with_retries(url: &str) -> Option<String> {
     for _ in 0..10 {
         match reqwest::get(url).await {

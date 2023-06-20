@@ -6,6 +6,7 @@ use tracing::info;
 
 use crate::models::{
     Barcode, Chain, ItemInfo, ItemKey, RamiLevyMetadata, ShufersalMetadata, VictoryMetadata,
+    YochananofMetadata,
 };
 
 fn connection() -> Result<Connection> {
@@ -303,6 +304,45 @@ pub fn save_victory_metadata_to_sqlite(
                 .execute(params![
                     item_code,
                     categories,
+                    nutrition_info,
+                    metadata.ingredients,
+                    metadata.image_url,
+                ])
+                .with_context(|| format!("With item_code = {:?}", item_code))?;
+        }
+    }
+    transaction.commit()?;
+    Ok(())
+}
+
+pub fn save_yochananof_metadata_to_sqlite(
+    yochananof_metadata: &HashMap<String, YochananofMetadata>,
+) -> Result<()> {
+    let mut connection = connection()?;
+
+    info!("Saving table YochananofMetadata to sqlite");
+    connection.execute(
+        "CREATE TABLE IF NOT EXISTS YochananofMetadata (
+                        ItemCode TEXT NOT NULL PRIMARY KEY,
+                        NutritionInfo TEXT,
+                        Ingredients TEXT,
+                        ImageUrl TEXT)",
+        (),
+    )?;
+
+    let transaction = connection.transaction()?;
+    {
+        let tx = &transaction;
+        let mut statement = tx
+            .prepare(&format!("INSERT INTO YochananofMetadata (ItemCode, NutritionInfo, Ingredients, ImageUrl) VALUES (?1,?2,?3,?4)"))?;
+        for (item_code, metadata) in yochananof_metadata.iter() {
+            let nutrition_info = match metadata.nutrition_info.is_empty() {
+                false => Some(serde_json::to_string(&metadata.nutrition_info)?),
+                true => None,
+            };
+            statement
+                .execute(params![
+                    item_code,
                     nutrition_info,
                     metadata.ingredients,
                     metadata.image_url,

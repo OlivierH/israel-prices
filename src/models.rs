@@ -169,3 +169,11 @@ pub struct VictoryMetadata {
     // I wasn't able to.
     // pub product_symbols: Option<String>,
 }
+
+#[derive(Debug, Serialize)]
+pub struct YochananofMetadata {
+    // No categories yet, but it should be possible to add them
+    pub nutrition_info: Vec<NutritionalValues>,
+    pub ingredients: Option<String>,
+    pub image_url: Option<String>,
+}

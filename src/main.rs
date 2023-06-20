@@ -156,6 +156,9 @@ struct Args {
     #[arg(long)]
     fetch_shukcity_metadata: bool,
 
+    #[arg(long)]
+    fetch_yochananof_metadata: bool,
+
     #[arg(long, default_value = "0")]
     metadata_fetch_limit: usize,
 }
@@ -495,6 +498,10 @@ async fn main() -> Result<()> {
             )
             .await?;
             sqlite_utils::save_victory_metadata_to_sqlite("ShukCity", &shukcity_metadata)?;
+        }
+        if args.fetch_yochananof_metadata {
+            let yochananof_metadata = online_store_data::fetch_yochananof_metadata().await?;
+            sqlite_utils::save_yochananof_metadata_to_sqlite(&yochananof_metadata)?;
         }
     }
     info!("{}", prometheus.render());

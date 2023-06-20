@@ -335,7 +335,8 @@ impl NutritionalValue {
             nutrition_type.strip_suffix(&format!(" ({unit})")).unwrap()
         } else {
             nutrition_type.as_str()
-        };
+        }
+        .replace("‎", "");
 
         if unit == "" && nutrition_type == "כפיות סוכר" {
             return Some(NutritionalValue {
