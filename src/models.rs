@@ -1,5 +1,8 @@
+use std::collections::HashMap;
+
 use serde::Deserialize;
 use serde::Serialize;
+use serde_with::serde_as;
 
 use crate::nutrition::NutritionalValues;
 pub type Barcode = i64;
@@ -134,6 +137,13 @@ pub struct SubchainRecord {
     pub chain_name: String,
     pub subchain_id: SubchainId,
     pub subchain_name: String,
+}
+
+#[serde_as]
+#[derive(Default, Serialize, Deserialize, Debug)]
+pub struct ItemInfos {
+    #[serde_as(as = "Vec<(_, _)>")]
+    pub data: HashMap<ItemKey, ItemInfo>,
 }
 
 // The following structs represent the data scrappable

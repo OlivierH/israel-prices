@@ -289,14 +289,7 @@ async fn main() -> Result<()> {
             info!("Finished to handle prices");
         }
 
-        #[serde_as]
-        #[derive(Default, Serialize, Deserialize, Debug)]
-        struct ItemInfos {
-            #[serde_as(as = "Vec<(_, _)>")]
-            data: HashMap<ItemKey, ItemInfo>,
-        }
-
-        let mut item_infos: ItemInfos = ItemInfos::default();
+        let mut item_infos = models::ItemInfos::default();
 
         fn get_item_codes_for_chain(
             chain_id: models::ChainId,
