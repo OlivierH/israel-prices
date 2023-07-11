@@ -72,8 +72,12 @@ pub async fn post_to_text_with_headers_with_retries(
 }
 
 pub async fn get_to_text_with_retries(url: &str) -> Option<String> {
+    let client = Client::builder()
+        .timeout(std::time::Duration::from_secs(60))
+        .build()
+        .unwrap();
     for _ in 0..10 {
-        match reqwest::get(url).await {
+        match client.get(url).send().await {
             Ok(resp) => match resp.text().await {
                 Ok(text) => {
                     return Some(text);
