@@ -7,6 +7,7 @@ use axum::{
     routing::get,
     Router,
 };
+use chrono::format::Item;
 use israel_prices::models;
 use rusqlite::{params, Connection};
 use serde::Deserialize;
@@ -24,6 +25,7 @@ async fn main() {
         .route("/compare/:store_1/:store_2", get(compare))
         .route("/", get(index))
         .route("/stores", get(stores))
+        .route("/search/:query", get(search))
         .route("/store/:chain_id/:store_id", get(store));
 
     tracing::debug!("listening on http://0.0.0.0:3000");
@@ -78,6 +80,48 @@ async fn stores() -> Result<impl IntoResponse, AppError> {
 
     Ok(HtmlTemplate(template))
 }
+
+async fn search(
+    extract::Path(query): extract::Path<String>,
+) -> Result<impl IntoResponse, AppError> {
+    let connection = connection()?;
+    let mut stmt = connection.prepare(
+        "
+    SELECT 
+        items.itemname, prices.chainid, prices.storeid, subchains.chainname
+    FROM prices JOIN items JOIN subchains
+    ON prices.itemcode = items.itemcode AND prices.chainid = subchains.chainid
+    WHERE items.itemname LIKE ?1;
+    ",
+    )?;
+    let s = format!("%{query}%");
+    let mut result: rusqlite::Rows<'_> = stmt.query(params![s])?;
+
+    struct ItemRecord {
+        name: String,
+        chain_id: i64,
+        store_id: i64,
+        chain_name: String,
+    }
+    let mut items = Vec::new();
+
+    while let Some(row) = result.next()? {
+        items.push(ItemRecord {
+            name: row.get(0)?,
+            chain_id: row.get(1)?,
+            store_id: row.get(2)?,
+            chain_name: row.get(3)?,
+        });
+    }
+    #[derive(Template)]
+    #[template(path = "search_results.html")]
+    struct SearchTemplate {
+        items: Vec<ItemRecord>,
+    }
+    let template = SearchTemplate { items };
+    Ok(HtmlTemplate(template))
+}
+
 async fn store(
     extract::Path((chain_id, store_id)): extract::Path<(models::ChainId, models::StoreId)>,
 ) -> Result<impl IntoResponse, AppError> {
@@ -88,7 +132,7 @@ async fn store(
     FROM Stores JOIN Subchains on Stores.chainId = Subchains.chainId AND Stores.subchainid = Subchains.subchainid
     WHERE Stores.chainId = ?1 AND StoreId = ?2   
     ")?;
-    let mut result = stmt.query(params![chain_id, store_id])?;
+    let mut result: rusqlite::Rows<'_> = stmt.query(params![chain_id, store_id])?;
     let row = result.next()?.ok_or(anyhow!("No such store found"))?;
 
     let subchain_id: models::SubchainId = row.get(0)?;
