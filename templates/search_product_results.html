@@ -1,0 +1,33 @@
+<html>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <style>
+        .part {
+            width: 300px;
+            display: inline-block;
+        }
+
+        .fixed {
+            position: fixed;
+            left: 0;
+            padding: 20px;
+
+        }
+    </style>
+    <script>
+
+    </script>
+</head>
+
+{% for item in items %}
+<a href="/product/{{item.barcode}}">
+    <span class="part">{{item.name}}</span>
+    <span class="part">{{item.description}}</span>
+    <span class="part">{{item.barcode}}</span>
+</a>
+<br />
+
+{% endfor %}
+
+</html>

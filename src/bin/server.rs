@@ -7,7 +7,6 @@ use axum::{
     routing::get,
     Router,
 };
-use chrono::format::Item;
 use israel_prices::models;
 use rusqlite::{params, Connection};
 use serde::Deserialize;
@@ -26,10 +25,12 @@ async fn main() {
         .route("/", get(index))
         .route("/stores", get(stores))
         .route("/search/:query", get(search))
+        .route("/searchproduct/:query", get(searchproduct))
+        .route("/product/:barcode", get(product))
         .route("/store/:chain_id/:store_id", get(store));
-
-    tracing::debug!("listening on http://0.0.0.0:3000");
-    let _ = axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
+    let port = std::env::args().nth(1).unwrap_or("3000".to_string());
+    tracing::debug!("listening on http://0.0.0.0:{port}");
+    let _ = axum::Server::bind(&format!("0.0.0.0:{port}").parse().unwrap())
         .serve(app.into_make_service())
         .await
         .unwrap();
@@ -119,6 +120,111 @@ async fn search(
         items: Vec<ItemRecord>,
     }
     let template = SearchTemplate { items };
+    Ok(HtmlTemplate(template))
+}
+
+async fn searchproduct(
+    extract::Path(query): extract::Path<String>,
+) -> Result<impl IntoResponse, AppError> {
+    let connection = connection()?;
+    let mut stmt = connection.prepare(
+        "
+    SELECT 
+        items.itemname, items.ManufactureItemDescription, items.itemcode FROM items 
+    WHERE items.itemname LIKE ?1;
+    ",
+    )?;
+    let s = format!("%{query}%");
+    let mut result: rusqlite::Rows<'_> = stmt.query(params![s])?;
+
+    struct ItemRecord {
+        name: String,
+        description: String,
+        barcode: i64,
+    }
+    let mut items = Vec::new();
+
+    while let Some(row) = result.next()? {
+        items.push(ItemRecord {
+            name: row.get(0)?,
+            description: row.get(1)?,
+            barcode: row.get(2)?,
+        });
+    }
+    #[derive(Template)]
+    #[template(path = "search_product_results.html")]
+    struct SearchTemplate {
+        items: Vec<ItemRecord>,
+    }
+    let template = SearchTemplate { items };
+    Ok(HtmlTemplate(template))
+}
+
+async fn product(
+    extract::Path(product_id): extract::Path<String>,
+) -> Result<impl IntoResponse, AppError> {
+    let connection = connection()?;
+    let mut stmt = connection.prepare(
+        "
+    SELECT 
+        items.itemname, items.ManufactureItemDescription FROM items 
+    WHERE items.itemcode = ?1;
+    ",
+    )?;
+    let mut result: rusqlite::Rows<'_> = stmt.query(params![product_id])?;
+
+    struct ItemRecord {
+        name: String,
+        description: String,
+    }
+    let item = {
+        let mut items = Vec::new();
+
+        while let Some(row) = result.next()? {
+            items.push(ItemRecord {
+                name: row.get(0)?,
+                description: row.get(1)?,
+            });
+        }
+        if items.len() != 1 {
+            Err(anyhow!("Zero or more than two items found"))?;
+        }
+        items.remove(0)
+    };
+
+    let mut stmt = connection.prepare(
+        "
+    SELECT 
+        DISTINCT prices.itemprice, prices.chainid, prices.storeid, subchains.chainname, stores.storename
+    FROM prices JOIN subchains JOIN STORES
+    ON 
+        prices.storeid = stores.storeid and
+        prices.chainid = stores.chainid and
+        prices.chainid = subchains.chainid
+    WHERE prices.itemcode = ?1;
+    ",
+    )?;
+    let mut stores = Vec::new();
+    struct StoreRecord {
+        price: String,
+        chain_name: String,
+        store_name: String,
+    }
+    let mut result: rusqlite::Rows<'_> = stmt.query(params![product_id])?;
+    while let Some(row) = result.next()? {
+        stores.push(StoreRecord {
+            price: row.get(0)?,
+            chain_name: row.get(3)?,
+            store_name: row.get(4)?,
+        });
+    }
+    #[derive(Template)]
+    #[template(path = "product.html")]
+    struct ProductTemplate {
+        item: ItemRecord,
+        stores: Vec<StoreRecord>,
+    }
+    let template = ProductTemplate { item, stores };
     Ok(HtmlTemplate(template))
 }
 
