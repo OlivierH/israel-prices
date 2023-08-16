@@ -771,7 +771,6 @@ pub async fn scrap_excalibur_data(
 
     // We expect to need <150 requests, but this protects against infinite loops while being future proof.
     for i in 0..1000 {
-        println!("{i}");
         let from = i * 500;
         let url = format!("{url_start}/products?filters={{\"must\":{{}}}}&from={from}&size=500");
         info!("{i}: fetching url {url}");
