@@ -187,3 +187,16 @@ pub struct YochananofMetadata {
     pub ingredients: Option<String>,
     pub image_url: Option<String>,
 }
+
+pub struct ImageUrl {
+    pub link: String,
+    pub metadata: Option<String>,
+}
+
+pub struct ScrappedData {
+    pub barcode: String, // Not always a number
+    pub categories: Vec<String>,
+    pub nutrition_info: Vec<NutritionalValues>,
+    pub ingredients: Option<String>,
+    pub image_urls: Vec<ImageUrl>,
+}

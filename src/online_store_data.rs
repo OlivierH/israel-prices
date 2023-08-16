@@ -1,6 +1,7 @@
 use crate::{
     models::{
-        self, Barcode, RamiLevyMetadata, ShufersalMetadata, VictoryMetadata, YochananofMetadata,
+        self, Barcode, ImageUrl, RamiLevyMetadata, ScrappedData, ShufersalMetadata,
+        VictoryMetadata, YochananofMetadata,
     },
     nutrition::{self, NutritionalValue, NutritionalValues},
     reqwest_utils::{self, get_to_text_with_retries, post_to_text_with_headers_with_retries},
@@ -688,4 +689,162 @@ pub async fn fetch_yochananof_metadata() -> Result<HashMap<String, YochananofMet
         data.extend(result.into_iter());
     }
     Ok(data)
+}
+
+// excalibur is a codename for various stores, including Victory,that use the same backend.
+#[instrument]
+pub async fn scrap_excalibur_data(
+    url_start: &str,
+    fetch_limit: usize,
+) -> Result<Vec<ScrappedData>> {
+    #[derive(Deserialize, Debug)]
+    struct ExcaliburJsonSizeValues {
+        #[serde(rename = "unitOfMeasure")]
+        unit_of_measure: Option<ExcaliburJsonNames>,
+        value: Option<f32>,
+        #[serde(rename = "valueLessThan")]
+        value_less_than: bool,
+    }
+
+    #[derive(Deserialize, Debug)]
+    struct ExcaliburJsonImage {
+        url: String,
+    }
+    #[derive(Deserialize, Debug)]
+    struct OneStringField {
+        #[serde(rename = "1")]
+        name: Option<String>,
+    }
+    #[derive(Deserialize, Debug)]
+    struct ExcaliburJsonFamily {
+        categories: Option<Vec<ExcaliburJsonNames>>,
+    }
+    #[derive(Deserialize, Debug)]
+    struct ExcaliburJsonNames {
+        names: Option<OneStringField>,
+    }
+    impl ExcaliburJsonNames {
+        fn str(&self) -> String {
+            self.names
+                .as_ref()
+                .and_then(|n| n.name.clone())
+                .unwrap_or_default()
+        }
+    }
+    #[derive(Deserialize, Debug)]
+    struct ExcaliburJsonNutritionValue {
+        names: Option<OneStringField>,
+        #[serde(rename = "sizeValues")]
+        size: Vec<ExcaliburJsonSizeValues>,
+    }
+    #[derive(Deserialize, Debug)]
+    struct ExcaliburJsonNutritionValues {
+        values: Vec<ExcaliburJsonNutritionValue>,
+        sizes: Vec<ExcaliburJsonNames>,
+    }
+    #[derive(Deserialize, Debug)]
+    struct ExcaliburJsonData {
+        ingredients: Option<String>,
+    }
+    #[derive(Deserialize, Debug)]
+    struct ExcaliburJsonDataWrapper {
+        #[serde(rename = "1")]
+        data: Option<ExcaliburJsonData>,
+    }
+
+    #[derive(Deserialize, Debug)]
+    struct ExcaliburJsonProduct {
+        barcode: String,
+        data: Option<ExcaliburJsonDataWrapper>,
+        family: Option<ExcaliburJsonFamily>,
+        #[serde(rename = "nutritionValues")]
+        nutrition: Option<ExcaliburJsonNutritionValues>,
+        image: Option<ExcaliburJsonImage>,
+    }
+
+    #[derive(Deserialize, Debug)]
+    struct ExcaliburJsonResponse {
+        products: Vec<ExcaliburJsonProduct>,
+    }
+
+    let mut v = Vec::new();
+
+    // We expect to need <150 requests, but this protects against infinite loops while being future proof.
+    for i in 0..1000 {
+        println!("{i}");
+        let from = i * 500;
+        let url = format!("{url_start}/products?filters={{\"must\":{{}}}}&from={from}&size=500");
+        info!("{i}: fetching url {url}");
+        let text = reqwest_utils::get_to_text_with_retries(&url).await;
+        // if let Some(t) = &text {
+        //     std::fs::write("last_victory.json", t)?;
+        // }
+        let response: ExcaliburJsonResponse = serde_json::from_str(&text.unwrap()).unwrap();
+
+        if response.products.is_empty() {
+            break;
+        }
+        for product in response.products {
+            let nutritional_values = product.nutrition.map(|n| NutritionalValues {
+                size: n.sizes.get(0).map(|s| s.str()),
+                values: n
+                    .values
+                    .iter()
+                    .flat_map(|nutrition_value| {
+                        let size = match nutrition_value.size.get(0) {
+                            Some(x) => x,
+                            None => return None,
+                        };
+
+                        nutrition::NutritionalValue::create(
+                            size.value.unwrap_or(0.0).to_string(),
+                            size.unit_of_measure
+                                .as_ref()
+                                .map_or(String::default(), |n| n.str()),
+                            nutrition_value
+                                .names
+                                .as_ref()
+                                .map_or(String::default(), |n| {
+                                    n.name.clone().unwrap_or_default().replace("‎", "")
+                                }),
+                            size.value_less_than,
+                        )
+                    })
+                    .collect::<Vec<NutritionalValue>>(),
+            });
+
+            let ingredients = product
+                .data
+                .and_then(|d| d.data)
+                .and_then(|d| d.ingredients);
+            let categories = product
+                .family
+                .and_then(|f| {
+                    f.categories
+                        .map(|cs| cs.iter().map(|c| c.str()).collect::<Vec<String>>())
+                })
+                .unwrap_or_default();
+            let barcode = product.barcode;
+            let image_urls = product
+                .image
+                .map(|i| {
+                    vec![ImageUrl {
+                        link: i.url,
+                        metadata: None,
+                    }]
+                })
+                .unwrap_or_default();
+            v.push(ScrappedData {
+                barcode,
+                categories,
+                nutrition_info: nutritional_values.map(|nv| vec![nv]).unwrap_or_default(),
+                ingredients,
+                image_urls,
+            });
+        }
+        if fetch_limit > 0 && fetch_limit < v.len() {
+            break;
+        }
+    }
+    Ok(v)
 }
