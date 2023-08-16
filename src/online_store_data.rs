@@ -830,7 +830,7 @@ pub async fn scrap_excalibur_data(
                 .map(|i| {
                     vec![ImageUrl {
                         link: i.url,
-                        metadata: None,
+                        metadata: models::ImageUrlMetadata::Templated,
                     }]
                 })
                 .unwrap_or_default();

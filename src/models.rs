@@ -188,11 +188,19 @@ pub struct YochananofMetadata {
     pub image_url: Option<String>,
 }
 
-pub struct ImageUrl {
-    pub link: String,
-    pub metadata: Option<String>,
+#[derive(Debug, Serialize)]
+pub enum ImageUrlMetadata {
+    None,
+    Templated,
 }
 
+#[derive(Debug, Serialize)]
+pub struct ImageUrl {
+    pub link: String,
+    pub metadata: ImageUrlMetadata,
+}
+
+#[derive(Debug, Serialize)]
 pub struct ScrappedData {
     pub barcode: String, // Not always a number
     pub categories: Vec<String>,
