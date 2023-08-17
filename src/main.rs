@@ -170,9 +170,18 @@ async fn main() -> Result<()> {
         .expect("failed to install prometheus exporter");
     let log_file = File::create("log.txt")?;
     let subscriber = tracing_subscriber::registry()
-        .with(tracing_subscriber::fmt::layer())
+        .with(
+            tracing_subscriber::fmt::layer()
+                .with_file(true)
+                .with_line_number(true),
+        )
         .with(tracing_subscriber::EnvFilter::from_default_env())
-        .with(tracing_subscriber::fmt::layer().with_writer(Mutex::new(log_file)));
+        .with(
+            tracing_subscriber::fmt::layer()
+                .with_file(true)
+                .with_line_number(true)
+                .with_writer(Mutex::new(log_file)),
+        );
 
     tracing::subscriber::set_global_default(subscriber)?;
 
