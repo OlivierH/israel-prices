@@ -3,20 +3,8 @@ pub enum Website {
     // Excalibur is a codename for various stores, including Victory,that use the same backend.
     // param: main_url
     Excalibur(&'static str),
-    // param: username, password
-    PublishedPriceWithPassword(&'static str, &'static str),
+    RamiLevy,
     Shufersal,
-    // These are different urls that work the same and use the same code.
-    // Interistingly, the download prefix can be switched from one store to another
-    // params: initial url, download prefix
-    SimpleJsonToGet(&'static str, &'static str),
-    // All MatrixCatalog stores use the same main page - filtering need to happen later.
-    // Paramter: chain. currently: ויקטורי, מחסני השוק, ח. כהן, סופר ברקת
-    MatrixCatalog(&'static str),
-    // param: main page
-    PublishPrice(&'static str),
-    NetivHahesed,
-    SuperPharm,
 }
 
 #[derive(Clone)]
@@ -65,6 +53,7 @@ pub fn get_online_stores() -> Vec<OnlineStore> {
             Website::Excalibur("https://www.shukcity.co.il/v2/retailers/1254"),
             "shukcity",
         ),
+        OnlineStore::new(Website::RamiLevy, "rami_levy"),
     ]
     .to_vec()
 }

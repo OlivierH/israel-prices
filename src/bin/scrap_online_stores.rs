@@ -95,6 +95,9 @@ async fn main() -> Result<()> {
                 )
                 .await?
             }
+            online_store::Website::RamiLevy => {
+                online_store_data::scrap_rami_levy(args.metadata_fetch_limit).await?
+            }
             _ => panic!("SSSS"),
         };
         info!(

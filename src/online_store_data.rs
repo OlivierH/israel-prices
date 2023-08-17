@@ -849,3 +849,165 @@ pub async fn scrap_excalibur_data(
     }
     Ok(v)
 }
+
+#[instrument]
+pub async fn scrap_rami_levy(fetch_limit: usize) -> Result<Vec<ScrappedData>> {
+    let departments = vec![
+        49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 951, 1236, 1237, 1238, 1239, 1240,
+        1243, 1244, 1245, 1246,
+    ];
+
+    #[derive(Deserialize, Debug)]
+    struct RamiLevyJsonFoodSymbol {
+        value: String,
+    }
+    #[derive(Serialize, Deserialize, Debug)]
+    struct RamiLevyJsonImages {
+        small: Option<String>,
+        original: Option<String>,
+        trim: Option<String>,
+        transparent: Option<String>,
+    }
+    #[derive(Deserialize, Debug)]
+    struct RamiLevyJsonNutritionalValueField {
+        #[serde(rename = "UOM")]
+        unit_of_measurement: String,
+        value: String,
+    }
+    #[derive(Deserialize, Debug)]
+    struct RamiLevyJsonNutritionalValues {
+        label: String,
+        fields: Vec<RamiLevyJsonNutritionalValueField>,
+    }
+    #[derive(Deserialize, Debug)]
+    struct RamiLevyJsonDetails {
+        #[serde(rename = "Nutritional_Values")]
+        nutritional_values: Vec<RamiLevyJsonNutritionalValues>,
+        #[serde(rename = "Ingredient_Sequence_and_Name")]
+        ingredient_sequence_and_name: String,
+        #[serde(rename = "Food_Symbol_Red")]
+        product_symbols: Option<Vec<RamiLevyJsonFoodSymbol>>,
+    }
+    #[derive(Deserialize, Debug)]
+    struct RamiLevyJsonCategory {
+        name: String,
+    }
+    #[derive(Deserialize, Debug)]
+    struct RamiLevyJsonData {
+        department: Option<RamiLevyJsonCategory>,
+        group: Option<RamiLevyJsonCategory>,
+        #[serde(rename = "subGroup")]
+        sub_group: Option<RamiLevyJsonCategory>,
+        #[serde(rename = "gs")]
+        details: RamiLevyJsonDetails,
+        images: RamiLevyJsonImages,
+        barcode: models::Barcode,
+    }
+
+    #[derive(Deserialize, Debug)]
+    struct RamiLevyJsonValue {
+        data: Vec<RamiLevyJsonData>,
+    }
+
+    let client = reqwest::Client::new();
+    let url = "https://www.rami-levy.co.il/api/catalog";
+    let mut all_products = Vec::new();
+    for department in departments {
+        let response_str = reqwest_utils::post_to_text_with_retries(
+            &client,
+            url,
+            format!("{{\"d\":{department},\"size\":10000}}"),
+            None,
+        )
+        .await
+        .ok_or(anyhow!("Error fetching rami levy department {department}"))?;
+        let data = serde_json::from_str::<RamiLevyJsonValue>(&response_str)?;
+        for data in data.data {
+            let categories = vec![&data.department, &data.group, &data.sub_group]
+                .iter()
+                .filter_map(|c| c.as_ref())
+                .map(|c| c.name.clone())
+                .collect::<Vec<String>>();
+            let ingredients = Some(data.details.ingredient_sequence_and_name.to_string())
+                .filter(|s| !s.is_empty());
+            let product_symbols = data.details.product_symbols.as_ref().and_then(|symbols| {
+                let symbols = symbols
+                    .iter()
+                    .map(|p| p.value.clone())
+                    .collect::<Vec<String>>();
+                if symbols.is_empty() {
+                    None
+                } else {
+                    Some(symbols)
+                }
+            });
+            let product_symbols = match product_symbols {
+                Some(product_symbols) => Some(serde_json::to_string(&product_symbols).unwrap()),
+                None => None,
+            };
+            //
+            let nutrition_info = data
+                .details
+                .nutritional_values
+                .iter()
+                .filter_map(|v| {
+                    let (value, unit) = if let Some(field) = v.fields.get(0) {
+                        (field.value.as_str(), field.unit_of_measurement.as_str())
+                    } else {
+                        ("", "")
+                    };
+                    NutritionalValue::new(value.to_string(), unit.to_string(), v.label.clone())
+                })
+                .collect::<Vec<NutritionalValue>>();
+            let nutrition_info = match nutrition_info.is_empty() {
+                false => vec![NutritionalValues {
+                    size: None,
+                    values: nutrition_info,
+                }],
+                true => Vec::new(),
+            };
+
+            let mut image_urls = Vec::new();
+            if let Some(link) = data.images.original {
+                image_urls.push(ImageUrl {
+                    link,
+                    metadata: models::ImageUrlMetadata::Original,
+                });
+            };
+            if let Some(link) = data.images.small {
+                image_urls.push(ImageUrl {
+                    link,
+                    metadata: models::ImageUrlMetadata::Small,
+                });
+            };
+            if let Some(link) = data.images.transparent {
+                image_urls.push(ImageUrl {
+                    link,
+                    metadata: models::ImageUrlMetadata::Transparent,
+                });
+            };
+            if let Some(link) = data.images.trim {
+                image_urls.push(ImageUrl {
+                    link,
+                    metadata: models::ImageUrlMetadata::Trim,
+                });
+            };
+            all_products.push(ScrappedData {
+                source: "rami_levy".to_string(),
+                barcode: data.barcode.to_string(),
+                categories,
+                nutrition_info,
+                ingredients,
+                // product_symbols,
+                image_urls,
+            });
+            if all_products.len() > fetch_limit {
+                break;
+            }
+        }
+        if all_products.len() > fetch_limit {
+            break;
+        }
+    }
+    Ok(all_products)
+}

@@ -192,6 +192,10 @@ pub struct YochananofMetadata {
 pub enum ImageUrlMetadata {
     None,
     Templated,
+    Original,
+    Small,
+    Transparent,
+    Trim,
 }
 
 #[derive(Debug, Serialize)]
