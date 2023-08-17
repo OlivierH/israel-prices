@@ -694,6 +694,7 @@ pub async fn fetch_yochananof_metadata() -> Result<HashMap<String, YochananofMet
 // excalibur is a codename for various stores, including Victory,that use the same backend.
 #[instrument]
 pub async fn scrap_excalibur_data(
+    source: &str,
     url_start: &str,
     fetch_limit: usize,
 ) -> Result<Vec<ScrappedData>> {
@@ -834,6 +835,7 @@ pub async fn scrap_excalibur_data(
                 })
                 .unwrap_or_default();
             v.push(ScrappedData {
+                source: source.to_string(),
                 barcode,
                 categories,
                 nutrition_info: nutritional_values.map(|nv| vec![nv]).unwrap_or_default(),

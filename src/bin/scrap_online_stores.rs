@@ -2,7 +2,7 @@ use std::{fs::File, sync::Mutex};
 
 use anyhow::Result;
 use clap::Parser;
-use israel_prices::{online_store, online_store_data};
+use israel_prices::{online_store, online_store_data, sqlite_utils};
 use metrics_exporter_prometheus::PrometheusBuilder;
 use tokio;
 use tracing::{debug, error, info, span, Level};
@@ -88,15 +88,21 @@ async fn main() -> Result<()> {
     for online_store in online_store::get_online_stores() {
         let scraped_data = match online_store.website {
             online_store::Website::Excalibur(url) => {
-                online_store_data::scrap_excalibur_data(url, args.metadata_fetch_limit).await?
+                online_store_data::scrap_excalibur_data(
+                    online_store.name,
+                    url,
+                    args.metadata_fetch_limit,
+                )
+                .await?
             }
             _ => panic!("SSSS"),
         };
-        println!(
+        info!(
             "From store {}, got {} elements",
             online_store.name,
             scraped_data.len()
-        )
+        );
+        sqlite_utils::save_scraped_data_to_sqlite(&scraped_data)?;
     }
 
     // for d in victory_metadata {

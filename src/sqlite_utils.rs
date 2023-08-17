@@ -5,8 +5,8 @@ use rusqlite::{params, Connection};
 use tracing::info;
 
 use crate::models::{
-    Barcode, Chain, ItemInfo, ItemKey, RamiLevyMetadata, ShufersalMetadata, VictoryMetadata,
-    YochananofMetadata,
+    Barcode, Chain, ItemInfo, ItemKey, RamiLevyMetadata, ScrappedData, ShufersalMetadata,
+    VictoryMetadata, YochananofMetadata,
 };
 
 fn connection() -> Result<Connection> {
@@ -348,6 +348,57 @@ pub fn save_yochananof_metadata_to_sqlite(
                     metadata.image_url,
                 ])
                 .with_context(|| format!("With item_code = {:?}", item_code))?;
+        }
+    }
+    transaction.commit()?;
+    Ok(())
+}
+pub fn save_scraped_data_to_sqlite(data: &Vec<ScrappedData>) -> Result<()> {
+    let mut connection = connection()?;
+
+    info!("Saving table ScrapedData to sqlite");
+    connection.execute(
+        &format!(
+            "CREATE TABLE IF NOT EXISTS ScrapedData (
+                        Source TEXT NOT NULL,
+                        ItemCode TEXT NOT NULL,
+                        Categories TEXT,
+                        NutritionInfo TEXT,
+                        Ingredients TEXT,
+                        ImageUrl TEXT,
+                        PRIMARY KEY(Source,ItemCode))"
+        ),
+        (),
+    )?;
+
+    let transaction = connection.transaction()?;
+    {
+        let tx = &transaction;
+        let mut statement = tx
+            .prepare(&format!("INSERT OR REPLACE INTO ScrapedData (Source, ItemCode, Categories, NutritionInfo, Ingredients, ImageUrl) VALUES (?1,?2,?3,?4,?5,?6)"))?;
+        for elem in data {
+            let categories = match elem.categories.is_empty() {
+                false => Some(serde_json::to_string(&elem.categories)?),
+                true => None,
+            };
+            let nutrition_info = match elem.nutrition_info.is_empty() {
+                false => Some(serde_json::to_string(&elem.nutrition_info)?),
+                true => None,
+            };
+            let image_urls = match elem.image_urls.is_empty() {
+                false => Some(serde_json::to_string(&elem.nutrition_info)?),
+                true => None,
+            };
+            statement
+                .execute(params![
+                    elem.source,
+                    elem.barcode,
+                    categories,
+                    nutrition_info,
+                    elem.ingredients,
+                    image_urls,
+                ])
+                .with_context(|| format!("With item_code = {:?}", elem.barcode))?;
         }
     }
     transaction.commit()?;
