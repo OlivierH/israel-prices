@@ -785,33 +785,42 @@ pub async fn scrap_excalibur_data(
             break;
         }
         for product in response.products {
-            let nutritional_values = product.nutrition.map(|n| NutritionalValues {
-                size: n.sizes.get(0).map(|s| s.str()),
-                values: n
-                    .values
-                    .iter()
-                    .flat_map(|nutrition_value| {
-                        let size = match nutrition_value.size.get(0) {
-                            Some(x) => x,
-                            None => return None,
-                        };
+            let nutritional_values = product
+                .nutrition
+                .map(|n| NutritionalValues {
+                    size: n.sizes.get(0).and_then(|s| {
+                        if s.str().is_empty() {
+                            None
+                        } else {
+                            Some(s.str())
+                        }
+                    }),
+                    values: n
+                        .values
+                        .iter()
+                        .flat_map(|nutrition_value| {
+                            let size = match nutrition_value.size.get(0) {
+                                Some(x) => x,
+                                None => return None,
+                            };
 
-                        nutrition::NutritionalValue::create(
-                            size.value.unwrap_or(0.0).to_string(),
-                            size.unit_of_measure
-                                .as_ref()
-                                .map_or(String::default(), |n| n.str()),
-                            nutrition_value
-                                .names
-                                .as_ref()
-                                .map_or(String::default(), |n| {
-                                    n.name.clone().unwrap_or_default().replace("‎", "")
-                                }),
-                            size.value_less_than,
-                        )
-                    })
-                    .collect::<Vec<NutritionalValue>>(),
-            });
+                            nutrition::NutritionalValue::create(
+                                size.value.unwrap_or(0.0).to_string(),
+                                size.unit_of_measure
+                                    .as_ref()
+                                    .map_or(String::default(), |n| n.str()),
+                                nutrition_value
+                                    .names
+                                    .as_ref()
+                                    .map_or(String::default(), |n| {
+                                        n.name.clone().unwrap_or_default().replace("‎", "")
+                                    }),
+                                size.value_less_than,
+                            )
+                        })
+                        .collect::<Vec<NutritionalValue>>(),
+                })
+                .and_then(|nv| if nv.values.is_empty() { None } else { Some(nv) });
 
             let ingredients = product
                 .data

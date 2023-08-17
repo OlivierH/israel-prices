@@ -3,7 +3,7 @@ use std::{str::FromStr, string::ParseError};
 use serde::Serialize;
 use tracing::debug;
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, PartialEq)]
 pub enum NutritionType {
     AceticAcid,
     AdditionalSugar,
@@ -244,7 +244,7 @@ impl FromStr for NutritionType {
     }
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, PartialEq)]
 pub enum Unit {
     #[serde(rename = "g")]
     Gram,
@@ -305,7 +305,7 @@ impl FromStr for Unit {
     }
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, PartialEq)]
 pub struct NutritionalValue {
     pub number: String,
     pub unit: Unit,
@@ -377,6 +377,11 @@ impl NutritionalValue {
 
 #[derive(Debug, Serialize)]
 pub struct NutritionalValues {
+    #[serde(skip_serializing_if = "is_default")]
     pub size: Option<String>,
+    #[serde(skip_serializing_if = "is_default")]
     pub values: Vec<NutritionalValue>,
+}
+fn is_default<T: Default + PartialEq>(t: &T) -> bool {
+    t == &T::default()
 }
