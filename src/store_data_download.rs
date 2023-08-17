@@ -122,6 +122,7 @@ async fn get_downloads_publishedprice(
     return Ok(downloads);
 }
 
+#[instrument]
 async fn get_downloads_simple_json_to_get(
     store: &Store,
     file_limit: Option<usize>,
