@@ -82,13 +82,13 @@ pub fn get_store_configs() -> Vec<Store> {
         Store::new(Website::PublishedPrice("osherad"), "osher_ad"),
         Store::new(Website::NetivHahesed, "netiv_hahesed"),
         Store::new(Website::PublishedPrice("SalachD"), "salach_dabbah"),
-        // Store::new(
-        //     Website::SimpleJsonToGet(
-        //         "https://supersapir.binaprojects.com/Main.aspx",
-        //         "https://supersapir.binaprojects.com/Download/",
-        //     ),
-        //     "super_sapir",
-        // ),
+        Store::new(
+            Website::SimpleJsonToGet(
+                "https://supersapir.binaprojects.com/MainIO_Hok.aspx",
+                "https://supersapir.binaprojects.com/Download/",
+            ),
+            "super_sapir",
+        ),
         Store::new(Website::SuperPharm, "superpharm"),
         Store::new(Website::PublishedPrice("Stop_Market"), "stop_market"),
         Store::new(Website::MatrixCatalog("סופר ברקת"), "super_bareket"),
