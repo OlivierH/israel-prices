@@ -2,7 +2,11 @@ use std::{fs::File, sync::Mutex};
 
 use anyhow::Result;
 use clap::Parser;
-use israel_prices::{online_store, online_store_data, sqlite_utils};
+use futures::future;
+use israel_prices::{
+    online_store::{self, OnlineStore},
+    online_store_data, sqlite_utils,
+};
 use metrics_exporter_prometheus::PrometheusBuilder;
 use tokio;
 use tracing::{debug, error, info, span, Level};
@@ -59,6 +63,23 @@ struct Args {
     metadata_fetch_limit: usize,
 }
 
+async fn scrap_store(online_store: OnlineStore, fetch_limit: usize) -> Result<()> {
+    let scraped_data = match online_store.website {
+        online_store::Website::Excalibur(url) => {
+            online_store_data::scrap_excalibur_data(online_store.name, url, fetch_limit).await?
+        }
+        online_store::Website::RamiLevy => online_store_data::scrap_rami_levy(fetch_limit).await?,
+        _ => panic!("SSSS"),
+    };
+    info!(
+        "From store {}, got {} elements",
+        online_store.name,
+        scraped_data.len()
+    );
+    sqlite_utils::save_scraped_data_to_sqlite(&scraped_data)?;
+    Ok(())
+}
+
 #[tokio::main(flavor = "multi_thread", worker_threads = 10)]
 async fn main() -> Result<()> {
     let log_file = File::create("log.txt")?;
@@ -84,33 +105,15 @@ async fn main() -> Result<()> {
             std::fs::remove_file("data.sqlite")?;
         }
     }
-
+    let mut tasks = Vec::new();
     for online_store in online_store::get_online_stores() {
-        let scraped_data = match online_store.website {
-            online_store::Website::Excalibur(url) => {
-                online_store_data::scrap_excalibur_data(
-                    online_store.name,
-                    url,
-                    args.metadata_fetch_limit,
-                )
-                .await?
-            }
-            online_store::Website::RamiLevy => {
-                online_store_data::scrap_rami_levy(args.metadata_fetch_limit).await?
-            }
-            _ => panic!("SSSS"),
-        };
-        info!(
-            "From store {}, got {} elements",
-            online_store.name,
-            scraped_data.len()
-        );
-        sqlite_utils::save_scraped_data_to_sqlite(&scraped_data)?;
+        tasks.push(tokio::spawn(scrap_store(
+            online_store,
+            args.metadata_fetch_limit,
+        )));
     }
-
-    // for d in victory_metadata {
-    //     println!("{:?}", d);
-    // }
-    // sqlite_utils::save_victory_metadata_to_sqlite("Victory", &victory_metadata)?;
+    for result in future::join_all(tasks).await {
+        let _outcome = result??;
+    }
     Ok(())
 }
