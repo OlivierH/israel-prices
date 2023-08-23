@@ -4,12 +4,13 @@ use anyhow::Result;
 use clap::Parser;
 use futures::future;
 use israel_prices::{
+    models::Barcode,
     online_store::{self, OnlineStore},
-    online_store_data, sqlite_utils,
+    online_store_data::{self, scrap_shufersal},
+    sqlite_utils,
 };
-use metrics_exporter_prometheus::PrometheusBuilder;
 use tokio;
-use tracing::{debug, error, info, span, Level};
+use tracing::info;
 use tracing_subscriber::prelude::__tracing_subscriber_SubscriberExt;
 
 #[derive(Parser, Debug, Clone)]
@@ -61,14 +62,31 @@ struct Args {
 
     #[arg(long, default_value = "0")]
     metadata_fetch_limit: usize,
+
+    #[arg(long, default_value = "shufersal_codes.txt")]
+    shufersal_codes_filename: String,
 }
 
-async fn scrap_store(online_store: OnlineStore, fetch_limit: usize) -> Result<()> {
+async fn scrap_store(online_store: OnlineStore, args: Args) -> Result<()> {
     let scraped_data = match online_store.website {
         online_store::Website::Excalibur(url) => {
-            online_store_data::scrap_excalibur_data(online_store.name, url, fetch_limit).await?
+            online_store_data::scrap_excalibur_data(
+                online_store.name,
+                url,
+                args.metadata_fetch_limit,
+            )
+            .await?
         }
-        online_store::Website::RamiLevy => online_store_data::scrap_rami_levy(fetch_limit).await?,
+        online_store::Website::RamiLevy => {
+            online_store_data::scrap_rami_levy(args.metadata_fetch_limit).await?
+        }
+        online_store::Website::Shufersal => {
+            let shufersal_barcodes = std::fs::read_to_string(&args.shufersal_codes_filename)?
+                .lines()
+                .filter_map(|s| s.parse::<Barcode>().ok())
+                .collect::<Vec<Barcode>>();
+            scrap_shufersal(&shufersal_barcodes, args.metadata_fetch_limit).await?
+        }
         _ => panic!("SSSS"),
     };
     info!(
@@ -87,7 +105,11 @@ async fn main() -> Result<()> {
         .with(tracing_subscriber::EnvFilter::new(
             "scrap_online_stores=debug,israel_prices=debug",
         ))
-        .with(tracing_subscriber::fmt::layer())
+        .with(
+            tracing_subscriber::fmt::layer()
+                .with_line_number(true)
+                .with_file(true),
+        )
         .with(tracing_subscriber::fmt::layer().with_writer(Mutex::new(log_file)));
 
     tracing::subscriber::set_global_default(subscriber)?;
@@ -95,7 +117,6 @@ async fn main() -> Result<()> {
     info!("Starting");
 
     let args = Args::parse();
-
     if args.delete_sqlite {
         info!("Deleting data.sqlite");
         let path = std::path::Path::new("data.sqlite");
@@ -107,10 +128,7 @@ async fn main() -> Result<()> {
     }
     let mut tasks = Vec::new();
     for online_store in online_store::get_online_stores() {
-        tasks.push(tokio::spawn(scrap_store(
-            online_store,
-            args.metadata_fetch_limit,
-        )));
+        tasks.push(tokio::spawn(scrap_store(online_store, args.clone())));
     }
     for result in future::join_all(tasks).await {
         let _outcome = result??;

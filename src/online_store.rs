@@ -54,6 +54,7 @@ pub fn get_online_stores() -> Vec<OnlineStore> {
             "shukcity",
         ),
         OnlineStore::new(Website::RamiLevy, "rami_levy"),
+        OnlineStore::new(Website::Shufersal, "shufersal"),
     ]
     .to_vec()
 }

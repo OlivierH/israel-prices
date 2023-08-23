@@ -365,7 +365,7 @@ pub fn save_scraped_data_to_sqlite(data: &Vec<ScrappedData>) -> Result<()> {
                         Categories TEXT,
                         NutritionInfo TEXT,
                         Ingredients TEXT,
-                        ImageUrl TEXT,
+                        ImageUrls TEXT,
                         PRIMARY KEY(Source,ItemCode))"
         ),
         (),
@@ -375,7 +375,7 @@ pub fn save_scraped_data_to_sqlite(data: &Vec<ScrappedData>) -> Result<()> {
     {
         let tx = &transaction;
         let mut statement = tx
-            .prepare(&format!("INSERT OR REPLACE INTO ScrapedData (Source, ItemCode, Categories, NutritionInfo, Ingredients, ImageUrl) VALUES (?1,?2,?3,?4,?5,?6)"))?;
+            .prepare(&format!("INSERT OR REPLACE INTO ScrapedData (Source, ItemCode, Categories, NutritionInfo, Ingredients, ImageUrls) VALUES (?1,?2,?3,?4,?5,?6)"))?;
         for elem in data {
             let categories = match elem.categories.is_empty() {
                 false => Some(serde_json::to_string(&elem.categories)?),
@@ -386,7 +386,7 @@ pub fn save_scraped_data_to_sqlite(data: &Vec<ScrappedData>) -> Result<()> {
                 true => None,
             };
             let image_urls = match elem.image_urls.is_empty() {
-                false => Some(serde_json::to_string(&elem.nutrition_info)?),
+                false => Some(serde_json::to_string(&elem.image_urls)?),
                 true => None,
             };
             statement

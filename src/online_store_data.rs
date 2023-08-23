@@ -1,7 +1,7 @@
 use crate::{
     models::{
-        self, Barcode, ImageUrl, RamiLevyMetadata, ScrappedData, ShufersalMetadata,
-        VictoryMetadata, YochananofMetadata,
+        self, Barcode, ImageUrl, ImageUrlMetadata, RamiLevyMetadata, ScrappedData,
+        ShufersalMetadata, VictoryMetadata, YochananofMetadata,
     },
     nutrition::{self, NutritionalValue, NutritionalValues},
     reqwest_utils::{self, get_to_text_with_retries, post_to_text_with_headers_with_retries},
@@ -30,15 +30,15 @@ fn get_text(item: &ElementRef, selector: &Selector) -> Result<String> {
         .to_string())
 }
 
-fn get_categories(document: &Html) -> Result<Option<String>> {
+fn get_categories(document: &Html) -> Result<Vec<String>> {
     let selector = create_selector(".modal-dialog")?;
     let modal_dialog = match document.select(&selector).next() {
         Some(element) => element,
-        None => return Ok(None),
+        None => return Ok(Vec::new()),
     };
     let attrs = match modal_dialog.value().attr("data-gtm") {
         Some(attrs) => attrs,
-        None => return Ok(None),
+        None => return Ok(Vec::new()),
     };
     let attrs: serde_json::Value = serde_json::from_str(attrs)?;
     let attrs = attrs
@@ -47,10 +47,9 @@ fn get_categories(document: &Html) -> Result<Option<String>> {
         .into_iter()
         .filter(|pair| pair.0.starts_with("categoryLevel"))
         .sorted_by(|a, b| Ord::cmp(a.0, b.0))
-        .map(|pair| pair.1.as_str().unwrap())
-        .collect::<Vec<&str>>();
-    let categories = serde_json::to_string(&attrs)?;
-    Ok(Some(categories))
+        .map(|pair| pair.1.as_str().unwrap().to_string())
+        .collect::<Vec<String>>();
+    Ok(attrs)
 }
 fn get_nutrition_info(document: &Html) -> Result<Option<String>> {
     let selector = create_selector(".nutritionList")?;
@@ -151,7 +150,10 @@ async fn fetch(item_code: Barcode) -> Result<(Barcode, ShufersalMetadata)> {
     Ok((
         item_code,
         ShufersalMetadata {
-            categories,
+            categories: match categories.is_empty() {
+                false => Some(serde_json::to_string(&categories)?),
+                true => None,
+            },
             nutrition_info,
             ingredients,
             product_symbols,
@@ -1019,4 +1021,117 @@ pub async fn scrap_rami_levy(fetch_limit: usize) -> Result<Vec<ScrappedData>> {
         }
     }
     Ok(all_products)
+}
+
+#[instrument(skip_all)]
+pub async fn scrap_shufersal(item_codes: &Vec<Barcode>, limit: usize) -> Result<Vec<ScrappedData>> {
+    fn scrap_nutrition_info(document: &Html) -> Result<Vec<NutritionalValues>> {
+        let selector = create_selector(".nutritionListTitle")?;
+        let sub_info_selector = create_selector(".subInfo")?;
+        let nutrition_item_selector = create_selector(".nutritionItem")?;
+        let number_selector = create_selector(".number")?;
+        let name_selector = create_selector(".name")?;
+        let text_selector = create_selector(".text")?;
+
+        let nutrition_titles: Vec<ElementRef<'_>> =
+            document.select(&selector).collect::<Vec<ElementRef>>();
+        let mut all_nutritional_values = Vec::new();
+        for title in nutrition_titles {
+            let li = title
+                .parent()
+                .ok_or(anyhow!("No parent for nutrition_title"))?;
+            let size = title
+                .select(&sub_info_selector)
+                .next()
+                .map(|elem| elem.text().collect::<String>());
+
+            let mut values = Vec::new();
+            for item in ElementRef::wrap(li)
+                .unwrap()
+                .select(&nutrition_item_selector)
+            {
+                let number = get_text(&item, &number_selector)?;
+                let unit = get_text(&item, &name_selector)?;
+                let nutrition_type = get_text(&item, &text_selector)?;
+                if let Some(n) = NutritionalValue::new(number, unit, nutrition_type) {
+                    values.push(n);
+                }
+            }
+            all_nutritional_values.push(NutritionalValues { size, values });
+        }
+        return Ok(all_nutritional_values);
+    }
+
+    async fn scrap_item(item_code: Barcode) -> Result<ScrappedData> {
+        let url = format!("https://www.shufersal.co.il/online/he/p/P_{item_code}/json");
+        debug!("Fetching url {url} for itemcode {item_code}");
+
+        let document = reqwest::get(url).await?.text().await?;
+        let document = Html::parse_document(&document);
+        let categories = get_categories(&document)?;
+        let nutrition_info = scrap_nutrition_info(&document)?;
+        let ingredients = get_ingredients(&document)?;
+
+        let image_url_selector = create_selector("img")?;
+        let image_urls = document
+            .select(&image_url_selector)
+            .map(|e| e.value().attr("src").unwrap_or_default())
+            .filter(|url| url.contains("product_images"))
+            .map(|url| {
+                {
+                    (
+                        url,
+                        url.split("/").filter(|u| u.starts_with("product")).last(),
+                    )
+                }
+            })
+            .filter_map(|(url, suffix)| match suffix {
+                Some(suffix) => Some((url, suffix)),
+                None => None,
+            })
+            .map(|(url, suffix)| ImageUrl {
+                link: url.to_string(),
+                metadata: ImageUrlMetadata::from(suffix),
+            })
+            .collect::<Vec<ImageUrl>>();
+        let _product_symbols = get_product_symbols(&document)?;
+        increment_counter!("fetch_shufersal_item_completed");
+        Ok(ScrappedData {
+            source: "shufersal".to_string(),
+            barcode: item_code.to_string(),
+            categories,
+            nutrition_info,
+            ingredients,
+            image_urls,
+        })
+    }
+
+    let mut data = Vec::new();
+    let futures = FuturesUnordered::new();
+
+    let item_codes = if limit == 0 {
+        &item_codes[0..item_codes.len()]
+    } else {
+        &item_codes[0..limit]
+    };
+
+    info!("Starting to create tasks");
+    for (i, item_code) in item_codes.into_iter().enumerate() {
+        futures.push(tokio::spawn(scrap_item(*item_code)));
+        if (i % 100 == 0 && i < 1000) || (i % 1000 == 0) {
+            debug!("Created task {i}");
+        }
+    }
+    info!("Finished to create tasks");
+    info!("Starting to await tasks");
+    let mut stream = futures.enumerate();
+    while let Some((i, result)) = stream.next().await {
+        let result = result??;
+        if (i % 100 == 0 && i < 1000) || (i % 1000 == 0) {
+            debug!("Finished task {i}");
+        }
+        data.push(result);
+    }
+    info!("Finished to await tasks");
+    Ok(data)
 }

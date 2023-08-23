@@ -194,8 +194,25 @@ pub enum ImageUrlMetadata {
     Templated,
     Original,
     Small,
+    Medium, // Used by Shufersal
+    Zoom,   // Used by Shufersal
     Transparent,
     Trim,
+}
+
+impl ImageUrlMetadata {
+    pub fn from(s: &str) -> ImageUrlMetadata {
+        if s.ends_with("_zoom") {
+            return ImageUrlMetadata::Zoom;
+        }
+        if s.ends_with("_small") {
+            return ImageUrlMetadata::Small;
+        }
+        if s.ends_with("_medium") {
+            return ImageUrlMetadata::Medium;
+        }
+        return ImageUrlMetadata::None;
+    }
 }
 
 #[derive(Debug, Serialize)]
