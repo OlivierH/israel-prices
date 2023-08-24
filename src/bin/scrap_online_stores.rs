@@ -87,7 +87,6 @@ async fn scrap_store(online_store: OnlineStore, args: Args) -> Result<()> {
                 .collect::<Vec<Barcode>>();
             scrap_shufersal(&shufersal_barcodes, args.metadata_fetch_limit).await?
         }
-        _ => panic!("SSSS"),
     };
     info!(
         "From store {}, got {} elements",
