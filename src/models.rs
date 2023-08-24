@@ -188,6 +188,7 @@ pub struct YochananofMetadata {
     pub image_url: Option<String>,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Serialize)]
 pub enum ImageUrlMetadata {
     None,
@@ -200,6 +201,7 @@ pub enum ImageUrlMetadata {
     Trim,
 }
 
+#[allow(dead_code)]
 impl ImageUrlMetadata {
     pub fn from(s: &str) -> ImageUrlMetadata {
         if s.ends_with("_zoom") {

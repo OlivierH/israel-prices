@@ -481,6 +481,7 @@ pub async fn fetch_victory_metadata(
 }
 
 // Note: this doesn't work currently, need to pass a cookie.
+#[allow(dead_code)]
 #[instrument]
 pub async fn fetch_hatzi_hinam() -> Result<()> {
     let catalog = reqwest_utils::get_json_to_text_with_retries(
@@ -952,7 +953,7 @@ pub async fn scrap_rami_levy(fetch_limit: usize) -> Result<Vec<ScrappedData>> {
                     Some(symbols)
                 }
             });
-            let product_symbols = match product_symbols {
+            let _product_symbols = match product_symbols {
                 Some(product_symbols) => Some(serde_json::to_string(&product_symbols).unwrap()),
                 None => None,
             };

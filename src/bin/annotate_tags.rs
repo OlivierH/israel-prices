@@ -10,20 +10,20 @@ fn main() -> Result<()> {
 
     info!("Starting");
 
-    let mut item_infos = israel_prices::models::ItemInfos::default();
-
-    {
+    let item_infos = {
         let item_infos_file = std::io::BufReader::new(std::fs::File::open("item_infos.json")?);
         info!("Reading item_infos from item_infos.json");
-        item_infos = serde_json::from_reader(item_infos_file)?;
+        let item_infos: israel_prices::models::ItemInfos =
+            serde_json::from_reader(item_infos_file)?;
         info!(
             "Read {} item_infos from item_infos.json",
             item_infos.data.len()
         );
-    }
+        item_infos
+    };
 
-    for (item_key, item_info) in item_infos.data {
-        let item_info: israel_prices::models::ItemInfo = item_info;
+    for (_item_key, item_info) in item_infos.data {
+        let _item_info: israel_prices::models::ItemInfo = item_info;
     }
 
     Ok(())
