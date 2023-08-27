@@ -27,39 +27,6 @@ struct Args {
     #[arg(long, default_value = "")]
     store: String,
 
-    #[arg(long)]
-    fetch_shufersal_metadata: bool,
-
-    #[arg(long)]
-    fetch_rami_levy_metadata: bool,
-
-    #[arg(long)]
-    fetch_victory_metadata: bool,
-
-    #[arg(long)]
-    fetch_yenot_bitan_metadata: bool,
-
-    #[arg(long)]
-    fetch_mega_metadata: bool,
-
-    #[arg(long)]
-    fetch_maayan_2000_metadata: bool,
-
-    #[arg(long)]
-    fetch_am_pm_metadata: bool,
-
-    #[arg(long)]
-    fetch_tiv_taam_metadata: bool,
-
-    #[arg(long)]
-    fetch_keshet_metadata: bool,
-
-    #[arg(long)]
-    fetch_shukcity_metadata: bool,
-
-    #[arg(long)]
-    fetch_yochananof_metadata: bool,
-
     #[arg(long, default_value = "0")]
     metadata_fetch_limit: usize,
 
@@ -68,32 +35,48 @@ struct Args {
 }
 
 async fn scrap_store(online_store: OnlineStore, args: Args) -> Result<()> {
-    let scraped_data = match online_store.website {
+    match online_store.website {
         online_store::Website::Excalibur(url) => {
-            online_store_data::scrap_excalibur_data(
+            let scraped_data = online_store_data::scrap_excalibur_data(
                 online_store.name,
                 url,
                 args.metadata_fetch_limit,
             )
-            .await?
+            .await?;
+            info!(
+                "From store {}, got {} elements",
+                online_store.name,
+                scraped_data.len()
+            );
+            sqlite_utils::save_scraped_data_to_sqlite(&scraped_data)?;
         }
         online_store::Website::RamiLevy => {
-            online_store_data::scrap_rami_levy(args.metadata_fetch_limit).await?
+            let scraped_data =
+                online_store_data::scrap_rami_levy(args.metadata_fetch_limit).await?;
+            info!(
+                "From store {}, got {} elements",
+                online_store.name,
+                scraped_data.len()
+            );
+            sqlite_utils::save_scraped_data_to_sqlite(&scraped_data)?;
         }
         online_store::Website::Shufersal => {
             let shufersal_barcodes = std::fs::read_to_string(&args.shufersal_codes_filename)?
                 .lines()
                 .filter_map(|s| s.parse::<Barcode>().ok())
                 .collect::<Vec<Barcode>>();
-            scrap_shufersal(&shufersal_barcodes, args.metadata_fetch_limit).await?
+            let num_of_chunks = shufersal_barcodes.len() / 1000;
+            for (i, chunk) in shufersal_barcodes.chunks(1000).enumerate() {
+                info!("Fetching shufersal data chunk {i}/{num_of_chunks}");
+                let shufersal_data = scrap_shufersal(chunk, i, args.metadata_fetch_limit).await?;
+                sqlite_utils::save_scraped_data_to_sqlite(&shufersal_data)?;
+                if args.metadata_fetch_limit > 0 && args.metadata_fetch_limit < i * 1000 {
+                    break;
+                }
+            }
         }
     };
-    info!(
-        "From store {}, got {} elements",
-        online_store.name,
-        scraped_data.len()
-    );
-    sqlite_utils::save_scraped_data_to_sqlite(&scraped_data)?;
+
     Ok(())
 }
 
@@ -127,6 +110,9 @@ async fn main() -> Result<()> {
     }
     let mut tasks = Vec::new();
     for online_store in online_store::get_online_stores() {
+        if !args.store.is_empty() && !args.store.contains(online_store.name) {
+            continue;
+        }
         tasks.push(tokio::spawn(scrap_store(online_store, args.clone())));
     }
     for result in future::join_all(tasks).await {

@@ -5,7 +5,7 @@ use rusqlite::{params, Connection};
 use tracing::info;
 
 use crate::models::{
-    Barcode, Chain, ItemInfo, ItemKey, RamiLevyMetadata, ScrappedData, ShufersalMetadata,
+    Barcode, Chain, ItemInfo, ItemKey, RamiLevyMetadata, ScrapedData, ShufersalMetadata,
     VictoryMetadata, YochananofMetadata,
 };
 
@@ -353,7 +353,7 @@ pub fn save_yochananof_metadata_to_sqlite(
     transaction.commit()?;
     Ok(())
 }
-pub fn save_scraped_data_to_sqlite(data: &Vec<ScrappedData>) -> Result<()> {
+pub fn save_scraped_data_to_sqlite(data: &Vec<ScrapedData>) -> Result<()> {
     let mut connection = connection()?;
 
     info!("Saving table ScrapedData to sqlite");

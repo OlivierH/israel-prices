@@ -224,7 +224,7 @@ pub struct ImageUrl {
 }
 
 #[derive(Debug, Serialize)]
-pub struct ScrappedData {
+pub struct ScrapedData {
     pub source: String,
     pub barcode: String, // Not always a number
     pub categories: Vec<String>,

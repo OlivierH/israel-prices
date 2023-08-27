@@ -1,6 +1,6 @@
 use crate::{
     models::{
-        self, Barcode, ImageUrl, ImageUrlMetadata, RamiLevyMetadata, ScrappedData,
+        self, Barcode, ImageUrl, ImageUrlMetadata, RamiLevyMetadata, ScrapedData,
         ShufersalMetadata, VictoryMetadata, YochananofMetadata,
     },
     nutrition::{self, NutritionalValue, NutritionalValues},
@@ -14,7 +14,8 @@ use reqwest::Client;
 use scraper::{Element, ElementRef, Html, Selector};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use tracing::{debug, info, instrument, span};
+use tracing::Instrument;
+use tracing::{debug, info, instrument, span, Level};
 
 fn create_selector(selectors: &str) -> Result<Selector> {
     Ok(Selector::parse(selectors).map_err(|_| anyhow!("couldn't build selector"))?)
@@ -700,7 +701,7 @@ pub async fn scrap_excalibur_data(
     source: &str,
     url_start: &str,
     fetch_limit: usize,
-) -> Result<Vec<ScrappedData>> {
+) -> Result<Vec<ScrapedData>> {
     #[derive(Deserialize, Debug)]
     struct ExcaliburJsonSizeValues {
         #[serde(rename = "unitOfMeasure")]
@@ -846,7 +847,7 @@ pub async fn scrap_excalibur_data(
                     }]
                 })
                 .unwrap_or_default();
-            v.push(ScrappedData {
+            v.push(ScrapedData {
                 source: source.to_string(),
                 barcode,
                 categories,
@@ -863,7 +864,7 @@ pub async fn scrap_excalibur_data(
 }
 
 #[instrument]
-pub async fn scrap_rami_levy(fetch_limit: usize) -> Result<Vec<ScrappedData>> {
+pub async fn scrap_rami_levy(fetch_limit: usize) -> Result<Vec<ScrapedData>> {
     let departments = vec![
         49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 951, 1236, 1237, 1238, 1239, 1240,
         1243, 1244, 1245, 1246,
@@ -925,14 +926,20 @@ pub async fn scrap_rami_levy(fetch_limit: usize) -> Result<Vec<ScrappedData>> {
     let url = "https://www.rami-levy.co.il/api/catalog";
     let mut all_products = Vec::new();
     for department in departments {
+        let span = span!(Level::DEBUG, "department", department = department);
+        span.in_scope(|| {
+            info!("Starting to handle department");
+        });
         let response_str = reqwest_utils::post_to_text_with_retries(
             &client,
             url,
             format!("{{\"d\":{department},\"size\":10000}}"),
             None,
         )
+        .instrument(span.clone())
         .await
         .ok_or(anyhow!("Error fetching rami levy department {department}"))?;
+        let _entered = span.enter();
         let data = serde_json::from_str::<RamiLevyJsonValue>(&response_str)?;
         for data in data.data {
             let categories = vec![&data.department, &data.group, &data.sub_group]
@@ -957,7 +964,6 @@ pub async fn scrap_rami_levy(fetch_limit: usize) -> Result<Vec<ScrappedData>> {
                 Some(product_symbols) => Some(serde_json::to_string(&product_symbols).unwrap()),
                 None => None,
             };
-            //
             let nutrition_info = data
                 .details
                 .nutritional_values
@@ -1004,7 +1010,7 @@ pub async fn scrap_rami_levy(fetch_limit: usize) -> Result<Vec<ScrappedData>> {
                     metadata: models::ImageUrlMetadata::Trim,
                 });
             };
-            all_products.push(ScrappedData {
+            all_products.push(ScrapedData {
                 source: "rami_levy".to_string(),
                 barcode: data.barcode.to_string(),
                 categories,
@@ -1013,19 +1019,23 @@ pub async fn scrap_rami_levy(fetch_limit: usize) -> Result<Vec<ScrappedData>> {
                 // product_symbols,
                 image_urls,
             });
-            if all_products.len() > fetch_limit {
+            if fetch_limit > 0 && all_products.len() > fetch_limit {
                 break;
             }
         }
-        if all_products.len() > fetch_limit {
+        if fetch_limit > 0 && all_products.len() > fetch_limit {
             break;
         }
     }
     Ok(all_products)
 }
 
-#[instrument(skip_all)]
-pub async fn scrap_shufersal(item_codes: &Vec<Barcode>, limit: usize) -> Result<Vec<ScrappedData>> {
+#[instrument(skip(item_codes, limit))]
+pub async fn scrap_shufersal(
+    item_codes: &[Barcode],
+    _chunk: usize,
+    limit: usize,
+) -> Result<Vec<ScrapedData>> {
     fn scrap_nutrition_info(document: &Html) -> Result<Vec<NutritionalValues>> {
         let selector = create_selector(".nutritionListTitle")?;
         let sub_info_selector = create_selector(".subInfo")?;
@@ -1063,16 +1073,17 @@ pub async fn scrap_shufersal(item_codes: &Vec<Barcode>, limit: usize) -> Result<
         return Ok(all_nutritional_values);
     }
 
-    async fn scrap_item(item_code: Barcode) -> Result<ScrappedData> {
+    async fn scrap_item(item_code: Barcode) -> Result<Option<ScrapedData>> {
         let url = format!("https://www.shufersal.co.il/online/he/p/P_{item_code}/json");
         debug!("Fetching url {url} for itemcode {item_code}");
-
-        let document = reqwest::get(url).await?.text().await?;
+        let document = match reqwest_utils::get_to_text_with_retries(&url).await {
+            Some(text) => text,
+            None => return Ok(None),
+        };
         let document = Html::parse_document(&document);
         let categories = get_categories(&document)?;
         let nutrition_info = scrap_nutrition_info(&document)?;
         let ingredients = get_ingredients(&document)?;
-
         let image_url_selector = create_selector("img")?;
         let image_urls = document
             .select(&image_url_selector)
@@ -1097,14 +1108,14 @@ pub async fn scrap_shufersal(item_codes: &Vec<Barcode>, limit: usize) -> Result<
             .collect::<Vec<ImageUrl>>();
         let _product_symbols = get_product_symbols(&document)?;
         increment_counter!("fetch_shufersal_item_completed");
-        Ok(ScrappedData {
+        Ok(Some(ScrapedData {
             source: "shufersal".to_string(),
             barcode: item_code.to_string(),
             categories,
             nutrition_info,
             ingredients,
             image_urls,
-        })
+        }))
     }
 
     let mut data = Vec::new();
@@ -1131,7 +1142,9 @@ pub async fn scrap_shufersal(item_codes: &Vec<Barcode>, limit: usize) -> Result<
         if (i % 100 == 0 && i < 1000) || (i % 1000 == 0) {
             debug!("Finished task {i}");
         }
-        data.push(result);
+        if let Some(result) = result {
+            data.push(result);
+        }
     }
     info!("Finished to await tasks");
     Ok(data)
