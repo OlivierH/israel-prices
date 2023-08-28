@@ -4,7 +4,9 @@ use crate::{
         ShufersalMetadata, VictoryMetadata, YochananofMetadata,
     },
     nutrition::{self, NutritionalValue, NutritionalValues},
+    online_store::{self, OnlineStore},
     reqwest_utils::{self, get_to_text_with_retries, post_to_text_with_headers_with_retries},
+    sqlite_utils,
 };
 use anyhow::{anyhow, Result};
 use futures::{stream::FuturesUnordered, StreamExt};
@@ -1155,4 +1157,47 @@ pub async fn scrap_shufersal(
     }
     info!("Finished to await tasks");
     Ok(data)
+}
+
+pub async fn scrap_store_and_save_to_sqlite(
+    online_store: OnlineStore,
+    scrap_limit: usize,
+    shufersal_codes_filename: String,
+) -> Result<()> {
+    match online_store.website {
+        online_store::Website::Excalibur(url) => {
+            let scraped_data = scrap_excalibur_data(online_store.name, url, scrap_limit).await?;
+            info!(
+                "From store {}, got {} elements",
+                online_store.name,
+                scraped_data.len()
+            );
+            sqlite_utils::save_scraped_data_to_sqlite(&scraped_data)?;
+        }
+        online_store::Website::RamiLevy => {
+            let scraped_data = scrap_rami_levy(scrap_limit).await?;
+            info!(
+                "From store {}, got {} elements",
+                online_store.name,
+                scraped_data.len()
+            );
+            sqlite_utils::save_scraped_data_to_sqlite(&scraped_data)?;
+        }
+        online_store::Website::Shufersal => {
+            let shufersal_barcodes = std::fs::read_to_string(shufersal_codes_filename)?
+                .lines()
+                .filter_map(|s| s.parse::<Barcode>().ok())
+                .collect::<Vec<Barcode>>();
+            let num_of_chunks = shufersal_barcodes.len() / 1000;
+            for (i, chunk) in shufersal_barcodes.chunks(1000).enumerate() {
+                info!("Fetching shufersal data chunk {i}/{num_of_chunks}");
+                let shufersal_data = scrap_shufersal(chunk, i, scrap_limit).await?;
+                sqlite_utils::save_scraped_data_to_sqlite(&shufersal_data)?;
+                if scrap_limit > 0 && scrap_limit <= (i + 1) * 1000 {
+                    break;
+                }
+            }
+        }
+    };
+    Ok(())
 }
