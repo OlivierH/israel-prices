@@ -60,13 +60,13 @@ async fn main() -> Result<()> {
         }
     }
 
-    let shufersal_codes_getter = Arc::new(move || {
+    let shufersal_codes = Arc::new(
         std::fs::read_to_string(&args.shufersal_codes_filename)
             .unwrap()
             .lines()
             .filter_map(|s| s.parse::<Barcode>().ok())
-            .collect::<Vec<Barcode>>()
-    });
+            .collect::<Vec<Barcode>>(),
+    );
 
     scrap_stores_and_save_to_sqlite(
         args.metadata_fetch_limit,
@@ -74,7 +74,7 @@ async fn main() -> Result<()> {
             true => None,
             false => Some(&args.store),
         },
-        shufersal_codes_getter,
+        shufersal_codes,
     )
     .await?;
     Ok(())

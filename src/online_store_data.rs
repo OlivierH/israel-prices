@@ -1162,7 +1162,7 @@ pub async fn scrap_shufersal(
 pub async fn scrap_store_and_save_to_sqlite(
     online_store: OnlineStore,
     scrap_limit: usize,
-    shufersal_codes_getter: Arc<dyn Fn() -> Vec<Barcode> + Send + Sync>,
+    shufersal_codes: Arc<Vec<Barcode>>,
 ) -> Result<()> {
     match online_store.website {
         online_store::Website::Excalibur(url) => {
@@ -1184,7 +1184,7 @@ pub async fn scrap_store_and_save_to_sqlite(
             sqlite_utils::save_scraped_data_to_sqlite(&scraped_data)?;
         }
         online_store::Website::Shufersal => {
-            let shufersal_barcodes = shufersal_codes_getter();
+            let shufersal_barcodes = shufersal_codes;
             let num_of_chunks = shufersal_barcodes.len() / 1000;
             for (i, chunk) in shufersal_barcodes.chunks(1000).enumerate() {
                 info!("Fetching shufersal data chunk {i}/{num_of_chunks}");
@@ -1202,7 +1202,7 @@ pub async fn scrap_store_and_save_to_sqlite(
 pub async fn scrap_stores_and_save_to_sqlite(
     scrap_limit: usize,
     store_to_filter: Option<&str>,
-    shufersal_codes_getter: Arc<dyn Fn() -> Vec<Barcode> + Send + Sync>,
+    shufersal_codes: Arc<Vec<Barcode>>,
 ) -> Result<()> {
     let mut tasks = Vec::new();
     for online_store in online_store::get_online_stores() {
@@ -1214,7 +1214,7 @@ pub async fn scrap_stores_and_save_to_sqlite(
         tasks.push(tokio::spawn(scrap_store_and_save_to_sqlite(
             online_store,
             scrap_limit,
-            shufersal_codes_getter.clone(),
+            shufersal_codes.clone(),
         )));
     }
     for result in future::join_all(tasks).await {
