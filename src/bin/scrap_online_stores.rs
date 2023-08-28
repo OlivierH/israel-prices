@@ -1,8 +1,11 @@
-use std::{fs::File, sync::Mutex};
+use std::{
+    fs::File,
+    sync::{Arc, Mutex},
+};
 
 use anyhow::Result;
 use clap::Parser;
-use israel_prices::online_store_data::scrap_stores_and_save_to_sqlite;
+use israel_prices::{models::Barcode, online_store_data::scrap_stores_and_save_to_sqlite};
 use tokio;
 use tracing::info;
 use tracing_subscriber::prelude::__tracing_subscriber_SubscriberExt;
@@ -57,13 +60,21 @@ async fn main() -> Result<()> {
         }
     }
 
+    let shufersal_codes_getter = Arc::new(move || {
+        std::fs::read_to_string(&args.shufersal_codes_filename)
+            .unwrap()
+            .lines()
+            .filter_map(|s| s.parse::<Barcode>().ok())
+            .collect::<Vec<Barcode>>()
+    });
+
     scrap_stores_and_save_to_sqlite(
         args.metadata_fetch_limit,
         match args.store.is_empty() {
             true => None,
             false => Some(&args.store),
         },
-        args.shufersal_codes_filename,
+        shufersal_codes_getter,
     )
     .await?;
     Ok(())
