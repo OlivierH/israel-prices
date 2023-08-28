@@ -2,11 +2,7 @@ use std::{fs::File, sync::Mutex};
 
 use anyhow::Result;
 use clap::Parser;
-use futures::future;
-use israel_prices::{
-    online_store::{self},
-    online_store_data::scrap_store_and_save_to_sqlite,
-};
+use israel_prices::online_store_data::scrap_stores_and_save_to_sqlite;
 use tokio;
 use tracing::info;
 use tracing_subscriber::prelude::__tracing_subscriber_SubscriberExt;
@@ -60,19 +56,15 @@ async fn main() -> Result<()> {
             std::fs::remove_file("data.sqlite")?;
         }
     }
-    let mut tasks = Vec::new();
-    for online_store in online_store::get_online_stores() {
-        if !args.store.is_empty() && !args.store.contains(online_store.name) {
-            continue;
-        }
-        tasks.push(tokio::spawn(scrap_store_and_save_to_sqlite(
-            online_store,
-            args.metadata_fetch_limit,
-            args.shufersal_codes_filename.clone(),
-        )));
-    }
-    for result in future::join_all(tasks).await {
-        let _outcome = result??;
-    }
+
+    scrap_stores_and_save_to_sqlite(
+        args.metadata_fetch_limit,
+        match args.store.is_empty() {
+            true => None,
+            false => Some(&args.store),
+        },
+        args.shufersal_codes_filename,
+    )
+    .await?;
     Ok(())
 }

@@ -9,7 +9,7 @@ use crate::{
     sqlite_utils,
 };
 use anyhow::{anyhow, Result};
-use futures::{stream::FuturesUnordered, StreamExt};
+use futures::{future, stream::FuturesUnordered, StreamExt};
 use itertools::Itertools;
 use metrics::increment_counter;
 use reqwest::Client;
@@ -1199,5 +1199,29 @@ pub async fn scrap_store_and_save_to_sqlite(
             }
         }
     };
+    Ok(())
+}
+
+pub async fn scrap_stores_and_save_to_sqlite(
+    scrap_limit: usize,
+    store_to_filter: Option<&str>,
+    shufersal_codes_filename: String,
+) -> Result<()> {
+    let mut tasks = Vec::new();
+    for online_store in online_store::get_online_stores() {
+        if let Some(store_to_filter) = store_to_filter {
+            if !store_to_filter.contains(online_store.name) {
+                continue;
+            }
+        }
+        tasks.push(tokio::spawn(scrap_store_and_save_to_sqlite(
+            online_store,
+            scrap_limit,
+            shufersal_codes_filename.clone(),
+        )));
+    }
+    for result in future::join_all(tasks).await {
+        let _outcome = result??;
+    }
     Ok(())
 }
