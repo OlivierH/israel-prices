@@ -1073,6 +1073,17 @@ pub async fn scrap_shufersal(
         return Ok(all_nutritional_values);
     }
 
+    async fn scrap_items(item_codes: Vec<Barcode>) -> Result<Vec<ScrapedData>> {
+        let mut results = Vec::new();
+        for result in item_codes.iter().map(|i| scrap_item(*i)) {
+            let result = result.await?;
+            if let Some(data) = result {
+                results.push(data);
+            }
+        }
+        Ok(results)
+    }
+
     async fn scrap_item(item_code: Barcode) -> Result<Option<ScrapedData>> {
         let url = format!("https://www.shufersal.co.il/online/he/p/P_{item_code}/json");
         debug!("Fetching url {url} for itemcode {item_code}");
@@ -1128,11 +1139,9 @@ pub async fn scrap_shufersal(
     };
 
     info!("Starting to create tasks");
-    for (i, item_code) in item_codes.into_iter().enumerate() {
-        futures.push(tokio::spawn(scrap_item(*item_code)));
-        if (i % 100 == 0 && i < 1000) || (i % 1000 == 0) {
-            debug!("Created task {i}");
-        }
+    for chunk in item_codes.chunks(10) {
+        let chunk = chunk.to_vec();
+        futures.push(tokio::spawn(scrap_items(chunk)));
     }
     info!("Finished to create tasks");
     info!("Starting to await tasks");
@@ -1142,9 +1151,7 @@ pub async fn scrap_shufersal(
         if (i % 100 == 0 && i < 1000) || (i % 1000 == 0) {
             debug!("Finished task {i}");
         }
-        if let Some(result) = result {
-            data.push(result);
-        }
+        data.extend(result);
     }
     info!("Finished to await tasks");
     Ok(data)

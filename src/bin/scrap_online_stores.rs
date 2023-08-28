@@ -70,7 +70,7 @@ async fn scrap_store(online_store: OnlineStore, args: Args) -> Result<()> {
                 info!("Fetching shufersal data chunk {i}/{num_of_chunks}");
                 let shufersal_data = scrap_shufersal(chunk, i, args.metadata_fetch_limit).await?;
                 sqlite_utils::save_scraped_data_to_sqlite(&shufersal_data)?;
-                if args.metadata_fetch_limit > 0 && args.metadata_fetch_limit < i * 1000 {
+                if args.metadata_fetch_limit > 0 && args.metadata_fetch_limit <= (i + 1) * 1000 {
                     break;
                 }
             }
