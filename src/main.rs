@@ -10,7 +10,7 @@ mod xml_to_standard;
 use crate::counter::DataCounter;
 use anyhow::{anyhow, bail, Context, Result};
 use clap::Parser;
-use israel_prices::{models, online_store_data, sqlite_utils};
+use israel_prices::{constants, models, online_store_data, sqlite_utils};
 use metrics_exporter_prometheus::PrometheusBuilder;
 use models::{ItemInfo, ItemKey, ItemPrice};
 use std::collections::HashMap;
@@ -307,12 +307,12 @@ async fn main() -> Result<()> {
             codes
         }
 
-        let shufersal_item_codes = get_item_codes_for_chain(7290027600007, &prices);
+        let shufersal_item_codes = get_item_codes_for_chain(constants::SHUFERSAL, &prices);
         info!(
             "Found {} barcodes for shufersal",
             shufersal_item_codes.len()
         );
-        let rami_levy_item_codes = get_item_codes_for_chain(7290058140886, &prices);
+        let rami_levy_item_codes = get_item_codes_for_chain(constants::RAMI_LEVY, &prices);
         info!(
             "Found {} barcodes for rami_levy",
             rami_levy_item_codes.len()

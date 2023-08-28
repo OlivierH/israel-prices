@@ -1,3 +1,4 @@
+pub mod constants;
 pub mod models;
 pub mod nutrition;
 pub mod online_store;
