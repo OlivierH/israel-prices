@@ -11,6 +11,7 @@ mod xml_to_standard;
 use crate::counter::DataCounter;
 use anyhow::{anyhow, bail, Context, Result};
 use clap::Parser;
+use israel_prices::sqlite_utils::maybe_delete_database;
 use israel_prices::{constants, log_utils, models, online_store_data, sqlite_utils};
 use metrics_exporter_prometheus::PrometheusBuilder;
 use models::{ItemInfo, ItemKey, ItemPrice};
@@ -132,15 +133,7 @@ async fn main() -> Result<()> {
         }
     }
 
-    if args.delete_sqlite {
-        info!("Deleting data.sqlite");
-        let path = std::path::Path::new("data.sqlite");
-        if !path.exists() {
-            info!("data.sqlite doesn't exist already");
-        } else {
-            std::fs::remove_file("data.sqlite")?;
-        }
-    }
+    maybe_delete_database(args.delete_sqlite)?;
 
     if !args.no_download {
         store_data_download::download_all_stores_data(&stores, args.quick, file_limit, args.dir)

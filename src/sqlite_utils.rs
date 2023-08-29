@@ -426,3 +426,16 @@ pub fn get_codes_from_chain_id(chain_id: i64) -> Result<Vec<Barcode>> {
     debug!("get_codes_from_chain_id done");
     Ok(codes)
 }
+
+pub fn maybe_delete_database(should_delete: bool) -> Result<()> {
+    if should_delete {
+        info!("Deleting data.sqlite");
+        let path = std::path::Path::new("data.sqlite");
+        if !path.exists() {
+            info!("data.sqlite doesn't exist already");
+        } else {
+            std::fs::remove_file("data.sqlite")?;
+        }
+    }
+    Ok(())
+}
