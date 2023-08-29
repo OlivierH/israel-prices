@@ -9,13 +9,12 @@ mod store_data_download;
 mod xml;
 mod xml_to_standard;
 use crate::counter::DataCounter;
-use anyhow::{anyhow, bail, Context, Result};
+use anyhow::{anyhow, Context, Result};
 use clap::Parser;
 use israel_prices::sqlite_utils::maybe_delete_database;
 use israel_prices::{constants, log_utils, models, online_store_data, sqlite_utils};
 use metrics_exporter_prometheus::PrometheusBuilder;
 use models::{ItemInfo, ItemKey, ItemPrice};
-use std::io::ErrorKind;
 use std::{collections::HashMap, sync::Arc};
 use store::*;
 use tokio;
@@ -122,14 +121,12 @@ async fn main() -> Result<()> {
     };
 
     if args.clear_files {
-        info!("Deleting data_raw");
-        let res = std::fs::remove_dir_all("./data_raw");
-        if let Err(e) = res {
-            if e.kind() == ErrorKind::NotFound {
-                info!("data_raw doesn't exist already");
-            } else {
-                bail!(e);
-            }
+        info!("Deleting data_raw directory");
+        let path = std::path::Path::new("data.sqlite");
+        if !path.exists() {
+            info!("data_raw doesn't exist already");
+        } else {
+            std::fs::remove_dir_all("./data_raw")?;
         }
     }
 
