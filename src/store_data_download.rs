@@ -1,8 +1,8 @@
 use crate::file_info::*;
 use crate::parallel_download::{self, Download};
 use crate::store::*;
-use anyhow::anyhow;
 use anyhow::Result;
+use anyhow::{anyhow, Context};
 use chrono::Datelike;
 use futures::StreamExt; // 0.3.5
 use reqwest::header;
@@ -565,7 +565,7 @@ async fn download_store_data(
                 file_limit,
                 download_semaphore.clone(),
             )
-            .await?
+            .await
         }
         Website::PublishedPriceWithPassword(username, password) => {
             get_downloads_publishedprice(
@@ -575,20 +575,20 @@ async fn download_store_data(
                 file_limit,
                 download_semaphore.clone(),
             )
-            .await?
+            .await
         }
-        Website::Shufersal => get_downloads_shufersal(&store, file_limit).await?,
+        Website::Shufersal => get_downloads_shufersal(&store, file_limit).await,
         Website::SimpleJsonToGet(initial_url, download_prefix) => {
-            get_downloads_simple_json_to_get(&store, file_limit, initial_url, download_prefix)
-                .await?
+            get_downloads_simple_json_to_get(&store, file_limit, initial_url, download_prefix).await
         }
         Website::MatrixCatalog(chain) => {
-            get_downloads_matrix_catalog(&store, file_limit, chain).await?
+            get_downloads_matrix_catalog(&store, file_limit, chain).await
         }
-        Website::PublishPrice(url) => get_downloads_publish_price(&store, file_limit, url).await?,
-        Website::NetivHahesed => get_downloads_netiv_hahesed(&store, file_limit).await?,
-        Website::SuperPharm => get_downloads_superpharm(&store, file_limit).await?,
-    };
+        Website::PublishPrice(url) => get_downloads_publish_price(&store, file_limit, url).await,
+        Website::NetivHahesed => get_downloads_netiv_hahesed(&store, file_limit).await,
+        Website::SuperPharm => get_downloads_superpharm(&store, file_limit).await,
+    }
+    .context(format!("with store {}", store.name))?;
     info!("Found a total of {} elements", downloads.len());
     if quick {
         return Ok(());

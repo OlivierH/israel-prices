@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use anyhow::{Context, Result};
 use rusqlite::{params, Connection};
-use tracing::info;
+use tracing::{debug, info};
 
 use crate::models::{
     Barcode, Chain, ItemInfo, ItemKey, RamiLevyMetadata, ScrapedData, ShufersalMetadata,
@@ -231,16 +231,19 @@ pub fn save_to_sqlite(
     }
     if save_to_sqlite_only.is_empty() || save_to_sqlite_only.eq_ignore_ascii_case("prices") {
         info!("Saving table Prices to sqlite");
-        connection.execute(
-            "CREATE TABLE Prices (
+        connection
+            .execute(
+                "CREATE TABLE Prices (
                         ChainId int NOT NULL,
                         StoreId int NOT NULL,
                         ItemCode TEXT,
                         ItemPrice TEXT,
                         UnitOfMeasurePrice TEXT,
                         PRIMARY KEY(ChainId, StoreId, ItemCode)) ",
-            (),
-        )?;
+                (),
+            )
+            .context("when creating table Prices")?;
+        info!("Finished saving table Prices to sqlite");
         let transaction = connection.transaction()?;
         {
             let tx = &transaction;
@@ -262,7 +265,11 @@ pub fn save_to_sqlite(
                 }
             }
         }
-        transaction.commit()?;
+        transaction.commit().context(format!(
+            "Commiting transaction of saving prices to sqlite: {}:{}",
+            file!(),
+            line!()
+        ))?;
     }
     Ok(())
 }
@@ -354,7 +361,7 @@ pub fn save_yochananof_metadata_to_sqlite(
     Ok(())
 }
 pub fn save_scraped_data_to_sqlite(data: &Vec<ScrapedData>) -> Result<()> {
-    let mut connection = connection()?;
+    let mut connection: Connection = connection()?;
 
     info!("Saving table ScrapedData to sqlite");
     connection.execute(
@@ -403,4 +410,19 @@ pub fn save_scraped_data_to_sqlite(data: &Vec<ScrapedData>) -> Result<()> {
     }
     transaction.commit()?;
     Ok(())
+}
+
+pub fn get_codes_from_chain_id(chain_id: i64) -> Result<Vec<Barcode>> {
+    let connection: Connection = connection()?;
+    debug!("get_codes_from_chain_id");
+    let mut stmt = connection
+        .prepare("select distinct(itemcode) from prices where chainid = ?1")
+        .context("get_codes_from_chain_id")?;
+    let rows = stmt.query_map(params![chain_id], |row| row.get::<_, String>(0))?;
+    let mut codes = Vec::new();
+    for code in rows {
+        codes.push(code?.parse()?);
+    }
+    debug!("get_codes_from_chain_id done");
+    Ok(codes)
 }

@@ -13,10 +13,10 @@ use clap::Parser;
 use israel_prices::{constants, models, online_store_data, sqlite_utils};
 use metrics_exporter_prometheus::PrometheusBuilder;
 use models::{ItemInfo, ItemKey, ItemPrice};
-use std::collections::HashMap;
 use std::fs::File;
 use std::io::ErrorKind;
 use std::sync::Mutex;
+use std::{collections::HashMap, sync::Arc};
 use store::*;
 use tokio;
 use tracing::{debug, error, info, span, Level};
@@ -119,35 +119,8 @@ struct Args {
     #[arg(long, default_value = "")]
     store: String,
 
-    #[arg(long)]
-    fetch_shufersal_metadata: bool,
-
-    #[arg(long)]
-    fetch_rami_levy_metadata: bool,
-
-    #[arg(long)]
-    fetch_victory_metadata: bool,
-
-    #[arg(long)]
-    fetch_yenot_bitan_metadata: bool,
-
-    #[arg(long)]
-    fetch_mega_metadata: bool,
-
-    #[arg(long)]
-    fetch_maayan_2000_metadata: bool,
-
-    #[arg(long)]
-    fetch_am_pm_metadata: bool,
-
-    #[arg(long)]
-    fetch_tiv_taam_metadata: bool,
-
-    #[arg(long)]
-    fetch_keshet_metadata: bool,
-
-    #[arg(long)]
-    fetch_shukcity_metadata: bool,
+    #[arg(long, default_value = "")]
+    scrap_only: String,
 
     #[arg(long)]
     fetch_yochananof_metadata: bool,
@@ -307,17 +280,6 @@ async fn main() -> Result<()> {
             codes
         }
 
-        let shufersal_item_codes = get_item_codes_for_chain(constants::SHUFERSAL, &prices);
-        info!(
-            "Found {} barcodes for shufersal",
-            shufersal_item_codes.len()
-        );
-        let rami_levy_item_codes = get_item_codes_for_chain(constants::RAMI_LEVY, &prices);
-        info!(
-            "Found {} barcodes for rami_levy",
-            rami_levy_item_codes.len()
-        );
-
         if args.load_item_infos_to_json {
             let item_infos_file = std::io::BufReader::new(std::fs::File::open("item_infos.json")?);
             info!("Reading item_infos from item_infos.json");
@@ -412,89 +374,20 @@ async fn main() -> Result<()> {
         if args.save_to_sqlite || !args.save_to_sqlite_only.is_empty() {
             sqlite_utils::save_to_sqlite(&chains, &item_infos.data, &args.save_to_sqlite_only)?;
         }
-        if args.fetch_shufersal_metadata {
-            let num_of_chunks = shufersal_item_codes.len() / 1000;
-            for (i, chunk) in shufersal_item_codes.chunks(1000).enumerate() {
-                info!("Fetching shufersal metadata chunk {i}/{num_of_chunks}");
-                let shufersal_metadata =
-                    online_store_data::fetch_shufersal_metadata(chunk, args.metadata_fetch_limit)
-                        .await?;
-                sqlite_utils::save_shufersal_metadata_to_sqlite(&shufersal_metadata)?;
-                if args.metadata_fetch_limit > 0 {
-                    break;
-                }
-            }
-        }
     }
-    if args.fetch_rami_levy_metadata {
-        info!("Fetching rami levy metadata chunk");
-        let rami_levy_metadata = online_store_data::fetch_rami_levy_metadata().await?;
-        sqlite_utils::save_rami_levy_metadata_to_sqlite(&rami_levy_metadata)?;
-    }
-    if args.fetch_victory_metadata {
-        let victory_metadata = online_store_data::fetch_victory_metadata(
-            "https://www.victoryonline.co.il/v2/retailers/1470",
-            args.metadata_fetch_limit,
-        )
-        .await?;
-        sqlite_utils::save_victory_metadata_to_sqlite("Victory", &victory_metadata)?;
-    }
-    if args.fetch_yenot_bitan_metadata {
-        let yenot_bitan_metadata = online_store_data::fetch_victory_metadata(
-            "https://www.ybitan.co.il/v2/retailers/1131",
-            args.metadata_fetch_limit,
-        )
-        .await?;
-        sqlite_utils::save_victory_metadata_to_sqlite("YenotBitan", &yenot_bitan_metadata)?;
-    }
-    if args.fetch_mega_metadata {
-        let mega_metadata = online_store_data::fetch_victory_metadata(
-            "https://www.mega.co.il/v2/retailers/1182",
-            args.metadata_fetch_limit,
-        )
-        .await?;
-        sqlite_utils::save_victory_metadata_to_sqlite("Mega", &mega_metadata)?;
-    }
-    if args.fetch_maayan_2000_metadata {
-        let maayan_2000_metadata = online_store_data::fetch_victory_metadata(
-            "https://www.m2000.co.il/v2/retailers/1404",
-            args.metadata_fetch_limit,
-        )
-        .await?;
-        sqlite_utils::save_victory_metadata_to_sqlite("Maayan_2000", &maayan_2000_metadata)?;
-    }
-    if args.fetch_am_pm_metadata {
-        let am_pm_metadata = online_store_data::fetch_victory_metadata(
-            "https://www.ampm.co.il/v2/retailers/2",
-            args.metadata_fetch_limit,
-        )
-        .await?;
-        sqlite_utils::save_victory_metadata_to_sqlite("Am_pm", &am_pm_metadata)?;
-    }
-    if args.fetch_tiv_taam_metadata {
-        let tiv_taam_metadata = online_store_data::fetch_victory_metadata(
-            "https://www.tivtaam.co.il/v2/retailers/1062",
-            args.metadata_fetch_limit,
-        )
-        .await?;
-        sqlite_utils::save_victory_metadata_to_sqlite("TivTaam", &tiv_taam_metadata)?;
-    }
-    if args.fetch_keshet_metadata {
-        let keshet_metadata = online_store_data::fetch_victory_metadata(
-            "https://www.keshet-teamim.co.il/v2/retailers/1219",
-            args.metadata_fetch_limit,
-        )
-        .await?;
-        sqlite_utils::save_victory_metadata_to_sqlite("Keshet", &keshet_metadata)?;
-    }
-    if args.fetch_shukcity_metadata {
-        let shukcity_metadata = online_store_data::fetch_victory_metadata(
-            "https://www.shukcity.co.il/v2/retailers/1254",
-            args.metadata_fetch_limit,
-        )
-        .await?;
-        sqlite_utils::save_victory_metadata_to_sqlite("ShukCity", &shukcity_metadata)?;
-    }
+
+    let shufersal_codes = Arc::new(sqlite_utils::get_codes_from_chain_id(constants::SHUFERSAL)?);
+    info!("Found {} barcodes for shufersal", shufersal_codes.len());
+    online_store_data::scrap_stores_and_save_to_sqlite(
+        args.metadata_fetch_limit,
+        match args.scrap_only.is_empty() {
+            true => None,
+            false => Some(&args.scrap_only),
+        },
+        shufersal_codes,
+    )
+    .await?;
+
     if args.fetch_yochananof_metadata {
         let yochananof_metadata = online_store_data::fetch_yochananof_metadata().await?;
         sqlite_utils::save_yochananof_metadata_to_sqlite(&yochananof_metadata)?;

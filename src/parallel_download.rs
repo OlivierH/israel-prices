@@ -60,7 +60,6 @@ pub async fn parallel_download(downloads: Vec<Download>, download_semaphore: Arc
                                 && ((*content.get(0).unwrap() != (31 as u8) || *content.get(1).unwrap() != (139 as u8))
                                 // 80 75, i.e. 50 4B, is used by netiv_hahesed
                                 && (*content.get(0).unwrap() != (80 as u8) || *content.get(1).unwrap() != (75 as u8)) ){
-                                    
                                     debug!("ERROR downloading {path}: invalid gz, retrying, got bytes {} {}",*content.get(0).unwrap(), *content.get(1).unwrap());
                                     increment_counter!("download_failure: invalid gz", "store" => download.store.clone());
                                     tokio::time::sleep(Duration::from_secs(5)).await;
