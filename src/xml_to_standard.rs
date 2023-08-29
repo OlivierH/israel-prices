@@ -1,5 +1,6 @@
 use anyhow::anyhow;
 use anyhow::bail;
+use anyhow::Context;
 use anyhow::Result;
 
 use encoding_rs::UTF_16LE;
@@ -276,7 +277,7 @@ fn get_chain_from_root(root: Node, path: &str) -> Result<Chain> {
 pub fn handle_stores_file(path: &str) -> Result<Chain> {
     let contents = read_as_utf_8(path)?;
 
-    let doc = Document::parse(&contents).unwrap();
+    let doc = Document::parse(&contents).context(format!("While parsing {path}"))?;
 
     let mut chain = {
         if let Some(node) = xml::get_descendant(&doc, "Root") {
