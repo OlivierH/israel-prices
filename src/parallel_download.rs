@@ -2,7 +2,7 @@ use bytes::Bytes;
 use futures::StreamExt;
 use metrics::increment_counter;
 use reqwest::{header::HeaderMap, Client};
-use std::fs::File;
+use std::{fs::File, time::Duration};
 use std::io::Cursor;
 use std::sync::Arc;
 use tokio::sync::Semaphore;
@@ -54,17 +54,31 @@ pub async fn parallel_download(downloads: Vec<Download>, download_semaphore: Arc
                     };
                     should_retry = match client.send().await {
                         Ok(resp) => match resp.bytes().await {
-                            Ok(content) => match write_file(&content, dest) {
-                                Ok(()) => {
-                                    debug!("Success in writing {dest}");
-                                    increment_counter!("download_success", "store" => download.store.clone());
-                                    false
+                            Ok(content) => {
+                                if path.ends_with("gz") && content.len() > 2 
+                                // 31 139, i.e. 1F 8B, is the magic number for gz
+                                && ((*content.get(0).unwrap() != (31 as u8) || *content.get(1).unwrap() != (139 as u8))
+                                // 80 75, i.e. 50 4B, is used by netiv_hahesed
+                                && (*content.get(0).unwrap() != (80 as u8) || *content.get(1).unwrap() != (75 as u8)) ){
+                                    
+                                    debug!("ERROR downloading {path}: invalid gz, retrying, got bytes {} {}",*content.get(0).unwrap(), *content.get(1).unwrap());
+                                    increment_counter!("download_failure: invalid gz", "store" => download.store.clone());
+                                    tokio::time::sleep(Duration::from_secs(5)).await;
+                                    true                                    
+                                } else {
+                                match write_file(&content, dest) {
+                                    Ok(()) => {
+                                        debug!("Success in writing {dest}");
+                                        increment_counter!("download_success", "store" => download.store.clone());
+                                        false
+                                    }
+                                    Err(e) => {
+                                        error!("Error in writing {dest}: {e}");
+                                        increment_counter!("download_failure: writing", "store" => download.store.clone());
+                                        false
+                                    }
                                 }
-                                Err(e) => {
-                                    error!("Error in writing {dest}: {e}");
-                                    increment_counter!("download_failure: writing", "store" => download.store.clone());
-                                    false
-                                }
+                            }
                             },
                             Err(e) => {
                                 warn!("ERROR reading {path}: {e}");
