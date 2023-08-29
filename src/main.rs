@@ -10,17 +10,14 @@ mod xml_to_standard;
 use crate::counter::DataCounter;
 use anyhow::{anyhow, bail, Context, Result};
 use clap::Parser;
-use israel_prices::{constants, models, online_store_data, sqlite_utils};
+use israel_prices::{constants, log_utils, models, online_store_data, sqlite_utils};
 use metrics_exporter_prometheus::PrometheusBuilder;
 use models::{ItemInfo, ItemKey, ItemPrice};
-use std::fs::File;
 use std::io::ErrorKind;
-use std::sync::Mutex;
 use std::{collections::HashMap, sync::Arc};
 use store::*;
 use tokio;
 use tracing::{debug, error, info, span, Level};
-use tracing_subscriber::prelude::*;
 
 fn run(command: &str) -> Result<()> {
     let span = span!(Level::INFO, "Run command", command);
@@ -134,22 +131,7 @@ async fn main() -> Result<()> {
     let prometheus = PrometheusBuilder::new()
         .install_recorder()
         .expect("failed to install prometheus exporter");
-    let log_file = File::create("log.txt")?;
-    let subscriber = tracing_subscriber::registry()
-        .with(
-            tracing_subscriber::fmt::layer()
-                .with_file(true)
-                .with_line_number(true),
-        )
-        .with(tracing_subscriber::EnvFilter::from_default_env())
-        .with(
-            tracing_subscriber::fmt::layer()
-                .with_file(true)
-                .with_line_number(true)
-                .with_writer(Mutex::new(log_file)),
-        );
-
-    tracing::subscriber::set_global_default(subscriber)?;
+    log_utils::init()?;
 
     info!("Starting");
 

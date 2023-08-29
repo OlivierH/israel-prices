@@ -1,4 +1,5 @@
 pub mod constants;
+pub mod log_utils;
 pub mod models;
 pub mod nutrition;
 pub mod online_store;
