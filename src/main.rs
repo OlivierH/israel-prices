@@ -67,12 +67,6 @@ struct Args {
     #[arg(long)]
     quick: bool,
 
-    #[arg(long)]
-    minimal: bool,
-
-    #[arg(long)]
-    debug: bool,
-
     #[arg(long, default_value = "")]
     processing_filter: String,
 
@@ -100,19 +94,7 @@ async fn main() -> Result<()> {
 
     let args = Args::parse();
 
-    let file_limit: Option<usize> = match args.minimal {
-        true => Some(5),
-        false => None,
-    };
-
-    let stores = match args.minimal {
-        false => get_store_configs(),
-        true => get_minimal_store_configs(),
-    };
-    let stores = match args.debug {
-        false => stores,
-        true => get_debug_store_configs(),
-    };
+    let stores = get_store_configs();
     let stores = match args.store.as_str() {
         "" => stores,
         store => {
@@ -133,8 +115,7 @@ async fn main() -> Result<()> {
     maybe_delete_database(args.delete_sqlite)?;
 
     if !args.no_download {
-        store_data_download::download_all_stores_data(&stores, args.quick, file_limit, args.dir)
-            .await;
+        store_data_download::download_all_stores_data(&stores, args.quick, None, args.dir).await;
     }
     if !args.no_curate {
         curate_data_raw::curate_data_raw()?;

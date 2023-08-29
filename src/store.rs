@@ -127,28 +127,6 @@ pub fn get_store_configs() -> Vec<Store> {
     .to_vec()
 }
 
-const MINIMAL_STORE_CONFIGS: &'static [&'static str] =
-    &["Yohananof", "Shufersal", "Super_Yoda", "Victory"];
-
-pub fn get_minimal_store_configs() -> Vec<Store> {
-    let mut results = Vec::new();
-
-    for store in get_store_configs() {
-        if MINIMAL_STORE_CONFIGS.contains(&store.name) {
-            results.push(store);
-        }
-    }
-
-    return results;
-}
-
-pub fn get_debug_store_configs() -> Vec<Store> {
-    return get_store_configs()
-        .into_iter()
-        .filter(|s| s.name == "superpharm")
-        .collect();
-}
-
 pub fn get_store_config(name: &str) -> Option<Store> {
     return get_store_configs().into_iter().find(|s| s.name == name);
 }
