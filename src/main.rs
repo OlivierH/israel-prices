@@ -13,6 +13,7 @@ use anyhow::{anyhow, Context, Result};
 use clap::Parser;
 use israel_prices::sqlite_utils::maybe_delete_database;
 use israel_prices::{constants, log_utils, models, online_store_data, sqlite_utils};
+use itertools::Itertools;
 use metrics_exporter_prometheus::PrometheusBuilder;
 use models::{ItemInfo, ItemKey, ItemPrice};
 use std::{collections::HashMap, sync::Arc};
@@ -94,13 +95,10 @@ async fn main() -> Result<()> {
 
     let args = Args::parse();
 
-    let stores = get_store_configs();
-    let stores = match args.store.as_str() {
-        "" => stores,
-        store => {
-            vec![get_store_config(store).ok_or(anyhow!("{store} is not an existing store name"))?]
-        }
-    };
+    let stores = get_store_configs()
+        .into_iter()
+        .filter(|s| args.store.is_empty() || args.store.contains(s.name))
+        .collect_vec();
 
     if args.clear_files {
         info!("Deleting data_raw directory");
