@@ -177,20 +177,6 @@ async fn main() -> Result<()> {
 
         let mut item_infos = models::ItemInfos::default();
 
-        fn get_item_codes_for_chain(
-            chain_id: models::ChainId,
-            prices: &Vec<models::Prices>,
-        ) -> Vec<models::Barcode> {
-            let mut codes = prices
-                .iter()
-                .filter(|price| price.chain_id == chain_id)
-                .flat_map(|price| price.items.iter().map(|item| item.item_code))
-                .collect::<Vec<_>>();
-            codes.sort();
-            codes.dedup();
-            codes
-        }
-
         if args.load_item_infos_to_json {
             let item_infos_file = std::io::BufReader::new(std::fs::File::open("item_infos.json")?);
             info!("Reading item_infos from item_infos.json");
