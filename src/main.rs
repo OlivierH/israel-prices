@@ -9,7 +9,7 @@ mod store_data_download;
 mod xml;
 mod xml_to_standard;
 use crate::counter::DataCounter;
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result};
 use clap::Parser;
 use israel_prices::sqlite_utils::maybe_delete_database;
 use israel_prices::{constants, log_utils, models, online_store_data, sqlite_utils};
@@ -25,9 +25,6 @@ use tracing::{debug, info};
 struct Args {
     #[arg(short, long, default_value = "./data_raw")]
     dir: String,
-
-    #[arg(short, long, default_value = "")]
-    output: String, // unused
 
     #[arg(long)]
     no_download: bool,
@@ -50,9 +47,6 @@ struct Args {
     #[arg(long)]
     save_to_sqlite: bool,
 
-    #[arg(long, default_value = "")]
-    save_to_sqlite_only: String,
-
     #[arg(long)]
     delete_sqlite: bool,
 
@@ -67,9 +61,6 @@ struct Args {
 
     #[arg(long)]
     quick: bool,
-
-    #[arg(long, default_value = "")]
-    processing_filter: String,
 
     #[arg(long, default_value = "")]
     store: String,
@@ -101,12 +92,12 @@ async fn main() -> Result<()> {
         .collect_vec();
 
     if args.clear_files {
-        info!("Deleting data_raw directory");
-        let path = std::path::Path::new("data.sqlite");
+        info!("Deleting {} directory", args.dir);
+        let path = std::path::Path::new(&args.dir);
         if !path.exists() {
             info!("data_raw doesn't exist already");
         } else {
-            std::fs::remove_dir_all("./data_raw")?;
+            std::fs::remove_dir_all(&args.dir)?;
         }
     }
 
@@ -142,9 +133,7 @@ async fn main() -> Result<()> {
                 .filter(|path| path.is_file())
                 .filter_map(|path| path.to_str().map(|s| s.to_owned()))
                 .filter(|path| !path.ends_with(".gz"))
-                .filter(|path| {
-                    args.processing_filter == "" || path.contains(&args.processing_filter)
-                });
+                .filter(|path| args.store == "" || path.contains(&args.store));
 
             let (price_paths, stores_paths): (Vec<String>, Vec<String>) = paths.partition(|path| {
                 let filename = path.rsplit_once("/").unwrap().1;
@@ -285,8 +274,8 @@ async fn main() -> Result<()> {
                 )?;
             }
         }
-        if args.save_to_sqlite || !args.save_to_sqlite_only.is_empty() {
-            sqlite_utils::save_to_sqlite(&chains, &item_infos.data, &args.save_to_sqlite_only)?;
+        if args.save_to_sqlite {
+            sqlite_utils::save_to_sqlite(&chains, &item_infos.data)?;
         }
     }
 

@@ -127,10 +127,6 @@ pub fn get_store_configs() -> Vec<Store> {
     .to_vec()
 }
 
-pub fn get_store_config(name: &str) -> Option<Store> {
-    return get_store_configs().into_iter().find(|s| s.name == name);
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

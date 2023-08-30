@@ -96,13 +96,9 @@ pub fn save_rami_levy_metadata_to_sqlite(
     Ok(())
 }
 
-pub fn save_to_sqlite(
-    chains: &Vec<Chain>,
-    item_infos: &HashMap<ItemKey, ItemInfo>,
-    save_to_sqlite_only: &str,
-) -> Result<()> {
+pub fn save_to_sqlite(chains: &Vec<Chain>, item_infos: &HashMap<ItemKey, ItemInfo>) -> Result<()> {
     let mut connection = connection()?;
-    if save_to_sqlite_only.is_empty() || save_to_sqlite_only.eq_ignore_ascii_case("chains") {
+    {
         info!("Saving table Chains to sqlite");
         connection.execute(
             "CREATE TABLE Chains (
@@ -116,7 +112,7 @@ pub fn save_to_sqlite(
             statement.execute(params![chain.chain_id, chain.chain_name])?;
         }
     }
-    if save_to_sqlite_only.is_empty() || save_to_sqlite_only.eq_ignore_ascii_case("subchains") {
+    {
         info!("Saving table Subchains to sqlite");
         connection.execute(
             "CREATE TABLE Subchains (
@@ -140,7 +136,7 @@ pub fn save_to_sqlite(
             }
         }
     }
-    if save_to_sqlite_only.is_empty() || save_to_sqlite_only.eq_ignore_ascii_case("stores") {
+    {
         info!("Saving table Stores to sqlite");
         connection.execute(
             "CREATE TABLE Stores (
@@ -174,7 +170,7 @@ pub fn save_to_sqlite(
             }
         }
     }
-    if save_to_sqlite_only.is_empty() || save_to_sqlite_only.eq_ignore_ascii_case("items") {
+    {
         info!("Saving table Items to sqlite");
         connection.execute(
             "CREATE TABLE Items (
@@ -229,7 +225,7 @@ pub fn save_to_sqlite(
         }
         transaction.commit()?;
     }
-    if save_to_sqlite_only.is_empty() || save_to_sqlite_only.eq_ignore_ascii_case("prices") {
+    {
         info!("Saving table Prices to sqlite");
         connection
             .execute(
