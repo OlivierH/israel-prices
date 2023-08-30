@@ -135,14 +135,22 @@ async fn main() -> Result<()> {
                 .filter(|path| !path.ends_with(".gz"))
                 .filter(|path| args.store == "" || path.contains(&args.store));
 
-            let (price_paths, stores_paths): (Vec<String>, Vec<String>) = paths.partition(|path| {
-                let filename = path.rsplit_once("/").unwrap().1;
-                filename.starts_with("Price") || filename.starts_with("price")
-            });
+            let (price_paths, non_price_paths): (Vec<String>, Vec<String>) =
+                paths.partition(|path| {
+                    let filename = path.rsplit_once("/").unwrap().1;
+                    filename.starts_with("Price") || filename.starts_with("price")
+                });
+            let (stores_paths, other_paths): (Vec<String>, Vec<String>) =
+                non_price_paths.into_iter().partition(|path| {
+                    let filename = path.rsplit_once("/").unwrap().1;
+                    filename.starts_with("Store") || filename.starts_with("store")
+                });
+
             info!(
-                "There are {} stores files and {} prices files",
+                "There are {} stores files, {} prices files, and {} other files",
                 stores_paths.len(),
-                price_paths.len()
+                price_paths.len(),
+                other_paths.len()
             );
             info!("Starting to handle stores");
             for store_path in stores_paths {
