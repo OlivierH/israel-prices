@@ -601,7 +601,7 @@ pub async fn download_all_stores_data(
     stores: &Vec<Store>,
     quick: bool,
     file_limit: Option<usize>,
-    dir: String,
+    dir: &str,
 ) {
     let download_semaphore = Arc::new(Semaphore::new(30));
     let tasks: Vec<_> = stores
@@ -611,7 +611,7 @@ pub async fn download_all_stores_data(
             tokio::spawn(
                 download_store_data(
                     store.clone(),
-                    dir.clone(),
+                    dir.to_owned(),
                     quick,
                     file_limit,
                     download_semaphore.clone(),

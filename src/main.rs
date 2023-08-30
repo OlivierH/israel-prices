@@ -1,25 +1,16 @@
-mod counter;
-mod country_code;
-mod curate_data_raw;
-mod file_info;
-mod parallel_download;
-mod sanitization;
-mod store;
-mod store_data_download;
-mod xml;
-mod xml_to_standard;
-use crate::counter::DataCounter;
-use anyhow::{Context, Result};
+use anyhow::Result;
 use clap::Parser;
+use israel_prices::process_raw_files::process_raw_files;
 use israel_prices::sqlite_utils::maybe_delete_database;
-use israel_prices::{constants, log_utils, models, online_store_data, sqlite_utils};
+use israel_prices::store::get_store_configs;
+use israel_prices::{
+    constants, curate_data_raw, log_utils, online_store_data, sqlite_utils, store_data_download,
+};
 use itertools::Itertools;
 use metrics_exporter_prometheus::PrometheusBuilder;
-use models::{ItemInfo, ItemKey, ItemPrice};
-use std::{collections::HashMap, sync::Arc};
-use store::*;
+use std::sync::Arc;
 use tokio;
-use tracing::{debug, info};
+use tracing::info;
 
 #[derive(Parser, Debug, Clone)]
 struct Args {
@@ -27,34 +18,10 @@ struct Args {
     dir: String,
 
     #[arg(long)]
-    no_download: bool,
-
-    #[arg(long)]
-    no_curate: bool,
-
-    #[arg(long)]
-    load_from_json: bool,
-
-    #[arg(long)]
-    save_to_json: bool,
-
-    #[arg(long)]
-    save_item_infos_to_json: bool,
-
-    #[arg(long)]
-    load_item_infos_to_json: bool,
-
-    #[arg(long)]
     save_to_sqlite: bool,
 
     #[arg(long)]
     delete_sqlite: bool,
-
-    #[arg(long)]
-    no_process: bool,
-
-    #[arg(long)]
-    no_build_item_infos: bool,
 
     #[arg(long)]
     clear_files: bool,
@@ -103,174 +70,13 @@ async fn main() -> Result<()> {
 
     maybe_delete_database(args.delete_sqlite)?;
 
-    if !args.no_download {
-        store_data_download::download_all_stores_data(&stores, args.quick, None, args.dir).await;
-    }
-    if !args.no_curate {
-        curate_data_raw::curate_data_raw()?;
-    }
+    store_data_download::download_all_stores_data(&stores, args.quick, None, &args.dir).await;
+    curate_data_raw::curate_data_raw()?;
 
-    if !args.no_process {
-        let mut chains: Vec<models::Chain> = Vec::new();
-        let mut prices: Vec<models::Prices> = Vec::new();
+    let processed_data = process_raw_files(&args.dir, &args.store)?;
 
-        if args.load_from_json {
-            let chains_file = std::io::BufReader::new(std::fs::File::open("chains.json")?);
-            info!("Reading chains from chains.json");
-            chains = serde_json::from_reader(chains_file)?;
-            info!("Read {} chains from chains.json", chains.len());
-
-            let prices_file = std::io::BufReader::new(std::fs::File::open("prices.json")?);
-            info!("Reading prices from prices.json - this may take some time");
-            prices = serde_json::from_reader(prices_file)?;
-            info!("Read {} prices from prices.json", prices.len());
-        } else {
-            info!("Starting processing of files");
-            let paths = walkdir::WalkDir::new(std::path::Path::new("data_raw"))
-                .into_iter()
-                .filter_map(|e| e.ok())
-                .map(|d| d.into_path())
-                .filter(|path| path.is_file())
-                .filter_map(|path| path.to_str().map(|s| s.to_owned()))
-                .filter(|path| !path.ends_with(".gz"))
-                .filter(|path| args.store == "" || path.contains(&args.store));
-
-            let (price_paths, non_price_paths): (Vec<String>, Vec<String>) =
-                paths.partition(|path| {
-                    let filename = path.rsplit_once("/").unwrap().1;
-                    filename.starts_with("Price") || filename.starts_with("price")
-                });
-            let (stores_paths, other_paths): (Vec<String>, Vec<String>) =
-                non_price_paths.into_iter().partition(|path| {
-                    let filename = path.rsplit_once("/").unwrap().1;
-                    filename.starts_with("Store") || filename.starts_with("store")
-                });
-
-            info!(
-                "There are {} stores files, {} prices files, and {} other files",
-                stores_paths.len(),
-                price_paths.len(),
-                other_paths.len()
-            );
-            info!("Starting to handle stores");
-            for store_path in stores_paths {
-                debug!("Reading file: {store_path}");
-                let chain = xml_to_standard::handle_stores_file(&store_path)?;
-                chains.push(chain);
-            }
-            if args.save_to_json {
-                info!("Writing chains.json");
-                std::fs::write("chains.json", serde_json::to_string(&chains).unwrap())?;
-            }
-            info!("Finished to handle stores, starting to handle prices");
-            for price_path in price_paths {
-                debug!("Reading file: {price_path}");
-                let price = xml_to_standard::hande_price_file(&price_path)?;
-                prices.push(price);
-            }
-            if args.save_to_json {
-                info!("Writing prices.json");
-                std::fs::write("prices.json", serde_json::to_string(&prices).unwrap())?;
-            }
-            info!("Finished to handle prices");
-        }
-
-        let mut item_infos = models::ItemInfos::default();
-
-        if args.load_item_infos_to_json {
-            let item_infos_file = std::io::BufReader::new(std::fs::File::open("item_infos.json")?);
-            info!("Reading item_infos from item_infos.json");
-            item_infos = serde_json::from_reader(item_infos_file)?;
-            info!(
-                "Read {} item_infos from item_infos.json",
-                item_infos.data.len()
-            );
-        } else if !args.no_build_item_infos {
-            #[derive(Default, Debug)]
-            struct AggregatedData {
-                prices: Vec<ItemPrice>,
-                names: DataCounter<String>,
-                manufacturer_names: DataCounter<String>,
-                manufacture_country: DataCounter<String>,
-                manufacturer_item_description: DataCounter<String>,
-                chains: DataCounter<models::ChainId>,
-                unit_qty: DataCounter<String>,
-                quantity: DataCounter<String>,
-                unit_of_measure: DataCounter<String>,
-                b_is_weighted: DataCounter<bool>,
-                qty_in_package: DataCounter<String>,
-            }
-
-            let mut items_aggregated_data: HashMap<ItemKey, AggregatedData> = HashMap::new();
-            info!("Starting to build Aggregated data");
-            for price in prices {
-                for item in price.items {
-                    let item_key = ItemKey::from_item_and_chain(&item, price.chain_id);
-
-                    let data = items_aggregated_data
-                        .entry(item_key)
-                        .or_insert(AggregatedData::default());
-                    data.prices.push(ItemPrice {
-                        chain_id: price.chain_id,
-                        store_id: price.store_id,
-                        price: item.item_price,
-                        unit_of_measure_price: item.unit_of_measure_price,
-                    });
-                    data.names.inc(sanitization::sanitize_name(&item.item_name));
-                    data.manufacturer_names.inc(item.manufacturer_name);
-                    data.manufacture_country.inc(item.manufacture_country);
-                    data.manufacturer_item_description
-                        .inc(item.manufacturer_item_description);
-                    data.chains.inc(price.chain_id);
-                    data.unit_qty.inc(item.unit_qty);
-                    data.quantity.inc(item.quantity);
-                    data.unit_of_measure.inc(item.unit_of_measure);
-                    data.b_is_weighted.inc(item.b_is_weighted);
-                    data.qty_in_package.inc(item.qty_in_package);
-                }
-            }
-            info!("Finished to build Aggregated data");
-            for (key, data) in items_aggregated_data.into_iter() {
-                item_infos.data.insert(
-                    key,
-                    ItemInfo {
-                        item_name: counter::longest(&data.names).context(key)?.to_string(),
-                        manufacturer_name: counter::longest(&data.manufacturer_names)
-                            .context(key)?
-                            .to_string(),
-                        manufacturer_item_description: counter::longest(
-                            &data.manufacturer_item_description,
-                        )
-                        .context(key)?
-                        .to_string(),
-                        manufacture_country: counter::longest(&data.manufacture_country)
-                            .context(key)?
-                            .to_string(),
-                        unit_qty: counter::longest(&data.unit_qty).context(key)?.to_string(),
-                        quantity: counter::longest(&data.quantity).context(key)?.to_string(),
-                        unit_of_measure: counter::longest(&data.unit_of_measure)
-                            .context(key)?
-                            .to_string(),
-                        b_is_weighted: data.b_is_weighted.most_common().context(key)?.clone(),
-                        qty_in_package: counter::longest(&data.qty_in_package)
-                            .context(key)?
-                            .to_string(),
-                        prices: data.prices.clone(),
-                    },
-                );
-            }
-
-            if args.save_item_infos_to_json {
-                info!("Saving item_infos.json");
-                std::fs::write(
-                    "item_infos.json",
-                    serde_json::to_string(&item_infos).unwrap(),
-                )?;
-            }
-        }
-        if args.save_to_sqlite {
-            sqlite_utils::save_to_sqlite(&chains, &item_infos.data)?;
-        }
+    if args.save_to_sqlite {
+        sqlite_utils::save_to_sqlite(&processed_data.chains, &processed_data.item_infos)?;
     }
 
     let shufersal_codes = Arc::new(sqlite_utils::get_codes_from_chain_id(constants::SHUFERSAL)?);

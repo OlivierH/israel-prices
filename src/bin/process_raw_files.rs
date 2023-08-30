@@ -1,8 +1,6 @@
 use anyhow::Result;
 use clap::Parser;
-use israel_prices::store::get_store_configs;
-use israel_prices::{curate_data_raw, log_utils, store_data_download};
-use itertools::Itertools;
+use israel_prices::{log_utils, process_raw_files, sqlite_utils};
 use metrics_exporter_prometheus::PrometheusBuilder;
 use tokio;
 use tracing::info;
@@ -33,23 +31,10 @@ async fn main() -> Result<()> {
 
     let args = Args::parse();
 
-    let stores = get_store_configs()
-        .into_iter()
-        .filter(|s| args.store.is_empty() || args.store.contains(s.name))
-        .collect_vec();
+    let processed_data = process_raw_files::process_raw_files(&args.dir, &args.store)?;
 
-    if args.clear_files {
-        info!("Deleting {} directory", args.dir);
-        let path = std::path::Path::new(&args.dir);
-        if !path.exists() {
-            info!("data_raw doesn't exist already");
-        } else {
-            std::fs::remove_dir_all(&args.dir)?;
-        }
-    }
+    sqlite_utils::save_to_sqlite(&processed_data.chains, &processed_data.item_infos)?;
 
-    store_data_download::download_all_stores_data(&stores, args.quick, None, &args.dir).await;
-    curate_data_raw::curate_data_raw()?;
     info!("{}", prometheus.render());
     Ok(())
 }
