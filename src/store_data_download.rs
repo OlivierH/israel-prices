@@ -1,4 +1,4 @@
-use crate::file_info::*;
+use crate::file_info::FileInfo;
 use crate::parallel_download::{self, Download};
 use crate::store::*;
 use anyhow::Result;
