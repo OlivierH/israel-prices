@@ -417,7 +417,7 @@ pub async fn fetch_victory_metadata(
     for i in 0..1000 {
         let from = i * 500;
         let url = format!("{url_start}/products?filters={{\"must\":{{}}}}&from={from}&size=500");
-        info!("{i}: fetching url {url}");
+        debug!("{i}: fetching url {url}");
         let text = reqwest_utils::get_to_text_with_retries(&url).await;
         if let Some(t) = &text {
             std::fs::write("last_victory.json", t)?;
