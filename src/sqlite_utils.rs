@@ -1,12 +1,16 @@
 use std::collections::HashMap;
 
 use anyhow::{Context, Result};
+use multimap::MultiMap;
 use rusqlite::{params, Connection};
-use tracing::{debug, info};
+use tracing::{debug, info, instrument};
 
-use crate::models::{
-    Barcode, Chain, ItemInfo, ItemKey, RamiLevyMetadata, ScrapedData, ShufersalMetadata,
-    VictoryMetadata, YochananofMetadata,
+use crate::{
+    models::{
+        Barcode, Chain, ItemInfo, ItemKey, RamiLevyMetadata, ScrapedData, ShufersalMetadata,
+        VictoryMetadata, YochananofMetadata,
+    },
+    tags::Tag,
 };
 
 fn connection() -> Result<Connection> {
@@ -408,6 +412,38 @@ pub fn save_scraped_data_to_sqlite(data: &Vec<ScrapedData>) -> Result<()> {
     Ok(())
 }
 
+#[instrument(skip_all)]
+pub fn save_tags_to_sqlite(tags: &MultiMap<ItemKey, Tag>) -> Result<()> {
+    let mut connection: Connection = connection()?;
+    info!("Saving table Tags to sqlite");
+    connection.execute(
+        &format!(
+            "CREATE TABLE IF NOT EXISTS Tags (
+                        ChainId int,
+                        ItemCode TEXT NOT NULL,
+                        Tags TEXT,
+                        PRIMARY KEY(ChainId,ItemCode))"
+        ),
+        (),
+    )?;
+    let transaction = connection.transaction()?;
+    {
+        let tx = &transaction;
+        let mut statement = tx.prepare(&format!(
+            "INSERT OR REPLACE INTO Tags (ChainId, ItemCode, Tags) VALUES (?1,?2,?3)"
+        ))?;
+        for (item_key, tags_vec) in tags.iter_all() {
+            let tags_str = serde_json::to_string(tags_vec)?;
+            statement
+                .execute(params![item_key.chain_id, item_key.item_code, tags_str,])
+                .with_context(|| format!("With item_key = {:?}", item_key))?;
+        }
+    }
+    transaction.commit()?;
+    Ok(())
+}
+
+#[instrument]
 pub fn get_codes_from_chain_id(chain_id: i64) -> Result<Vec<Barcode>> {
     let connection: Connection = connection()?;
     debug!("get_codes_from_chain_id");

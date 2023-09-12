@@ -1,143 +1,15 @@
 use std::collections::HashMap;
 
 use anyhow::Result;
-use israel_prices::models::{ItemInfo, ItemKey};
+use israel_prices::{
+    models::{ItemInfo, ItemKey},
+    sqlite_utils::save_tags_to_sqlite,
+    tags::Tag,
+};
 use itertools::Itertools;
 use multimap::MultiMap;
 use tracing::info;
 use tracing_subscriber::prelude::*;
-
-enum Tag {
-    AirPurifier,
-    Alcohol,
-    BabyAndNursingAccessories,
-    Beer,
-    BirthdayAccessories,
-    Biscuits,
-    BonbonsAndPralines,
-    Bottles,
-    Bread,
-    BreakfastCereals,
-    CandlesAndMatches,
-    Candy,
-    CannedFish,
-    CannedTomatoes,
-    CannedVegetables,
-    CarbonatedDrinks,
-    Cheese,
-    CheeseAlternatives,
-    Chocolate,
-    ChocolateSnacks,
-    ChocolateTablets,
-    Cigarettes,
-    CleaningAccessories,
-    CoffeeAndCapsules,
-    Concentrates,
-    Cookies,
-    CookiesAndBiscuits,
-    CookiesPackaged,
-    CookingSauce,
-    Crackers,
-    CreamyCheeses,
-    DairyDrinks,
-    DentalPaste,
-    Deodorant,
-    DisposableDishes,
-    EnergyAndCerealSnacks,
-    FaceAndBodyCare,
-    FamilyIceCreams,
-    Flour,
-    FrozenFish,
-    FrozenVegetables,
-    Fruit,
-    Gum,
-    HairProductsAndAccessories,
-    HealthSnacks,
-    HouseCleaning,
-    Jam,
-    JamsAndDips,
-    KitchenAccessories,
-    Laundry,
-    LaundrySoftener,
-    LeavesAndHerbs,
-    Maadanim,
-    Milk,
-    MilkAndChocolateDrinks,
-    NaturalCosmetics,
-    NaturalToiletries,
-    Oils,
-    Olives,
-    PackagedCakes,
-    PackagedSnacks,
-    Pads,
-    Pasta,
-    PetFood,
-    PlainYogurt,
-    PreparedSalads,
-    RiceCouscousAndPasta,
-    RollsAndPitas,
-    SaltedCheeses,
-    SaltySnacks,
-    ShampooAndConditioner,
-    ShavingAndWaxingProducts,
-    Soap,
-    SoftDrinks,
-    SoftDrinksFlavoredWater,
-    Spices,
-    TeaAndInfusions,
-    ToiletAndBathCleaningProducts,
-    Tootbrushes,
-    Vegetables,
-    Vitamins,
-    Waffles,
-    Whisky,
-    Wine,
-    Yogurt,
-    RedWine,
-    Pitsuhim,
-    PackagedPitsuhim,
-    Dough,
-    MenPerfume,
-    WomenPerfume,
-    FrozenMeat,
-    CheeseByWeight,
-    HardOrSemiHardCheese,
-    IndividualIceCream,
-    GranolaAndCereals,
-    VitaminsAndDietarySupplements,
-    HummusAndTahini,
-    SkinCare,
-    KitchenUtensils,
-    WhiteAndRoseWine,
-    ForTheKitchen,
-    IceCreamTubs,
-    SoyAndPlantBasedProducts,
-    ReadyToCook,
-    BabyFood,
-    Juices,
-    JuicesAndNectars,
-    Spreads,
-    SweetSpreads,
-    QuickPrepMeals,
-    Soups,
-    SoupsAndQuickPrepFood,
-    DishwashingAndDetergents,
-    KitchenAndDishCleaning,
-    Nectars,
-    NectarsAndJuices,
-    SausageAndPastrami,
-    PackedSausages,
-    HummusAndTahiniSalad,
-    CakesAndDessertsInCooling,
-    FreshChicken,
-    RiceCrispsAndCrackers,
-    DisposablePlates,
-    CerealsAndGrains,
-    KetchupMayonnaiseMustardTahini,
-    MilkSubstitutes,
-    QuickPrepMixes,
-    Lipsticks,
-}
 
 fn main() -> Result<()> {
     tracing_subscriber::registry()
@@ -222,6 +94,8 @@ fn main() -> Result<()> {
     let mut numitemswithtags = 0;
     let numitems = item_infos.len();
 
+    let mut tags: MultiMap<ItemKey, Tag> = MultiMap::new();
+
     for (itemkey, iteminfo) in item_infos {
         let separator = ", ".to_owned();
         let iteminfo: israel_prices::models::ItemInfo = iteminfo;
@@ -242,8 +116,16 @@ fn main() -> Result<()> {
         for category_vec in &category_vecs {
             if let Some(category) = category_vec.0.last() {
                 let tag = get_tag_for_string(&category);
-                if tag.is_some() {
+                if let Some(tag) = tag {
                     hastag = true;
+
+                    if tags
+                        .get_vec(&itemkey)
+                        .map(|v| !v.contains(&tag))
+                        .unwrap_or(true)
+                    {
+                        tags.insert(itemkey, tag);
+                    }
                 }
             }
         }
@@ -252,7 +134,7 @@ fn main() -> Result<()> {
         } else {
             for category_vec in &category_vecs {
                 if let Some(category) = category_vec.0.last() {
-                    println!("!{}-{category}!", category_vec.1);
+                    // println!("!{}-{category}!", category_vec.1);
                     // if category ==  {
                     //     println!("!{:?}!", category_vec.0);
                     // }
@@ -267,6 +149,8 @@ fn main() -> Result<()> {
         // }
         // // .collect::<String>();
     }
+    // println!("{:?}", tags);
+    save_tags_to_sqlite(&tags)?;
     println!("Got {numitemswithtags} items with tags out of {numitems}");
 
     Ok(())

@@ -15,5 +15,6 @@ pub mod sanitization;
 pub mod sqlite_utils;
 pub mod store;
 pub mod store_data_download;
+pub mod tags;
 pub mod xml;
 pub mod xml_to_standard;
