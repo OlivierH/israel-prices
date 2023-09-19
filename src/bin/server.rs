@@ -130,7 +130,7 @@ async fn searchproduct(
     let mut stmt = connection.prepare(
         "
     SELECT 
-        items.itemname, items.ManufactureItemDescription, items.itemcode FROM items 
+        items.itemname, items.ManufactureItemDescription, items.itemcode, items.tags FROM items 
     WHERE items.itemname LIKE ?1;
     ",
     )?;
@@ -141,6 +141,7 @@ async fn searchproduct(
         name: String,
         description: String,
         barcode: i64,
+        tags: String,
     }
     let mut items = Vec::new();
 
@@ -149,6 +150,7 @@ async fn searchproduct(
             name: row.get(0)?,
             description: row.get(1)?,
             barcode: row.get(2)?,
+            tags: row.get::<_, Option<String>>(3)?.unwrap_or_default(),
         });
     }
     #[derive(Template)]
