@@ -2,8 +2,8 @@ use std::collections::HashMap;
 
 use anyhow::{Context, Result};
 use multimap::MultiMap;
-use rusqlite::{params, Connection};
-use tracing::{debug, info, instrument};
+use rusqlite::{named_params, params, Connection};
+use tracing::{debug, info, instrument, warn};
 
 use crate::{
     models::{
@@ -441,7 +441,37 @@ pub fn save_tags_to_sqlite(tags: &MultiMap<ItemKey, Tag>) -> Result<()> {
         }
     }
     transaction.commit()?;
+
+    if !check_table_exists("Items")? {
+        warn!("Table items doesn't exist");
+    } else {
+        let transaction = connection.transaction()?;
+        {
+            let tx = &transaction;
+            let mut statement = tx.prepare(&format!(
+                "UPDATE Items SET Tags = ?1 WHERE ChainId = ?2 AND ItemCode = ?3"
+            ))?;
+            for (item_key, tags_vec) in tags.iter_all() {
+                let tags_str = serde_json::to_string(tags_vec)?;
+                statement
+                    .execute(params![tags_str, item_key.chain_id, item_key.item_code])
+                    .with_context(|| format!("With item_key = {:?}", item_key))?;
+            }
+        }
+        transaction.commit()?;
+    }
     Ok(())
+}
+
+fn check_table_exists(table_name: &str) -> Result<bool> {
+    let connection = connection()?;
+    let mut stmt = connection
+        .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name=:table_name")?;
+    let params = named_params! { ":table_name" : table_name };
+
+    let rows = stmt.query_map(params, |row| row.get::<_, String>(0))?;
+
+    Ok(rows.count() == 1)
 }
 
 #[instrument]
