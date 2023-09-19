@@ -189,6 +189,7 @@ pub fn save_to_sqlite(chains: &Vec<Chain>, item_infos: &HashMap<ItemKey, ItemInf
                         UnitOfMeasure TEXT,
                         IsWeighted TEXT,
                         QuantityInPackage TEXT,
+                        Tags TEXT,
                         PRIMARY KEY(ChainId, ItemCode)) ",
             (),
         )?;
